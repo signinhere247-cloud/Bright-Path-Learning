@@ -28,6 +28,7 @@ import {explorerMilestones} from './explorerMilestones.js';
 import {milestoneCelebration} from './milestoneCelebrations.js';
 import {adventureOverview} from './adventureOverview.js';
 import {personalisedAdventureGoals} from './adventureGoals.js';
+import {waypointHint} from './adventureWaypoints.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -360,12 +361,16 @@ function showDiscovery(activity){
 function interact(b){if(!b)return;if(b.id&&DISCOVERIES.some(d=>d.id===b.id)){showDiscovery(b);return}if(b.name==='My Home')showHome();else if(b.name==='Shop')showShop();else showLessons(b.name)}
 $('#learnBtn').onclick=showSubjects;$('#profileBtn').onclick=showProfile;$('#helpBtn').onclick=()=>modal('<h2>How to play</h2><p>Use arrow keys, WASD or the on-screen direction buttons to walk around the 3D world. Approach a building and press Enter or Interact. Tap buildings directly too.</p><p>Complete lessons to earn BrightCoins, buy furniture, decorate your home and adopt a pet.</p><p><b>Guest mode:</b> Progress saves on this device only. Secure family accounts are not yet connected.</p>');$('#interact').onclick=()=>interact(near);
 const villageGuide=document.createElement('button');villageGuide.id='villageGuide';villageGuide.textContent='🧭 Village guide';villageGuide.setAttribute('aria-label','Open village directions');$('#interact').after(villageGuide);
+let activeWaypoint=null;
+const waypointStatus=document.createElement('div');waypointStatus.id='waypointStatus';waypointStatus.setAttribute('role','status');waypointStatus.setAttribute('aria-live','off');villageGuide.after(waypointStatus);
+const cancelWaypoint=document.createElement('button');cancelWaypoint.id='cancelWaypoint';cancelWaypoint.textContent='✕ Clear directions';cancelWaypoint.hidden=true;waypointStatus.after(cancelWaypoint);
+cancelWaypoint.onclick=()=>{activeWaypoint=null;waypointStatus.textContent='';cancelWaypoint.hidden=true};
 villageGuide.onclick=()=>{
  const destinations=[...DISCOVERIES,...buildings.map(b=>({...b,x:b.x,z:b.z+4}))];
  const directions=villageDirections(position,destinations);
  modal('<h2>Village guide 🧭</h2><p>Choose a destination to see how far away it is.</p><div id="villageGuideList"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
  const list=$('#villageGuideList');
- for(const d of directions){const button=document.createElement('button');button.textContent=d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{$('#villageGuideMessage').textContent='Head '+d.direction+' towards '+d.name+'. Use the movement arrows to explore.'};list.append(button)}
+ for(const d of directions){const button=document.createElement('button');button.textContent=d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{activeWaypoint={name:d.name,x:d.x,z:d.z};close();waypointStatus.textContent='🧭 Head '+d.direction+' towards '+d.name+'.';cancelWaypoint.hidden=false};list.append(button)}
  $('#closeVillageGuide').onclick=close;
 };
 const movementKeys=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d']);
@@ -428,5 +433,5 @@ function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);vill
   companion.rotation.y=Math.atan2(position.x-companion.position.x,position.z-companion.position.z);
   petModel?.animate(now,Math.hypot(goal.x-companion.position.x,goal.z-companion.position.z)>.12,active?petActivity.action:null);
  }
- let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(nearestVillageDestination(position,DISCOVERIES,2.7)||buildings.find(b=>Math.hypot(position.x-b.x,position.z-(b.z+4))<3.5)):null;villageGuide.hidden=mode!=='world';$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
+ let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(nearestVillageDestination(position,DISCOVERIES,2.7)||buildings.find(b=>Math.hypot(position.x-b.x,position.z-(b.z+4))<3.5)):null;villageGuide.hidden=mode!=='world';cancelWaypoint.hidden=mode!=='world'||!activeWaypoint;waypointStatus.hidden=mode!=='world';if(activeWaypoint&&mode==='world'){const hint=waypointHint(position,activeWaypoint);if(hint){const message=hint.arrived?'🎉 You reached '+activeWaypoint.name+'!':'🧭 '+activeWaypoint.name+' · '+hint.distance+' steps · Head '+hint.direction;if(waypointStatus.textContent!==message)waypointStatus.textContent=message;if(hint.arrived){activeWaypoint=null;cancelWaypoint.hidden=true}}}$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
