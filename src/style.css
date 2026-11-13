@@ -193,3 +193,13 @@ canvas{touch-action:none}
 #hubCelebrationMessage:not(:empty){padding:12px;border-radius:12px;background:#fff;font-weight:700}
 .learning-hub-celebrate:focus-visible{outline:3px solid #7353a2;outline-offset:3px}
 @media(max-width:480px){#hubCelebrations{flex-direction:column}#hubCelebrations button{width:100%}}
+
+/* Step 3.47: accessible hub section navigation and responsive polish */
+.learning-hub-jump{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.learning-hub-jump a{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:8px 14px;border-radius:999px;background:#f1eaff;color:#46336d;font-weight:700;text-decoration:none}
+.learning-hub-jump a:hover{background:#e8dcff}
+.learning-hub-jump a:focus-visible,.learning-hub-actions button:focus-visible,.learning-hub-suggestion button:focus-visible{outline:3px solid #7050a8;outline-offset:3px}
+#hubSummaryHeading,#hubHighlightsHeading,#hubCelebrationsHeading,#hubSuggestionsHeading,#hubActivitiesHeading{scroll-margin-top:20px}
+.learning-hub-stat,.learning-hub-highlight,.learning-hub-suggestion{min-width:0;overflow-wrap:anywhere}
+@media(max-width:480px){.learning-hub-jump a{flex:1 1 calc(50% - 8px);text-align:center}.learning-hub-summary{grid-template-columns:1fr 1fr;gap:8px}.learning-hub-stat{padding:12px}}
+@media(max-width:340px){.learning-hub-summary{grid-template-columns:1fr}.learning-hub-jump a{flex-basis:100%}}
