@@ -32,6 +32,7 @@ import {waypointHint} from './adventureWaypoints.js';
 import {PROFILE_MENU_GROUPS} from './profileNavigation.js';
 import {lessonStepProgress,lessonAnswerFeedback} from './lessonExperience.js';
 import {learningHint} from './learningHints.js';
+import {practiceTopics,recordPracticeNeed} from './practiceTopics.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -141,15 +142,15 @@ function modal(html){$('#modalBody').innerHTML=html;$('#modal').classList.remove
 function close(){ if(mode==='home'){exitHome();return;} $('#modal').classList.add('hidden') }$('#close').onclick=close;
 function buttons(items,cb){return items.map((it,i)=>`<button class="choice" data-choice="${i}">${it}</button>`).join('')}
 function showSubjects(){modal(`<h2>Learning Academy</h2><p>Choose a subject to explore its lessons.</p><div class="cards">${subjects.map(s=>`<button data-subject="${s}">${s}</button>`).join('')}</div>`);$('#modalBody').onclick=e=>{let s=e.target.dataset.subject;if(s)showLessons(s)}}
-function showLessons(s){modal(`<button class="back" id="back">← Subjects</button><h2>${s} Academy</h2><p>Choose a lesson. Choose a topic and practise at your own level.</p><div class="cards">${lessonBank[s].map(([name,desc])=>`<button data-topic="${name}"><b>${name}</b><small>${desc}</small>${state.completed[s+':'+name]?' ✓':''}</button>`).join('')}</div>`);$('#back').onclick=showSubjects;$('#modalBody').onclick=e=>{let t=e.target.closest('[data-topic]');if(t)startLesson(s,t.dataset.topic)}}
-let current=null;function startLesson(s,t){let age=activeProfile().age;current={s,t,q:questions(s,t,age),i:0,correct:0,settled:false};showQuestion()}
+function showLessons(s){const practice=practiceTopics(state,s),practiceHtml=practice.length?`<section class="practice-recommendations"><h3>🎯 Practise again</h3><p>These topics could use another try.</p>${practice.filter(item=>lessonBank[s].some(([name])=>name===item.topic)).slice(0,3).map(item=>`<button data-topic="${item.topic}">Practise ${item.topic} again</button>`).join('')}</section>`:'';modal(`<button class="back" id="back">← Subjects</button><h2>${s} Academy</h2><p>Choose a lesson. Choose a topic and practise at your own level.</p>${practiceHtml}<div class="cards">${lessonBank[s].map(([name,desc])=>`<button data-topic="${name}"><b>${name}</b><small>${desc}</small>${state.completed[s+':'+name]?' ✓':''}</button>`).join('')}</div>`);$('#back').onclick=showSubjects;$('#modalBody').onclick=e=>{let t=e.target.closest('[data-topic]');if(t)startLesson(s,t.dataset.topic)}}
+let current=null;function startLesson(s,t){let age=activeProfile().age;current={s,t,q:questions(s,t,age),i:0,correct:0,missed:0,settled:false};showQuestion()}
 function showQuestion(){let c=current;if(c.i>=c.q.length){
  if(c.settled)return;
  try{
   const result=completeLessonAttempt(state,c.s,c.t,c.correct,c.q.length);
   // Commit the new progress only after the browser has persisted it successfully.
   const previous=state;
-  state=result.save;
+  state=recordPracticeNeed(result.save,c.s,c.t,c.missed>0);
   try{save()}catch(err){state=previous;throw err}
   c.settled=true;
   refresh();
@@ -162,7 +163,7 @@ function showQuestion(){let c=current;if(c.i>=c.q.length){
   $('#retryLessonSave').onclick=()=>showQuestion();
  }
  return;
- }let q=c.q[c.i],options=[...q.options].sort((a,b)=>a.localeCompare(b)),step=lessonStepProgress(c.i,c.q.length);modal(`<div class="progress">${step.label} · ${c.correct} correct</div><progress class="lesson-progress-bar" value="${step.current}" max="${step.total}" aria-label="Lesson progress"></progress><h2>${c.t}</h2><p class="progress">Learning level: ${learningBand(activeProfile().age)}</p><p class="question">${q.prompt}</p><div class="choices">${buttons(options)}</div><div id="feedback" role="status"></div>`);$('#modalBody').onclick=e=>{let btn=e.target.closest('[data-choice]');if(!btn||$('#feedback').textContent)return;let choice=options[Number(btn.dataset.choice)],ok=choice===q.answer,feedback=lessonAnswerFeedback(ok,c.i+1===c.q.length);c.correct+=Number(ok);$('#modalBody').querySelectorAll('[data-choice]').forEach(button=>button.disabled=true);const hint=learningHint(q,choice),feedbackArea=$('#feedback');feedbackArea.replaceChildren();const heading=document.createElement('strong'),answer=document.createElement('p'),explanation=document.createElement('p'),suggestion=document.createElement('p'),next=document.createElement('button');heading.textContent=hint.title;answer.textContent='Correct answer: '+q.answer;explanation.className='answer-explanation';explanation.textContent=hint.explanation;suggestion.className='learning-suggestion';suggestion.textContent=hint.suggestion;next.id='next';next.textContent=feedback.nextLabel;feedbackArea.append(heading,answer,explanation,suggestion,next);next.onclick=()=>{c.i++;showQuestion()}}}
+ }let q=c.q[c.i],options=[...q.options].sort((a,b)=>a.localeCompare(b)),step=lessonStepProgress(c.i,c.q.length);modal(`<div class="progress">${step.label} · ${c.correct} correct</div><progress class="lesson-progress-bar" value="${step.current}" max="${step.total}" aria-label="Lesson progress"></progress><h2>${c.t}</h2><p class="progress">Learning level: ${learningBand(activeProfile().age)}</p><p class="question">${q.prompt}</p><div class="choices">${buttons(options)}</div><div id="feedback" role="status"></div>`);$('#modalBody').onclick=e=>{let btn=e.target.closest('[data-choice]');if(!btn||$('#feedback').textContent)return;let choice=options[Number(btn.dataset.choice)],ok=choice===q.answer,feedback=lessonAnswerFeedback(ok,c.i+1===c.q.length);c.correct+=Number(ok);if(!ok)c.missed++;$('#modalBody').querySelectorAll('[data-choice]').forEach(button=>button.disabled=true);const hint=learningHint(q,choice),feedbackArea=$('#feedback');feedbackArea.replaceChildren();const heading=document.createElement('strong'),answer=document.createElement('p'),explanation=document.createElement('p'),suggestion=document.createElement('p'),next=document.createElement('button');heading.textContent=hint.title;answer.textContent='Correct answer: '+q.answer;explanation.className='answer-explanation';explanation.textContent=hint.explanation;suggestion.className='learning-suggestion';suggestion.textContent=hint.suggestion;next.id='next';next.textContent=feedback.nextLabel;feedbackArea.append(heading,answer,explanation,suggestion,next);next.onclick=()=>{c.i++;showQuestion()}}}
 function itemModel(id,x,z,rotation=0){const group=fantasyFurniture(THREE,id,shop.find(i=>i.id===id)?.color);group.position.set(x,0,z);group.rotation.y=rotation;group.userData.furnitureId=id;home.scene.add(group);return group}
 function clearHome(){for(const o of homeObjects){home.scene.remove(o);o.traverse(x=>{x.geometry?.dispose();if(Array.isArray(x.material))x.material.forEach(m=>m.dispose());else x.material?.dispose()})}homeObjects=[]}
 // Edit mode keeps controls visible while the 3D room remains unobstructed.
