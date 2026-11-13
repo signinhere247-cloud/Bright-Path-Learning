@@ -34,5 +34,5 @@ test('village guide presents discovery progress with labelled destinations',()=>
  const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
  assert.ok(main.includes('destinationDiscoveryProgress(state,'));
  assert.ok(main.includes('id="guideDiscoveryProgress"'));
- assert.ok(main.includes("d.discovery.visited?'✨ Explored"));
+ assert.ok(main.includes("d.discovery.visited?'✨ Explored before"));
 });
