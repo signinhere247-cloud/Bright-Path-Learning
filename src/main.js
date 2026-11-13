@@ -37,6 +37,7 @@ import {recordLearningDay,learningStreak} from './learningStreaks.js';
 import {recordDailySubject,dailyLearningChallenge} from './dailyLearningChallenges.js';
 import {challengeKeepsakes} from './challengeKeepsakes.js';
 import {learningJourney} from './learningJourney.js';
+import {journeySuggestions} from './journeySuggestions.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -266,8 +267,8 @@ function showAdventureOverview(){
  $('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
 function showLearningJourney(){
- const stops=learningJourney(state,subjects);
- modal(`<h2>My Learning Journey Map 🗺️</h2><p>Follow your learning path at your own pace. Every achievement stays collected!</p><ol class="learning-journey-map" id="journeyStops"></ol><button id="journeyBack">Back to my progress</button>`);
+ const stops=learningJourney(state,subjects),suggestions=journeySuggestions(state,subjects);
+ modal(`<h2>My Learning Journey Map 🗺️</h2><p>Follow your learning path at your own pace. Every achievement stays collected!</p><ol class="learning-journey-map" id="journeyStops"></ol><section class="journey-suggestions"><h3>✨ Ideas just for you</h3><p>Choose what sounds fun — these are suggestions, not homework.</p><div id="journeySuggestions"></div></section><button id="journeyBack">Back to my progress</button>`);
  const list=$('#journeyStops');
  for(const stop of stops){
   const item=document.createElement('li'),heading=document.createElement('strong'),detail=document.createElement('span'),progress=document.createElement('progress'),button=document.createElement('button');
@@ -278,6 +279,14 @@ function showLearningJourney(){
   button.textContent=stop.complete?'Explore more':'Keep going →';
   button.onclick=()=>stop.destination==='challenges'?showDailyQuests():showSubjects();
   item.append(heading,detail,progress,button);list.append(item);
+ }
+ const suggestionsBox=$('#journeySuggestions');
+ for(const suggestion of suggestions){
+  const button=document.createElement('button'),detail=document.createElement('small');
+  button.type='button';button.textContent=suggestion.kind==='practice'?'🎯 '+suggestion.title:'📚 '+suggestion.title;
+  detail.textContent=suggestion.detail;
+  const item=document.createElement('div');item.className='journey-suggestion';item.append(button,detail);suggestionsBox.append(item);
+  button.onclick=()=>suggestion.kind==='practice'&&lessonBank[suggestion.subject]?.some(([name])=>name===suggestion.topic)?startLesson(suggestion.subject,suggestion.topic):showLessons(suggestion.subject);
  }
  $('#journeyBack').onclick=showAdventureOverview;
 }
