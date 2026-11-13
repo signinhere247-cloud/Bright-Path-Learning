@@ -145,13 +145,14 @@ function buttons(items,cb){return items.map((it,i)=>`<button class="choice" data
 function showSubjects(){modal(`<h2>Learning Academy</h2><p>Choose a subject to explore its lessons.</p><div class="cards">${subjects.map(s=>`<button data-subject="${s}">${s}</button>`).join('')}</div>`);$('#modalBody').onclick=e=>{let s=e.target.dataset.subject;if(s)showLessons(s)}}
 function showLessons(s){const practice=practiceTopics(state,s),practiceHtml=practice.length?`<section class="practice-recommendations"><h3>🎯 Practise again</h3><p>These topics could use another try.</p>${practice.filter(item=>lessonBank[s].some(([name])=>name===item.topic)).slice(0,3).map(item=>`<button data-topic="${item.topic}">Practise ${item.topic} again</button>`).join('')}</section>`:'';modal(`<button class="back" id="back">← Subjects</button><h2>${s} Academy</h2><p>Choose a lesson. Choose a topic and practise at your own level.</p>${practiceHtml}<div class="cards">${lessonBank[s].map(([name,desc])=>`<button data-topic="${name}"><b>${name}</b><small>${desc}</small>${state.completed[s+':'+name]?' ✓':''}</button>`).join('')}</div>`);$('#back').onclick=showSubjects;$('#modalBody').onclick=e=>{let t=e.target.closest('[data-topic]');if(t)startLesson(s,t.dataset.topic)}}
 let current=null;function startLesson(s,t){let age=activeProfile().age;current={s,t,q:questions(s,t,age),i:0,correct:0,missed:0,settled:false};showQuestion()}
+function localLearningDate(){const now=new Date();return [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-')}
 function showQuestion(){let c=current;if(c.i>=c.q.length){
  if(c.settled)return;
  try{
   const result=completeLessonAttempt(state,c.s,c.t,c.correct,c.q.length);
   // Commit the new progress only after the browser has persisted it successfully.
   const previous=state;
-  state=recordLearningDay(recordPracticeNeed(result.save,c.s,c.t,c.missed>0),new Date().toLocaleDateString('en-CA'));
+  state=recordLearningDay(recordPracticeNeed(result.save,c.s,c.t,c.missed>0),localLearningDate());
   try{save()}catch(err){state=previous;throw err}
   c.settled=true;
   refresh();
