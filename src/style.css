@@ -185,3 +185,11 @@ canvas{touch-action:none}
 .learning-hub-highlight{padding:14px;border-radius:14px;background:#fff;border:1px solid #f1e3cc}
 .learning-hub-highlight p{margin:8px 0 0;line-height:1.45}
 @media(max-width:480px){#hubHighlights{grid-template-columns:1fr}}
+
+.learning-hub-celebrations{margin:18px 0;padding:16px;border-radius:18px;background:#fff0f5}
+.learning-hub-celebrations h3{margin:0 0 8px}
+#hubCelebrations{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.learning-hub-celebrate{min-height:44px;border-radius:14px;white-space:normal}
+#hubCelebrationMessage:not(:empty){padding:12px;border-radius:12px;background:#fff;font-weight:700}
+.learning-hub-celebrate:focus-visible{outline:3px solid #7353a2;outline-offset:3px}
+@media(max-width:480px){#hubCelebrations{flex-direction:column}#hubCelebrations button{width:100%}}
