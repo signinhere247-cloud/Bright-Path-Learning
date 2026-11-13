@@ -23,9 +23,9 @@ test('journal links require a previously explored discovery and questions requir
  const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
  const journal=main.slice(main.indexOf('function showVillageJournal()'),main.indexOf('function showDiscoveryMenu()'));
  const question=main.slice(main.indexOf('function showDiscovery(activity)'),main.indexOf('function interact(b)'));
- assert.ok(journal.includes('if(entry.visited){const link=discoveryLearningLink'));
- assert.ok(journal.includes('button.onclick=()=>showLessons(link.subject)'));
+ assert.ok(journal.includes('if(entry.visited){const suggestion=villageLearningSuggestion'));
+ assert.ok(journal.includes('button.onclick=()=>showLessons(suggestion.subject)'));
  assert.ok(question.includes('if(result.correct){'));
- assert.ok(question.includes('discoveryLearningLink(activity.id,subjects)'));
- assert.ok(question.includes("$('#discoveryLearningNext').replaceChildren(button)"));
+ assert.ok(question.includes('villageLearningSuggestion(state,activity.id,subjects)'));
+ assert.ok(question.includes("$('#discoveryLearningNext').replaceChildren(detail,button)"));
 });
