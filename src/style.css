@@ -221,3 +221,8 @@ canvas{touch-action:none}
 .destination-recommendations{margin:16px 0;padding:14px;border-radius:16px;background:#f3f0ff}
 .destination-recommendations h3{margin:0 0 8px}
 .destination-recommendations p{margin:0 0 10px}
+
+.destination-milestones{margin:16px 0;padding:14px;border-radius:16px;background:#fff3dc}
+.destination-milestones h3{margin:0 0 8px}
+.destination-milestones p{margin:0 0 10px}
+#guideMilestoneMessage:not(:empty){margin-top:10px;font-weight:700}
