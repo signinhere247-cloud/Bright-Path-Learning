@@ -2,11 +2,12 @@ import {discoveryLearningLink} from './discoveryLearningLinks.js';
 import {progressSummary} from './lessonProgress.js';
 import {practiceTopics} from './practiceTopics.js';
 /** Read-only, child-specific academy suggestion following a village discovery. */
-export function villageLearningSuggestion(save,discoveryId,subjects){
+export function villageLearningSuggestion(save,discoveryId,subjects,lessonBank=null){
  const link=discoveryLearningLink(discoveryId,subjects);
  if(!link)return null;
  const subject=link.subject;
- const needs=practiceTopics(save,subject);
+ const available=Array.isArray(lessonBank?.[subject])?new Set(lessonBank[subject].map(entry=>entry[0])):null;
+ const needs=practiceTopics(save,subject).filter(item=>!available||available.has(item.topic));
  if(needs.length){
   const topic=needs[0].topic;
   return {subject,kind:'practice',topic,title:'🎯 Practise '+topic,detail:'Build confidence with a '+subject+' topic you have tried before.'};
