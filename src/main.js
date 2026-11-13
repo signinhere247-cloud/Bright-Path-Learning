@@ -29,6 +29,7 @@ import {destinationMilestones} from './destinationMilestones.js';
 import {createDirectionalInput} from './directionalInput.js';
 import {adventureInteractionFeedback} from './adventureInteractionFeedback.js';
 import {discoveryLearningLink} from './discoveryLearningLinks.js';
+import {villageLearningSuggestion} from './villageLearningSuggestion.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -563,7 +564,7 @@ function showVillageJournal(){
   const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
   const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
   item.append(heading,description);
-  if(entry.visited){const link=discoveryLearningLink(entry.id,subjects);if(link){const button=document.createElement('button');button.type='button';button.textContent=link.label;button.onclick=()=>showLessons(link.subject);item.append(button)}}
+  if(entry.visited){const suggestion=villageLearningSuggestion(state,entry.id,subjects);if(suggestion){const detail=document.createElement('p');detail.textContent=suggestion.detail;const button=document.createElement('button');button.type='button';button.textContent=suggestion.title;button.onclick=()=>showLessons(suggestion.subject);item.append(detail,button)}}
   container.append(item);
  }
  $('#journalBack').onclick=showDiscoveryMenu;
@@ -585,8 +586,8 @@ function showDiscovery(activity){
   if(result.earned){state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
   $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Not quite — have another try!'} ${result.correct?result.explanation:''} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
   if(result.correct){
-   const link=discoveryLearningLink(activity.id,subjects);
-   if(link){const button=document.createElement('button');button.type='button';button.textContent=link.label;button.onclick=()=>showLessons(link.subject);$('#discoveryLearningNext').replaceChildren(button)}
+   const suggestion=villageLearningSuggestion(state,activity.id,subjects);
+   if(suggestion){const detail=document.createElement('p');detail.textContent=suggestion.detail;const button=document.createElement('button');button.type='button';button.textContent=suggestion.title;button.onclick=()=>showLessons(suggestion.subject);$('#discoveryLearningNext').replaceChildren(detail,button)}
    $('#discoveryFeedback').dataset.answered='yes';
    $('#modalBody').querySelectorAll('[data-discovery-choice]').forEach(b=>b.disabled=true);
   }
