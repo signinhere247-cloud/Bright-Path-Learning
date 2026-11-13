@@ -1,0 +1,30 @@
+name: Generate dependency lockfile (development only)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - development/dependency-validation
+permissions:
+  contents: read
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate deterministic dependency lockfile
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Validate lockfile and locked install
+        run: |
+          test -s package-lock.json
+          npm ci --no-audit --no-fund
+      - name: Upload generated lockfile for review and commit
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightpath-development-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 30
