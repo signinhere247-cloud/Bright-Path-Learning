@@ -25,6 +25,7 @@ import {nearestVillageDestination,villageDirections} from './villageNavigation.j
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
 import {explorerMilestones} from './explorerMilestones.js';
+import {milestoneCelebration} from './milestoneCelebrations.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -238,9 +239,9 @@ function showBackupControls(){
 }
 function showAchievements(){
  const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10));
- modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><button id="backToProfile">Back to profile</button>`);
+ modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="backToProfile">Back to profile</button>`);
  const container=$('#explorerMilestones');
- for(const milestone of milestones.milestones){const item=document.createElement('p');item.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;container.append(item)}
+ for(const milestone of milestones.milestones){const item=document.createElement('div');const button=document.createElement('button');button.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;button.disabled=!milestone.earned;button.setAttribute('aria-label',milestone.earned?'Celebrate '+milestone.name:milestone.name+' locked');button.onclick=()=>{const celebration=milestoneCelebration(milestone);if(celebration){$('#milestoneCelebration').textContent=celebration.title+' '+celebration.message;const banner=$('#milestoneCelebration');banner.classList.remove('milestone-pop');void banner.offsetWidth;banner.classList.add('milestone-pop')}};item.append(button);container.append(item)}
  $('#backToProfile').onclick=showProfile;
 }
 function showDailyQuests(){
