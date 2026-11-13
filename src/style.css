@@ -38,3 +38,10 @@ canvas{touch-action:none}
 .profile-menu-grid button{min-height:54px;text-align:left;line-height:1.35;background:white}
 .profile-menu-group:last-of-type{background:#f5f0e9}
 @media(max-width:480px){.profile-menu-group{padding:12px}.profile-menu-grid{grid-template-columns:1fr}.profile-menu-grid button{min-height:52px}}
+
+/* Lesson steps stay legible on phones, tablets and desktop. */
+.lesson-progress-bar{display:block;width:100%;height:14px;margin:9px 0 18px;accent-color:#29a89b}
+.choices button{min-height:52px}
+.choices button:disabled{opacity:.65;cursor:default}
+#feedback{font-size:1rem;line-height:1.6}
+#feedback button{display:block;margin-top:14px;min-height:48px;background:#d9f2eb}
