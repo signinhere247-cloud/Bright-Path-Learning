@@ -115,3 +115,9 @@ canvas{touch-action:none}
 .achievement-gallery-card span{font-size:2rem}
 .achievement-gallery-card small{overflow-wrap:anywhere}
 .achievement-gallery-card.locked{background:#f0f0f3;border-color:#d9d9df;opacity:.7}
+
+.gallery-celebrate-button{min-height:44px;margin-top:5px;background:white;border-radius:12px}
+.gallery-celebration:not(:empty){padding:14px;border-radius:14px;background:#fff2d2;font-weight:700}
+.gallery-celebration-pop{animation:gallery-celebrate-pop .45s ease-out}
+@keyframes gallery-celebrate-pop{0%{transform:scale(.96);opacity:.55}100%{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.gallery-celebration-pop{animation:none}}
