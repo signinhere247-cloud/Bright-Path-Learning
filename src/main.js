@@ -292,7 +292,7 @@ for(const discovery of DISCOVERIES){
  label(discovery.name,discovery.x,2.15,discovery.z);
 }
 function showDiscoveryMenu(){
- modal(`<h2>Village discoveries 🌿</h2><p>Explore the pond, garden and stars. Each correct discovery earns 8 BrightCoins once per day.</p><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
+ modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
  $('#discoveryMenuBack').onclick=showProfile;
  $('#modalBody').onclick=e=>{const id=e.target.closest('[data-open-discovery]')?.dataset.openDiscovery;if(id){const activity=DISCOVERIES.find(d=>d.id===id);if(activity)showDiscovery(activity)}};
 }
