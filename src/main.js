@@ -49,6 +49,7 @@ import {achievementProgress} from './achievementProgress.js';
 import {achievementRecommendations} from './achievementRecommendations.js';
 import {achievementSpotlight} from './achievementSpotlight.js';
 import {achievementCollectionSummary} from './achievementCollectionSummary.js';
+import {learningAdventureHub} from './learningAdventureHub.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -263,9 +264,22 @@ function showBackupControls(){
   $('#downloadBackup').onclick=()=>{try{const data=makeBackup(state,Number(localStorage.getItem('bp-age')||9));const blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='brightpath-explorer-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#backupMessage').textContent='Backup downloaded. Keep it somewhere private.'}catch(e){$('#backupMessage').textContent=e.message}};
   $('#importBackup').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2_000_000)throw Error('Backup is too large.');const backup=parseBackup(await file.text());const count=Object.keys(backup.save.completed).length;modal(`<h2>Review backup</h2><p>Explorer: <b id="importName"></b></p><p>${count} completed lessons · ${backup.save.coins} BrightCoins · Learning age ${backup.age}</p><p><strong>Warning:</strong> Restoring replaces the current guest explorer's progress on this device. Download your current backup first if you want to keep it.</p><label>Type RESTORE to confirm <input id="restoreConfirm" autocomplete="off"></label><button id="confirmImport">Restore this backup</button><button id="cancelImport">Cancel</button><div id="importError" role="alert"></div>`);$('#importName').textContent=backup.save.profile;$('#cancelImport').onclick=showBackupControls;$('#confirmImport').onclick=()=>{if($('#restoreConfirm').value!=='RESTORE'){$('#importError').textContent='Type RESTORE exactly to continue.';return}try{autoCloud.stop();family=importExplorerBackup(localStorage,family,backup);location.reload()}catch(err){$('#importError').textContent=err.message}}}catch(err){$('#backupMessage').textContent=err.message}};
 }
+function showLearningAdventureHub(){
+ const hub=learningAdventureHub(state,subjects,new Date().toISOString().slice(0,10));
+ modal(`<h2>My Learning Adventure 🏡</h2><p>Your lessons, challenges, goals and achievements all in one place.</p><div id="learningHubSummary" class="learning-hub-summary"></div><div class="learning-hub-actions"><button id="hubLearn">📚 Explore lessons</button><button id="hubChallenges">✨ Daily adventures</button><button id="hubGoals">🎯 My learning goal</button><button id="hubDashboard">📊 Learning dashboard</button><button id="hubAchievements">🏅 Achievement gallery</button><button id="hubJourney">🗺️ Journey map</button></div><button id="hubBack">Back to my progress</button>`);
+ const rows=[
+  ['📚 Learning',hub.completed+' topics completed · '+hub.attempts+' lesson attempts'],
+  ['🎯 My goal',hub.goal?(hub.goal.achieved?'Goal achieved! 🌟':hub.goal.progress+' of '+hub.goal.target+' '+hub.goal.subject+' topics'):'Choose a goal whenever you are ready'],
+  ['✨ Today’s challenge',hub.challenge.count+' of '+hub.challenge.goal+' subjects explored'],
+  ['🏅 Achievements',hub.achievements.earned+' of '+hub.achievements.total+' collected']
+ ];
+ const container=$('#learningHubSummary');
+ for(const [label,value] of rows){const item=document.createElement('div'),heading=document.createElement('strong'),detail=document.createElement('p');item.className='learning-hub-stat';heading.textContent=label;detail.textContent=value;item.append(heading,detail);container.append(item)}
+ $('#hubLearn').onclick=showSubjects;$('#hubChallenges').onclick=showDailyQuests;$('#hubGoals').onclick=showLearningGoals;$('#hubDashboard').onclick=showLearningDashboard;$('#hubAchievements').onclick=showAchievementGallery;$('#hubJourney').onclick=showLearningJourney;$('#hubBack').onclick=showAdventureOverview;
+}
 function showAdventureOverview(){
  const overview=adventureOverview(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewDashboard">My learning dashboard 📊</button><button id="overviewJourney">My learning journey map 🗺️</button><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
+ modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewLearningHub">My learning adventure 🏡</button><button id="overviewDashboard">My learning dashboard 📊</button><button id="overviewJourney">My learning journey map 🗺️</button><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
  const stats=[['📚 Lessons completed',overview.lessons],['🌿 Village discoveries',overview.discovered+' / '+overview.discoveriesTotal],['✨ Keepsakes collected',overview.keepsakes+' / '+overview.keepsakesTotal],['🏆 Milestones earned',overview.milestones+' / '+overview.milestonesTotal],['🐾 Pet companion',overview.pet||'Not adopted yet'],['🪙 BrightCoins',overview.coins]];
  const container=$('#adventureStats');
  for(const [label,value] of stats){const item=document.createElement('div'),heading=document.createElement('b'),detail=document.createElement('small');heading.textContent=label;detail.textContent=String(value);item.append(heading,detail);container.append(item)}
@@ -276,7 +290,7 @@ function showAdventureOverview(){
   button.onclick=()=>{if(goal.destination==='learn')showSubjects();else if(goal.destination==='discoveries')showDiscoveryMenu();else if(goal.destination==='shop')showShop();else if(goal.destination==='pet')showPetCare();else if(goal.destination==='achievements')showAchievements()};
   item.append(button);goalContainer.append(item);
  }
- $('#overviewDashboard').onclick=showLearningDashboard;$('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+ $('#overviewLearningHub').onclick=showLearningAdventureHub;$('#overviewDashboard').onclick=showLearningDashboard;$('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
 function showLearningGoals(){
  const celebration=learningGoalCelebration(state,subjects),goal=celebration.goal;
