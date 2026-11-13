@@ -44,6 +44,7 @@ import {recogniseLearningGoal,learningGoalCelebration} from './learningGoalCeleb
 import {achievementGallery} from './achievementGallery.js';
 import {galleryCelebration} from './galleryCelebrations.js';
 import {filterAchievementGallery} from './galleryFilters.js';
+import {achievementNextStep} from './achievementNextSteps.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -353,7 +354,17 @@ function showAchievementGallery(){
     celebrate.setAttribute('aria-label','Celebrate '+badge.title);
     celebrate.onclick=()=>{const message=galleryCelebration(badge);const banner=$('#galleryCelebration');banner.textContent=message.title+' '+message.message;banner.classList.remove('gallery-celebration-pop');void banner.offsetWidth;banner.classList.add('gallery-celebration-pop')};
     card.append(symbol,name,detail,celebrate);
-   }else card.append(symbol,name,detail);
+   }else{
+    const step=achievementNextStep(badge);
+    card.append(symbol,name,detail);
+    if(step){
+     const explain=document.createElement('p'),action=document.createElement('button');
+     explain.className='gallery-next-step';explain.textContent=step.description;
+     action.type='button';action.className='gallery-next-button';action.textContent=step.label+' →';
+     action.onclick=()=>{if(step.destination==='learn')showSubjects();else if(step.destination==='discoveries')showDiscoveryMenu();else if(step.destination==='shop')showShop();else if(step.destination==='challenges')showDailyQuests()};
+     card.append(explain,action);
+    }
+   }
    grid.append(card);
   }
   if(!group.items.length){const empty=document.createElement('p');empty.textContent='Your first keepsake will appear here when you complete a goal.';grid.append(empty)}
