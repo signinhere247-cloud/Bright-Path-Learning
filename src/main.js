@@ -46,6 +46,7 @@ import {galleryCelebration} from './galleryCelebrations.js';
 import {filterAchievementGallery} from './galleryFilters.js';
 import {achievementNextStep} from './achievementNextSteps.js';
 import {achievementProgress} from './achievementProgress.js';
+import {achievementRecommendations} from './achievementRecommendations.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -335,7 +336,17 @@ function showLearningJourney(){
 }
 function showAchievementGallery(){
  const gallery=achievementGallery(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div class="gallery-filters" role="group" aria-label="Filter achievements"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="earned" aria-pressed="false">Collected</button><button type="button" data-gallery-filter="upcoming" aria-pressed="false">Still to unlock</button></div><p id="galleryFilterStatus" role="status"></p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div class="gallery-filters" role="group" aria-label="Filter achievements"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="earned" aria-pressed="false">Collected</button><button type="button" data-gallery-filter="upcoming" aria-pressed="false">Still to unlock</button></div><p id="galleryFilterStatus" role="status"></p><section class="gallery-recommendations"><h3>🌟 Almost there!</h3><p>Here are a few achievements you could work towards next.</p><div id="galleryRecommendations"></div></section><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ const suggestions=$('#galleryRecommendations');
+ const recommended=achievementRecommendations(gallery);
+ if(!recommended.length)suggestions.textContent='Explore the village and academy to discover more achievements!';
+ for(const item of recommended){
+  const row=document.createElement('div'),label=document.createElement('span'),button=document.createElement('button');
+  row.className='gallery-recommendation';label.textContent=item.badge.emoji+' '+item.badge.title+' · '+item.remaining+' to go';
+  button.type='button';button.textContent=item.next.label;button.setAttribute('aria-label',item.next.label+' for '+item.badge.title);
+  button.onclick=()=>{if(item.next.destination==='learn')showSubjects();else if(item.next.destination==='discoveries')showDiscoveryMenu();else if(item.next.destination==='shop')showShop();else if(item.next.destination==='challenges')showDailyQuests()};
+  row.append(label,button);suggestions.append(row);
+ }
  const root=$('#achievementGalleryGroups');
  const renderGallery=filter=>{
  root.replaceChildren();
