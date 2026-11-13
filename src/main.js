@@ -43,6 +43,7 @@ import {chooseLearningGoal,clearLearningGoal,learningGoalProgress} from './learn
 import {recogniseLearningGoal,learningGoalCelebration} from './learningGoalCelebrations.js';
 import {achievementGallery} from './achievementGallery.js';
 import {galleryCelebration} from './galleryCelebrations.js';
+import {filterAchievementGallery} from './galleryFilters.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -332,9 +333,13 @@ function showLearningJourney(){
 }
 function showAchievementGallery(){
  const gallery=achievementGallery(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div class="gallery-filters" role="group" aria-label="Filter achievements"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="earned" aria-pressed="false">Collected</button><button type="button" data-gallery-filter="upcoming" aria-pressed="false">Still to unlock</button></div><p id="galleryFilterStatus" role="status"></p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
  const root=$('#achievementGalleryGroups');
- for(const group of gallery.groups){
+ const renderGallery=filter=>{
+ root.replaceChildren();
+ const filtered=filterAchievementGallery(gallery,filter);
+ $('#galleryFilterStatus').textContent=filtered.visible+' achievements shown';
+ for(const group of filtered.groups){
   const section=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div');
   section.className='achievement-gallery-section';heading.textContent=group.title;grid.className='achievement-gallery-grid';
   for(const badge of group.items){
@@ -352,8 +357,16 @@ function showAchievementGallery(){
    grid.append(card);
   }
   if(!group.items.length){const empty=document.createElement('p');empty.textContent='Your first keepsake will appear here when you complete a goal.';grid.append(empty)}
-  section.append(heading,grid);root.append(section);
+  if(group.items.length){section.append(heading,grid);root.append(section)}
  }
+ if(!filtered.visible){const empty=document.createElement('p');empty.textContent=filter==='earned'?'No collected achievements yet. Keep exploring!':'Everything is unlocked in this view — amazing work!';root.append(empty)}
+ };
+ renderGallery('all');
+ document.querySelectorAll('[data-gallery-filter]').forEach(button=>button.onclick=()=>{
+  document.querySelectorAll('[data-gallery-filter]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));
+  $('#galleryCelebration').textContent='';
+  renderGallery(button.dataset.galleryFilter);
+ });
  $('#galleryBack').onclick=showAchievements;
 }
 function showAchievements(){
