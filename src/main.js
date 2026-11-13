@@ -23,6 +23,7 @@ import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
 import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
 import {worldLearningRoutes} from './worldLearningRoutes.js';
 import {adventureDestinations} from './adventureDestinations.js';
+import {destinationDiscoveryProgress} from './destinationDiscoveryProgress.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -588,11 +589,12 @@ const waypointStatus=document.createElement('div');waypointStatus.id='waypointSt
 const cancelWaypoint=document.createElement('button');cancelWaypoint.id='cancelWaypoint';cancelWaypoint.textContent='✕ Clear directions';cancelWaypoint.hidden=true;waypointStatus.after(cancelWaypoint);
 cancelWaypoint.onclick=()=>{activeWaypoint=null;waypointStatus.textContent='';cancelWaypoint.hidden=true};
 villageGuide.onclick=()=>{
- const destinations=adventureDestinations(position,DISCOVERIES,buildings,worldLearningRoutes('world'));
+ const destinations=destinationDiscoveryProgress(state,new Date().toISOString().slice(0,10),adventureDestinations(position,DISCOVERIES,buildings,worldLearningRoutes('world')));
  const directions=villageDirections(position,destinations.physical);
- modal('<h2>Adventure destinations 🧭</h2><p>Choose a village location for walking directions, or jump straight into a learning activity.</p><h3 id="guidePlacesHeading">🗺️ Places to explore</h3><div id="villageGuideList" class="adventure-destination-grid" aria-labelledby="guidePlacesHeading"></div><h3 id="guideActivitiesHeading">📚 Learning activities</h3><div id="guideLearningList" class="adventure-destination-grid" aria-labelledby="guideActivitiesHeading"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
+ modal('<h2>Adventure destinations 🧭</h2><p>Choose a village location for walking directions, or jump straight into a learning activity.</p><p id="guideDiscoveryProgress" class="guide-discovery-progress" role="status"></p><h3 id="guidePlacesHeading">🗺️ Places to explore</h3><div id="villageGuideList" class="adventure-destination-grid" aria-labelledby="guidePlacesHeading"></div><h3 id="guideActivitiesHeading">📚 Learning activities</h3><div id="guideLearningList" class="adventure-destination-grid" aria-labelledby="guideActivitiesHeading"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
+ $('#guideDiscoveryProgress').textContent='🌟 '+destinations.summary.discovered+' of '+destinations.summary.total+' village discoveries explored · '+destinations.summary.today+' completed today';
  const list=$('#villageGuideList');
- for(const d of directions){const button=document.createElement('button');button.type='button';button.textContent=d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{activeWaypoint={name:d.name,x:d.x,z:d.z};close();waypointStatus.textContent='🧭 Head '+d.direction+' towards '+d.name+'.';cancelWaypoint.hidden=false};list.append(button)}
+ for(const d of directions){const button=document.createElement('button');button.type='button';button.textContent=(d.discovery?(d.discovery.visited?'✨ Explored · ':'🔎 Not yet discovered · '):'📍 ')+d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{activeWaypoint={name:d.name,x:d.x,z:d.z};close();waypointStatus.textContent='🧭 Head '+d.direction+' towards '+d.name+'.';cancelWaypoint.hidden=false};list.append(button)}
  const learningList=$('#guideLearningList');
  for(const activity of destinations.activities){
   const button=document.createElement('button');button.type='button';button.textContent=activity.name;
