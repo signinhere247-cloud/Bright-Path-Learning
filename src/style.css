@@ -215,3 +215,5 @@ canvas{touch-action:none}
 .adventure-destination-grid button{min-height:48px;white-space:normal;text-align:left;padding:12px;border-radius:14px}
 .adventure-destination-grid button:focus-visible{outline:3px solid #7050a8;outline-offset:3px}
 @media(max-width:480px){.adventure-destination-grid{grid-template-columns:1fr}}
+
+.guide-discovery-progress{margin:12px 0;padding:12px 14px;border-radius:14px;background:#f2ebff;color:#45326e;font-weight:700;overflow-wrap:anywhere}
