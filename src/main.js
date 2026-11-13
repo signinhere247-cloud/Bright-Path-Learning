@@ -560,9 +560,10 @@ function showVillageKeepsakes(){
 }
 function showVillageJournal(){
  const day=new Date().toISOString().slice(0,10),entries=villageJournal(state,day),summary=journalSummary(state,day);
- modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><section aria-labelledby="villageLearningHighlightsHeading"><h3 id="villageLearningHighlightsHeading">🌟 My adventure learning highlights</h3><div id="villageLearningHighlights"></div><div id="adventureLearningMilestoneProgress"></div><div id="adventureLearningMilestones"></div><p id="adventureLearningMilestoneMessage" role="status" aria-live="polite"></p></section><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><section aria-labelledby="villageLearningHighlightsHeading"><h3 id="villageLearningHighlightsHeading">🌟 My adventure learning highlights</h3><div id="villageLearningHighlights"></div><div id="adventureLearningMilestoneProgress"></div><h4 id="earnedAdventureMilestonesHeading">🏅 Your unlocked celebrations</h4><div id="adventureLearningMilestones" role="group" aria-labelledby="earnedAdventureMilestonesHeading"></div><p id="adventureLearningMilestoneMessage" role="status" aria-live="polite"></p></section><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
  const highlights=villageLearningHighlights(state,subjects,day);
  const highlightContainer=$('#villageLearningHighlights');
+ highlightContainer.classList.add('village-learning-highlight-list');
  const summaryText=document.createElement('p');
  summaryText.textContent=highlights.discoveries+' village discoveries explored · '+highlights.lessons+' Academy lessons completed.';
  highlightContainer.append(summaryText);
@@ -571,14 +572,14 @@ function showVillageJournal(){
  const tracker=$('#adventureLearningMilestoneProgress');
  const trackerHeading=document.createElement('h4');trackerHeading.textContent=nextMilestone.complete?'🎉 All milestones unlocked':'🌱 Next celebration: '+nextMilestone.title;tracker.append(trackerHeading);
  if(!nextMilestone.complete){for(const [label,value,target] of [['Village discoveries',nextMilestone.discoveries,nextMilestone.discoveriesTarget],['Academy lessons',nextMilestone.lessons,nextMilestone.lessonsTarget]]){const row=document.createElement('div');row.className='adventure-learning-progress-row';const caption=document.createElement('span');caption.textContent=label+': '+value+' / '+target;const meter=document.createElement('progress');meter.value=value;meter.max=target;meter.setAttribute('aria-label',label+' towards '+nextMilestone.title);row.append(caption,meter);tracker.append(row)}}
- const encouragement=document.createElement('p');encouragement.textContent=nextMilestone.message;tracker.append(encouragement);
+ const encouragement=document.createElement('p');encouragement.className='adventure-learning-encouragement';encouragement.textContent=nextMilestone.message;tracker.append(encouragement);
  const milestones=adventureLearningMilestones(state,subjects,day);
  const milestoneContainer=$('#adventureLearningMilestones');
  for(const milestone of milestones){const button=document.createElement('button');button.type='button';button.className='adventure-learning-milestone';button.textContent=milestone.emoji+' '+milestone.title;button.setAttribute('aria-label','Celebrate '+milestone.title);button.onclick=()=>{$('#adventureLearningMilestoneMessage').textContent=milestone.message};milestoneContainer.append(button)}
  if(!milestones.length){const note=document.createElement('p');note.textContent='Explore a village discovery and complete an Academy lesson to unlock your first learning celebration!';milestoneContainer.append(note)}
  const container=$('#journalEntries');
  for(const entry of entries){
-  const item=document.createElement('section');
+  const item=document.createElement('section');item.className='village-journal-entry';
   const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
   const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
   item.append(heading,description);
