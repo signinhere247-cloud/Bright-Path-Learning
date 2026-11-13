@@ -30,3 +30,11 @@ canvas{touch-action:none}
  #milestoneCelebration.milestone-pop{animation:milestone-pop .5s ease-out}
  @keyframes milestone-pop{0%{opacity:.25;transform:scale(.96)}70%{transform:scale(1.035)}100%{opacity:1;transform:scale(1)}}
 }
+
+/* Clear, touch-friendly navigation for children and guardians. */
+.profile-menu-group{margin:18px 0;padding:14px;border-radius:16px;background:#f1f7f8}
+.profile-menu-group h3{margin:0 0 10px;color:#194c67;font-size:1.05rem}
+.profile-menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.profile-menu-grid button{min-height:54px;text-align:left;line-height:1.35;background:white}
+.profile-menu-group:last-of-type{background:#f5f0e9}
+@media(max-width:480px){.profile-menu-group{padding:12px}.profile-menu-grid{grid-template-columns:1fr}.profile-menu-grid button{min-height:52px}}
