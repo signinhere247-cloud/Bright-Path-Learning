@@ -107,3 +107,11 @@ canvas{touch-action:none}
 .goal-keepsakes h3{margin:0 0 8px;color:#74511b}
 #goalKeepsakes{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .goal-keepsake{display:inline-flex;padding:9px 12px;border-radius:999px;background:white;border:1px solid #e4d49a;font-weight:700;overflow-wrap:anywhere}
+
+.achievement-gallery-section{margin:16px 0}
+.achievement-gallery-section h3{margin:0 0 10px}
+.achievement-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+.achievement-gallery-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:16px 10px;border-radius:16px;background:#fff6e7;border:1px solid #edddbc}
+.achievement-gallery-card span{font-size:2rem}
+.achievement-gallery-card small{overflow-wrap:anywhere}
+.achievement-gallery-card.locked{background:#f0f0f3;border-color:#d9d9df;opacity:.7}
