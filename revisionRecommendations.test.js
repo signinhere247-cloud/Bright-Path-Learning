@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {revisionRecommendations} from '../src/revisionRecommendations.js';
+const at='2026-11-13T10:00:00.000Z';
+const entry=(subject,topic,correct,total=10)=>({subject,topic,correct,total,passed:correct/total>=.7,at});
+test('no history yields no invented recommendations',()=>assert.deepEqual(revisionRecommendations({},['Maths']),[]));
+test('prioritises recent failed lessons',()=>{const result=revisionRecommendations({lessonHistory:[entry('Maths','Fractions',4),entry('English','Grammar',7)]},['Maths','English']);assert.equal(result[0].topic,'Fractions');assert.equal(result[0].priority,'Practise next')});
+test('uses three most recent attempts for topic',()=>{const h=[entry('Maths','Addition',1),entry('Maths','Addition',9),entry('Maths','Addition',9),entry('Maths','Addition',9)];assert.deepEqual(revisionRecommendations({lessonHistory:h},['Maths']),[])});
+test('does not recommend strong results',()=>assert.deepEqual(revisionRecommendations({lessonHistory:[entry('Maths','Addition',9)]},['Maths']),[]));
+test('limits and filters subjects',()=>{const h=[entry('Maths','One',2),entry('Maths','Two',3),entry('Science','Three',1)];const r=revisionRecommendations({lessonHistory:h},['Maths'],1);assert.equal(r.length,1);assert.equal(r[0].topic,'One')});
+test('rejects invalid history',()=>assert.throws(()=>revisionRecommendations({lessonHistory:[{subject:'Maths'}]},['Maths'])));

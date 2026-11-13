@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {recordLessonAttempt,historySummary,HISTORY_LIMIT} from '../src/learningHistory.js';
+import {validateSave} from '../src/backup.js';
+const base={coins:100,profile:'Alex',completed:{},avatar:'#ffffff',outfit:'#000000',pet:null,inventory:[],placed:[]};
+test('records passed and failed attempts without modifying original',()=>{const a=recordLessonAttempt(base,'Maths','Addition',7,10,'2026-11-13T12:00:00Z');const b=recordLessonAttempt(a,'Maths','Addition',3,10,'2026-11-13T13:00:00Z');assert.equal(base.lessonHistory,undefined);assert.equal(b.lessonHistory.length,2);assert.equal(b.lessonHistory[1].passed,false);assert.equal(historySummary(b,['Maths']).bySubject.Maths.average,50);assert.equal(historySummary(b,['Maths']).bySubject.Maths.recentAverage,50)});
+test('older saves remain valid with no lesson history',()=>{assert.deepEqual(historySummary(base,['English']).recent,[]);assert.doesNotThrow(()=>validateSave(base))});
+test('history is bounded',()=>{let save=base;for(let i=0;i<HISTORY_LIMIT+5;i++)save=recordLessonAttempt(save,'Maths','Addition',8,10);assert.equal(save.lessonHistory.length,HISTORY_LIMIT)});
+test('malformed history is rejected during backup validation',()=>assert.throws(()=>validateSave({...base,lessonHistory:[{subject:'Maths',topic:'A',correct:15,total:10,passed:true,at:'2026-11-13T12:00:00Z'}]})));
+test('summary isolates subject results',()=>{const save=recordLessonAttempt(recordLessonAttempt(base,'Maths','A',9,10),'Science','B',2,10);const r=historySummary(save,['Maths','Science']);assert.equal(r.bySubject.Maths.average,90);assert.equal(r.bySubject.Science.average,20);assert.equal(r.totalAttempts,2)});

@@ -1,0 +1,9 @@
+# Separate preview service. Do not merge this blueprint into the live V3 service.
+services:
+  - type: web
+    name: brightpath-learning-preview
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    autoDeploy: false
+    envVars: []

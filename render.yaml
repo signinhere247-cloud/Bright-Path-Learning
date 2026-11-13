@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: brightpath-learning
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist

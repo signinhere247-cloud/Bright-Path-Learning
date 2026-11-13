@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {settleLesson,progressSummary} from '../src/lessonProgress.js';
+const base=()=>({coins:100,completed:{},profile:'One'});
+test('first passing lesson earns 25 without mutating original',()=>{const original=base(),r=settleLesson(original,'Maths','Counting',7,10);assert.equal(r.earned,25);assert.equal(r.save.coins,125);assert.equal(r.save.completed['Maths:Counting'],true);assert.deepEqual(original,base())});
+test('repeat earns 5',()=>{const first=settleLesson(base(),'Maths','Counting',8,10);const second=settleLesson(first.save,'Maths','Counting',10,10);assert.equal(second.earned,5);assert.equal(second.save.coins,130)});
+test('failure earns zero and does not mark completion',()=>{const r=settleLesson(base(),'Maths','Counting',6,10);assert.equal(r.passed,false);assert.equal(r.earned,0);assert.deepEqual(r.save.completed,{})});
+test('70 percent exactly passes',()=>assert.equal(settleLesson(base(),'English','Reading',7,10).passed,true));
+test('invalid results rejected',()=>{for(const args of [[-1,10],[11,10],[1,0],[1.5,10]])assert.throws(()=>settleLesson(base(),'Maths','Counting',...args))});
+test('progress badges and subject counts',()=>{const s=base();s.completed={'Maths:A':true,'Maths:B':true,'Maths:C':true,'English:A':true,'Science:A':true,'History:A':false};const p=progressSummary(s,['Maths','English','Science','History']);assert.equal(p.total,5);assert.equal(p.counts.Maths,3);assert.ok(p.badges.includes('Learning Explorer ⭐'));assert.ok(p.badges.includes('Maths Star ✨'))});
+test('separate explorers remain independent',()=>{const a=settleLesson(base(),'Maths','Counting',10,10),b=base();assert.equal(a.save.coins,125);assert.equal(b.coins,100);assert.deepEqual(b.completed,{})});

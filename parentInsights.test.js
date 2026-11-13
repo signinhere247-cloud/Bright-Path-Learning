@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildParentInsights} from '../src/parentInsights.js';
+const entry=(subject,topic,correct,at)=>({subject,topic,correct,total:10,at,passed:correct>=7});
+const record=(scores,subject='Maths',topic='Numbers')=>({lessonHistory:scores.map((n,i)=>entry(subject,topic,n,new Date(Date.UTC(2026,0,i+1)).toISOString()))});
+test('empty history reports no invented trends',()=>{const r=buildParentInsights({},['Maths']);assert.equal(r.attempts,0);assert.equal(r.improving.length,0);assert.match(r.messages[0],/No scored lessons/)});
+test('small sample does not claim improvement',()=>{const r=buildParentInsights(record([2,9]),['Maths']);assert.equal(r.improving.length,0);assert.match(r.messages[0],/Early results/)});
+test('six attempts can identify measured improvement',()=>{const r=buildParentInsights(record([3,3,3,3,3,10]),['Maths']);assert.equal(r.improving.length,1);assert.equal(r.improving[0].change,14)});
+test('consistent high scores receive recognition',()=>{const r=buildParentInsights(record([9,9,9,9,9]),['Maths']);assert.equal(r.steady.length,1);assert.equal(r.practice.length,0)});
+test('low-scoring topics provide actionable practice',()=>{const r=buildParentInsights(record([4,5,4]),['Maths']);assert.equal(r.practice[0].topic,'Numbers');assert.match(r.messages.at(-1),/Suggested next practice/)});
+test('insights do not mutate saved data',()=>{const save=record([4,5,6]);const before=JSON.stringify(save);buildParentInsights(save,['Maths']);assert.equal(JSON.stringify(save),before)});

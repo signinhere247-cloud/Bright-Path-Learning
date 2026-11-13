@@ -1,0 +1,148 @@
+[
+  {
+    "archive": "BrightPath-Learning-3D-Visual-Refresh.zip",
+    "sha256": "039db3a1c02655c9b1e68c8a5078b48ed60d2179ac8ef74a4d4ba703108f2897",
+    "files": 22,
+    "source_files": [
+      "src/main.js"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": false,
+      "threejs_world": true,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Adventure-World-V3.zip",
+    "sha256": "f2f38ffe2fafb5daaae87c02be7a81e180234a0eb6015455e817b23263a1a4f3",
+    "files": 9,
+    "source_files": [
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Curriculum-Expanded-V2.zip",
+    "sha256": "6e789a70c29844cbfd6ebc675c98e85ba5fc46531577b6fe0b2832c558d3a8c8",
+    "files": 8,
+    "source_files": [
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Family-Accounts-Upgrade.zip",
+    "sha256": "2ef7b5f3fda62fe46e742756f52f036b3c8a9f1a48d02ddf3c3da20ae45f3f64",
+    "files": 11,
+    "source_files": [
+      "supabase-schema.sql",
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": true,
+      "family_profile_ui": true,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": true,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Illustrated-Game-Upgrade.zip",
+    "sha256": "010a0d0dc29e9e5cc96d4740af96e9f254abbf76216fafa8eeed5e392b87a795",
+    "files": 25,
+    "source_files": [
+      "supabase-schema.sql",
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": true,
+      "family_profile_ui": true,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": true,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Playable-3D-Guest-Build(1).zip",
+    "sha256": "6967526fdeaca6159d66f374a38e4f75c9b08be65948bfd8c6c86babfaad68df",
+    "files": 8,
+    "source_files": [
+      "BrightPath-Playable-3D/src/main.js"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": false,
+      "threejs_world": true,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Playable-3D-Guest-Build.zip",
+    "sha256": "6967526fdeaca6159d66f374a38e4f75c9b08be65948bfd8c6c86babfaad68df",
+    "files": 8,
+    "source_files": [
+      "BrightPath-Playable-3D/src/main.js"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": false,
+      "threejs_world": true,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Version-1-Complete(1).zip",
+    "sha256": "a72db79d6abf39d17404ebce244f8332d7004d5e5d71e3188beeb561cfcc33f5",
+    "files": 7,
+    "source_files": [
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  },
+  {
+    "archive": "BrightPath-Learning-Version-1-Complete.zip",
+    "sha256": "a72db79d6abf39d17404ebce244f8332d7004d5e5d71e3188beeb561cfcc33f5",
+    "files": 7,
+    "source_files": [
+      "src/main.jsx"
+    ],
+    "feature_indicators": {
+      "supabase_schema": false,
+      "family_profile_ui": false,
+      "curriculum": true,
+      "threejs_world": false,
+      "cloud_auth": false,
+      "guest_backup": false
+    }
+  }
+]

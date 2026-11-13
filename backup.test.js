@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {makeBackup,parseBackup,restoreBackup} from '../src/backup.js';
+const save=()=>({coins:125,completed:{'Maths:Counting':true},profile:'Explorer',avatar:'#f7ad65',outfit:'#7b5ee8',pet:null,inventory:['bed'],placed:[{item:'bed',x:0,z:1}]});
+test('export and import round trip',()=>assert.deepEqual(parseBackup(makeBackup(save(),9)),{save:save(),age:9}));
+test('reject unsupported file',()=>assert.throws(()=>parseBackup('{"version":1}'),/Unsupported/));
+test('reject malformed file',()=>assert.throws(()=>parseBackup('{'),/valid JSON/));
+test('reject unsafe progress',()=>assert.throws(()=>parseBackup(makeBackup(save(),9).replace('"coins": 125','"coins": -1')),/BrightCoins/));
+test('reject oversized file',()=>assert.throws(()=>parseBackup('x'.repeat(2_000_001)),/too large/));
+test('restore preserves previous save',()=>{const map=new Map([['brightpath3d-save',JSON.stringify(save())],['bp-age','7']]);const storage={getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)};restoreBackup(storage,{save:{...save(),coins:200},age:10});assert.equal(JSON.parse(map.get('brightpath3d-save')).coins,200);assert.equal(map.get('bp-age'),'10');assert.equal(JSON.parse(map.get('brightpath3d-pre-import')).coins,125)});

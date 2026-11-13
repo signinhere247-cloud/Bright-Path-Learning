@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {planCloudSync,readSyncLinks,linkCloudProfile} from '../src/cloudSync.js';
+const id='explorer_1';
+const save={coins:100,completed:{},profile:'Child',avatar:'#f7ad65',outfit:'#7b5ee8',pet:null,inventory:['bed'],placed:[]};
+const profile={id,age:9,save};
+test('accepts exact matching cloud revision',()=>{const result=planCloudSync(profile,{profile_key:id,revision:3},3);assert.equal(result.expected_revision,3);assert.equal(result.save_data.coins,100)});
+test('rejects stale revision',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:4},3),/changed on another device/));
+test('rejects missing cloud backup',()=>assert.throws(()=>planCloudSync(profile,null,0),/not found/));
+test('rejects unlinked profile',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:0},undefined),/not been linked/));
+test('ignores damaged local sync metadata',()=>{const store={getItem:()=>'{oops'};assert.deepEqual(readSyncLinks(store),{})});
+test('stores per-explorer revisions',()=>{const map=new Map();const store={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)};linkCloudProfile(store,id,2);assert.equal(readSyncLinks(store)[id],2)});

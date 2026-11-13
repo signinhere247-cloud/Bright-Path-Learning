@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {questProgress,recordDailyLessonPass,claimDailyQuest} from '../src/dailyQuests.js';
+const day='2026-11-13';
+test('valid discovery progress and independent daily reset',()=>{const s={coins:0,discoveries:{pond:day,garden:day,observatory:day}};assert.deepEqual(questProgress(s,day).slice(0,2).map(q=>q.count),[1,3]);assert.deepEqual(questProgress(s,'2026-11-14').slice(0,2).map(q=>q.count),[0,0]);});
+test('cannot claim incomplete quest',()=>assert.throws(()=>claimDailyQuest({coins:0},'one-lesson',day),/not completed/));
+test('claim is immutable and cannot be repeated',()=>{const s={coins:10,discoveries:{pond:day}};const r=claimDailyQuest(s,'first-discovery',day);assert.equal(r.save.coins,22);assert.equal(s.coins,10);assert.throws(()=>claimDailyQuest(r.save,'first-discovery',day),/already claimed/);});
+test('lesson pass unlocks quest and keeps prior save unchanged',()=>{const s={coins:0};const updated=recordDailyLessonPass(s,day);assert.equal(questProgress(updated,day)[2].count,1);assert.equal(questProgress(s,day)[2].count,0);assert.equal(claimDailyQuest(updated,'one-lesson',day).earned,15);});
+test('different explorers have independent quest claims',()=>{const s={coins:0,discoveries:{pond:day}};assert.equal(claimDailyQuest(s,'first-discovery',day).earned,12);assert.equal(claimDailyQuest(s,'first-discovery',day).earned,12);});
+test('invalid dates and unknown quests are rejected',()=>{assert.throws(()=>questProgress({},'2026-02-30'));assert.throws(()=>claimDailyQuest({coins:0},'unknown',day));});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {careForPet,petStatus} from '../src/petCare.js';
+const explorer=()=>({pet:'cat',petMood:70,coins:15,inventory:[],completed:{}});
+test('feeding raises happiness without spending coins or mutating input',()=>{const before=explorer();const after=careForPet(before,'feed',100000);assert.equal(after.petMood,88);assert.equal(after.coins,15);assert.equal(before.petMood,70)});
+test('pet happiness caps at 100',()=>{assert.equal(careForPet({...explorer(),petMood:99},'play',100000).petMood,100)});
+test('pet must be adopted first',()=>{assert.throws(()=>careForPet({...explorer(),pet:null},'feed',100000),/Adopt/)});
+test('unknown activities rejected',()=>{assert.throws(()=>careForPet(explorer(),'buy',100000),/Unknown/)});
+test('cooldown prevents rapid repeat activities',()=>{const after=careForPet(explorer(),'feed',100000);assert.throws(()=>careForPet(after,'play',110000),/shortly/);assert.equal(careForPet(after,'play',131000).petCareCount,2)});
+test('status handles missing pet and saved mood',()=>{assert.equal(petStatus({pet:null}).adopted,false);assert.equal(petStatus(explorer()).label,'Happy')});

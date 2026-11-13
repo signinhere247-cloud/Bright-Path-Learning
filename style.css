@@ -1,0 +1,25 @@
+*{box-sizing:border-box}body{margin:0;background:#10253c;color:#193047;font-family:system-ui,-apple-system,sans-serif}#game,canvas{position:fixed;inset:0;width:100%;height:100%;display:block}#hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px;background:linear-gradient(#10253cdd,#10253c00);color:white;z-index:2}.brand{font-size:20px;font-weight:900}.brand span{font-size:12px;font-weight:500;display:block}.hud-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:end}button{cursor:pointer;border:0;border-radius:12px;background:#ffffff;color:#25334b;padding:10px 13px;font:inherit;font-weight:700;box-shadow:0 3px 0 #0002}button:focus-visible{outline:3px solid #ffc744}#coinCount{font-weight:800;background:#163d5f;border-radius:30px;padding:8px}#tip{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#143b5de6;color:white;border-radius:25px;padding:9px 18px;text-align:center;font-size:13px;min-width:240px}#joystick{position:fixed;bottom:48px;left:14px;z-index:2;text-align:center;touch-action:none}#joystick button{background:#fff9;width:50px;height:48px;margin:2px;touch-action:none}#interact{position:fixed;right:20px;bottom:65px;background:#ffdf7d;z-index:2;display:none}#modal{position:fixed;inset:0;z-index:5;background:#09233bbb;display:flex;justify-content:center;align-items:center;padding:16px}#modal.hidden{display:none}.dialog{position:relative;background:#fffaf2;border:5px solid #f1cb8e;border-radius:25px;max-width:680px;width:100%;max-height:88vh;overflow:auto;padding:26px;box-shadow:0 22px 60px #0006}.dialog h2{margin:0 35px 10px 0;color:#194c67;font-size:25px}.dialog p{line-height:1.5}.close{position:absolute;right:12px;top:12px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:18px 0}.cards button{background:#dff2f4;text-align:left;min-height:76px}.cards small{display:block;font-size:12px;margin-top:7px;font-weight:400}.choices{display:grid;gap:10px}.choice{background:#e5edf9;text-align:left}.question{font-size:20px;font-weight:700}.progress{color:#4b6a7a;font-size:13px;margin-bottom:12px}#feedback{margin-top:18px;line-height:2}.swatches{display:flex;gap:10px}.swatches button{width:44px;height:44px;border:3px solid #fff}label{display:block;margin:12px 0}input,select{display:block;width:100%;margin-top:5px;padding:10px;border-radius:10px;border:1px solid #abc}.back{margin-bottom:12px}@media(max-width:550px){#hud{align-items:start;padding:8px}.brand{font-size:15px}.hud-right button{padding:8px;font-size:12px}#coinCount{font-size:12px}.dialog{padding:17px}#tip{bottom:9px;max-width:60%;font-size:11px;min-width:0}#joystick{bottom:38px}#joystick button{width:43px;height:43px}}
+
+/* Accessible, responsive parent-report progress visuals */
+.progress-chart{margin:12px 0;padding:12px;border:1px solid #d6d0ed;border-radius:12px;min-width:0}
+.progress-chart strong,.progress-chart small{display:block;margin-bottom:6px}
+.progress-track{height:13px;border-radius:9px;background:#e5e2ef;overflow:hidden}
+.progress-track span{display:block;height:100%;background:#6c50bd;border-radius:9px}
+.progress-spark{height:58px;display:flex;align-items:flex-end;gap:4px;margin-top:9px}
+.progress-spark span{flex:1;min-width:3px;max-width:28px;background:#8c78c9;border-radius:4px 4px 0 0}
+
+/* Step 9: mobile-safe control placement and reliable touch targets. */
+#joystick{left:max(14px,env(safe-area-inset-left));bottom:calc(48px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
+#joystick button{min-width:44px;min-height:44px;-webkit-tap-highlight-color:transparent}
+#interact{right:max(20px,env(safe-area-inset-right));bottom:calc(65px + env(safe-area-inset-bottom));min-height:48px;touch-action:manipulation}
+#tip{bottom:calc(15px + env(safe-area-inset-bottom));pointer-events:none}
+#hud{padding-top:max(12px,env(safe-area-inset-top))}
+@media(max-width:550px){#joystick{bottom:calc(38px + env(safe-area-inset-bottom))}#tip{bottom:calc(9px + env(safe-area-inset-bottom))}}
+
+/* Step 11.2: touch-friendly furniture editor, outside the blocking modal. */
+#decoratorControls:not([hidden]){position:fixed;z-index:60;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(96vw,600px);max-height:45vh;overflow:auto;padding:12px;border-radius:16px;background:rgba(30,38,46,.95);color:white;box-shadow:0 6px 24px #0006;touch-action:pan-y}
+#decoratorControls p{margin:4px 0 8px;font-size:.85rem}
+#decoratorControls select{width:100%;max-width:100%;margin:5px 0}
+#decoratorControls .decoratorActions{display:flex;flex-wrap:wrap;gap:6px}
+#decoratorControls button{min-height:44px;flex:1 1 120px}
+canvas{touch-action:none}
