@@ -21,6 +21,7 @@ import {buildFantasyExplorer} from './fantasyExplorer.js';
 import {buildFantasyPet} from './fantasyPets.js';
 import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
 import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
+import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -310,6 +311,15 @@ function showDiscovery(activity){
 }
 function interact(b){if(!b)return;if(b.id&&DISCOVERIES.some(d=>d.id===b.id)){showDiscovery(b);return}if(b.name==='My Home')showHome();else if(b.name==='Shop')showShop();else showLessons(b.name)}
 $('#learnBtn').onclick=showSubjects;$('#profileBtn').onclick=showProfile;$('#helpBtn').onclick=()=>modal('<h2>How to play</h2><p>Use arrow keys, WASD or the on-screen direction buttons to walk around the 3D world. Approach a building and press Enter or Interact. Tap buildings directly too.</p><p>Complete lessons to earn BrightCoins, buy furniture, decorate your home and adopt a pet.</p><p><b>Guest mode:</b> Progress saves on this device only. Secure family accounts are not yet connected.</p>');$('#interact').onclick=()=>interact(near);
+const villageGuide=document.createElement('button');villageGuide.id='villageGuide';villageGuide.textContent='🧭 Village guide';villageGuide.setAttribute('aria-label','Open village directions');$('#interact').after(villageGuide);
+villageGuide.onclick=()=>{
+ const destinations=[...DISCOVERIES,...buildings.map(b=>({...b,x:b.x,z:b.z+4}))];
+ const directions=villageDirections(position,destinations);
+ modal('<h2>Village guide 🧭</h2><p>Choose a destination to see how far away it is.</p><div id="villageGuideList"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
+ const list=$('#villageGuideList');
+ for(const d of directions){const button=document.createElement('button');button.textContent=d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{$('#villageGuideMessage').textContent='Head '+d.direction+' towards '+d.name+'. Use the movement arrows to explore.'};list.append(button)}
+ $('#closeVillageGuide').onclick=close;
+};
 const movementKeys=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d']);
 const typingTarget=element=>element?.closest?.('input,textarea,select,[contenteditable]');
 function clearMovement(){for(const key of movementKeys)keys.delete(key)}
@@ -370,5 +380,5 @@ function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);vill
   companion.rotation.y=Math.atan2(position.x-companion.position.x,position.z-companion.position.z);
   petModel?.animate(now,Math.hypot(goal.x-companion.position.x,goal.z-companion.position.z)>.12,active?petActivity.action:null);
  }
- let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(DISCOVERIES.find(d=>Math.hypot(position.x-d.x,position.z-d.z)<2.7)||buildings.find(b=>Math.hypot(position.x-b.x,position.z-(b.z+4))<3.5)):null;$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
+ let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(nearestVillageDestination(position,DISCOVERIES,2.7)||nearestVillageDestination(position,buildings.map(b=>({...b,z:b.z+4})),3.5)):null;villageGuide.hidden=mode!=='world';$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
