@@ -32,6 +32,7 @@ import {discoveryLearningLink} from './discoveryLearningLinks.js';
 import {villageLearningSuggestion} from './villageLearningSuggestion.js';
 import {villageLearningHighlights} from './villageLearningHighlights.js';
 import {adventureLearningMilestones} from './adventureLearningMilestones.js';
+import {adventureLearningMilestoneProgress} from './adventureLearningMilestoneProgress.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -559,13 +560,18 @@ function showVillageKeepsakes(){
 }
 function showVillageJournal(){
  const day=new Date().toISOString().slice(0,10),entries=villageJournal(state,day),summary=journalSummary(state,day);
- modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><section aria-labelledby="villageLearningHighlightsHeading"><h3 id="villageLearningHighlightsHeading">🌟 My adventure learning highlights</h3><div id="villageLearningHighlights"></div><div id="adventureLearningMilestones"></div><p id="adventureLearningMilestoneMessage" role="status" aria-live="polite"></p></section><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><section aria-labelledby="villageLearningHighlightsHeading"><h3 id="villageLearningHighlightsHeading">🌟 My adventure learning highlights</h3><div id="villageLearningHighlights"></div><div id="adventureLearningMilestoneProgress"></div><div id="adventureLearningMilestones"></div><p id="adventureLearningMilestoneMessage" role="status" aria-live="polite"></p></section><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
  const highlights=villageLearningHighlights(state,subjects,day);
  const highlightContainer=$('#villageLearningHighlights');
  const summaryText=document.createElement('p');
  summaryText.textContent=highlights.discoveries+' village discoveries explored · '+highlights.lessons+' Academy lessons completed.';
  highlightContainer.append(summaryText);
  for(const link of highlights.links){const row=document.createElement('p');row.textContent=link.subject+': '+link.discoveries+' village discoveries · '+link.lessons+' completed lessons';highlightContainer.append(row)}
+ const nextMilestone=adventureLearningMilestoneProgress(state,subjects,day);
+ const tracker=$('#adventureLearningMilestoneProgress');
+ const trackerHeading=document.createElement('h4');trackerHeading.textContent=nextMilestone.complete?'🎉 All milestones unlocked':'🌱 Next celebration: '+nextMilestone.title;tracker.append(trackerHeading);
+ if(!nextMilestone.complete){for(const [label,value,target] of [['Village discoveries',nextMilestone.discoveries,nextMilestone.discoveriesTarget],['Academy lessons',nextMilestone.lessons,nextMilestone.lessonsTarget]]){const row=document.createElement('div');row.className='adventure-learning-progress-row';const caption=document.createElement('span');caption.textContent=label+': '+value+' / '+target;const meter=document.createElement('progress');meter.value=value;meter.max=target;meter.setAttribute('aria-label',label+' towards '+nextMilestone.title);row.append(caption,meter);tracker.append(row)}}
+ const encouragement=document.createElement('p');encouragement.textContent=nextMilestone.message;tracker.append(encouragement);
  const milestones=adventureLearningMilestones(state,subjects,day);
  const milestoneContainer=$('#adventureLearningMilestones');
  for(const milestone of milestones){const button=document.createElement('button');button.type='button';button.className='adventure-learning-milestone';button.textContent=milestone.emoji+' '+milestone.title;button.setAttribute('aria-label','Celebrate '+milestone.title);button.onclick=()=>{$('#adventureLearningMilestoneMessage').textContent=milestone.message};milestoneContainer.append(button)}
