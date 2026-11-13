@@ -20,12 +20,28 @@ export function buildFantasyVillage(THREE,scene){
  cone(3.8,5.3,0x9b64c5,0,11.6,castleZ+1);
  block(2.7,4,.22,0x6e4e9b,0,2,castleZ+3.1);
  for(const x of [-4,-2,2,4])block(.8,1.5,.16,0xffeab0,x,5.4,castleZ+2.6);
- // A winding pale stone promenade and small bridges guide the eye through the village.
- for(let i=0;i<22;i++){
-  const z=10-i*1.65;
-  const x=Math.sin(i*.33)*1.6;
-  block(3.4,.07,1.58,i%2?0xe7d7ba:0xf2e6cf,x,-.015,z);
+ // An irregular cobbled promenade replaces the oversized rectangular stepping slabs.
+ // Instancing keeps the entire path to a single draw call.
+ const stoneGeo=new THREE.CylinderGeometry(.24,.26,.065,7);
+ const stoneMat=new THREE.MeshStandardMaterial({color:0xc9b69a,roughness:.97});
+ const stones=new THREE.InstancedMesh(stoneGeo,stoneMat,1100);
+ const dummy=new THREE.Object3D(),tone=new THREE.Color();
+ let seed=4703;
+ const rand=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};
+ let used=0;
+ for(let row=0;row<110;row++){
+  const z=11-row*.39,center=Math.sin(row*.13)*1.5;
+  for(let col=-5;col<=4;col++){
+   if(rand()<.06)continue;
+   dummy.position.set(center+(col+(row%2)*.5)*.43+(rand()-.5)*.09,-.047,z+(rand()-.5)*.09);
+   dummy.rotation.set(0,rand()*.25,0);
+   dummy.scale.set(.78+rand()*.45,.8+rand()*.2,.8+rand()*.4);
+   dummy.updateMatrix();stones.setMatrixAt(used,dummy.matrix);
+   tone.setHSL(.09+rand()*.03,.13+rand()*.08,.54+rand()*.14);
+   stones.setColorAt(used,tone);used++;
+  }
  }
+ stones.count=used;stones.receiveShadow=true;scene.add(stones);
  // Two water gardens with short bridges, away from the portal entrances.
  for(const side of [-1,1]){
   const x=side*23,z=-7;
