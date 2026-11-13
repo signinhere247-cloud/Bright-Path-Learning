@@ -22,6 +22,7 @@ import {buildFantasyPet} from './fantasyPets.js';
 import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
 import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
+import {villageJournal,journalSummary} from './villageJournal.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -292,9 +293,22 @@ for(const discovery of DISCOVERIES){
  sphere(.55,discovery.color,discovery.x,1.25,discovery.z);
  label(discovery.name,discovery.x,2.15,discovery.z);
 }
+function showVillageJournal(){
+ const day=new Date().toISOString().slice(0,10),entries=villageJournal(state,day),summary=journalSummary(state,day);
+ modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ const container=$('#journalEntries');
+ for(const entry of entries){
+  const item=document.createElement('section');
+  const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
+  const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
+  item.append(heading,description);container.append(item);
+ }
+ $('#journalBack').onclick=showDiscoveryMenu;
+}
 function showDiscoveryMenu(){
- modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
+ modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><button id="openVillageJournal">My Village Journal 📖</button><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
  $('#discoveryMenuBack').onclick=showProfile;
+ $('#openVillageJournal').onclick=showVillageJournal;
  $('#modalBody').onclick=e=>{const id=e.target.closest('[data-open-discovery]')?.dataset.openDiscovery;if(id){const activity=DISCOVERIES.find(d=>d.id===id);if(activity)showDiscovery(activity)}};
 }
 function showDiscovery(activity){
