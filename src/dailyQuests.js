@@ -1,7 +1,7 @@
 /** Daily quests are calculated from completed activities; claim only once per UTC day. */
 export const DAILY_QUESTS=Object.freeze([
  {id:'first-discovery',name:'Curious Explorer',description:'Complete one village discovery',goal:1,reward:12},
- {id:'three-discoveries',name:'Village Adventurer',description:'Complete all three village discoveries',goal:3,reward:20},
+ {id:'three-discoveries',name:'Village Adventurer',description:'Complete three village discoveries',goal:3,reward:20},
  {id:'one-lesson',name:'Academy Apprentice',description:'Pass one academy lesson',goal:1,reward:15}
 ]);
 export function validQuestDay(day){if(typeof day!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(day))return false;const d=new Date(day+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===day;}

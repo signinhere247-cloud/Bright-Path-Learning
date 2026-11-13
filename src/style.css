@@ -23,3 +23,10 @@
 #decoratorControls .decoratorActions{display:flex;flex-wrap:wrap;gap:6px}
 #decoratorControls button{min-height:44px;flex:1 1 120px}
 canvas{touch-action:none}
+
+/* Milestone celebrations are optional, subtle and respect reduced-motion settings. */
+#milestoneCelebration{font-weight:700;min-height:1.5em;color:#7045a0}
+@media (prefers-reduced-motion: no-preference){
+ #milestoneCelebration.milestone-pop{animation:milestone-pop .5s ease-out}
+ @keyframes milestone-pop{0%{opacity:.25;transform:scale(.96)}70%{transform:scale(1.035)}100%{opacity:1;transform:scale(1)}}
+}

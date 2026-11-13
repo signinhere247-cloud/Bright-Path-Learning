@@ -20,6 +20,15 @@ import {buildFantasyAcademy} from './fantasyAcademies.js';
 import {buildFantasyExplorer} from './fantasyExplorer.js';
 import {buildFantasyPet} from './fantasyPets.js';
 import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
+import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
+import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
+import {villageJournal,journalSummary} from './villageJournal.js';
+import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
+import {explorerMilestones} from './explorerMilestones.js';
+import {milestoneCelebration} from './milestoneCelebrations.js';
+import {adventureOverview} from './adventureOverview.js';
+import {personalisedAdventureGoals} from './adventureGoals.js';
+import {waypointHint} from './adventureWaypoints.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -31,6 +40,8 @@ import {purchaseItem,placeFurniture,moveFurniture,removeFurniture} from './world
 import {commitEconomyChange} from './economyCommit.js';
 import {commitRewardChange} from './rewardCommit.js';
 import {careForPet,petStatus,PET_ACTIONS} from './petCare.js';
+import {petDisplayName,renamePet} from './petIdentity.js';
+import {PET_PERSONALITIES,petPersonality,choosePetPersonality,petBehaviour} from './petPersonality.js';
 import {companionTarget,companionMotion,activityAnimation} from './petWorld.js';
 import {DISCOVERIES,completeDiscovery,discoveryStatus} from './villageActivities.js';
 import {questProgress,claimDailyQuest} from './dailyQuests.js';
@@ -204,19 +215,22 @@ function finishFurnitureDrag(e){
 renderer.domElement.addEventListener('pointerup',finishFurnitureDrag);
 renderer.domElement.addEventListener('pointercancel',()=>{dragFurniture=null;renderFurniture()});
 function showHome(){
- if(mode!=='home'){worldPosition={...position};scene.remove(avatar);home.scene.add(avatar)}
+ if(mode!=='home'){worldPosition={...position};scene.remove(avatar);home.scene.add(avatar);if(companionKind){scene.remove(companion);home.scene.add(companion);companion.position.set(1.35,0,4.05)}}
  mode='home';position={x:0,z:3};avatar.position.set(0,0,3);renderFurniture();
  if(decorating){$('#modal').classList.add('hidden');furnitureControls();return}
  furnitureControls();
- modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><button id="exitHome">Back to Adventure World</button>`);
+ modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><h3>Enjoy your home</h3><div id="homeActions">${availableHomeActions(state).map(a=>`<button data-home-action="${a.id}">${a.label}</button>`).join('')||'<p>Place furniture to unlock home activities.</p>'}</div><p id="homeActionStatus" role="status" aria-live="polite"></p><button id="exitHome">Back to Adventure World</button>`);
+ $('#homeActions').onclick=e=>{const id=e.target.closest('[data-home-action]')?.dataset.homeAction;if(!id)return;try{$('#homeActionStatus').textContent=homeActionMessage(state,id)}catch(err){$('#homeActionStatus').textContent=err.message}};
  $('#startDecorating').onclick=()=>{decorating=true;showHome()};
  $('#exitHome').onclick=exitHome;
 }
-function exitHome(){if(mode!=='home')return;decorating=false;dragFurniture=null;selectedFurniture=null;furnitureControls();mode='world';clearHome();home.scene.remove(avatar);scene.add(avatar);position={...worldPosition};$('#modal').classList.add('hidden')}
+function exitHome(){if(mode!=='home')return;decorating=false;dragFurniture=null;selectedFurniture=null;furnitureControls();mode='world';clearHome();home.scene.remove(avatar);scene.add(avatar);if(companionKind){home.scene.remove(companion);scene.add(companion);companion.position.set(worldPosition.x+1.35,0,worldPosition.z+1.05)}position={...worldPosition};$('#modal').classList.add('hidden')}
 function showShop(){modal(`<h2>BrightCoins Shop</h2><p>Your balance: <b>${state.coins}</b> BrightCoins</p><div class="cards">${shop.map(it=>`<button data-buy="${it.id}" ${(state.inventory.includes(it.id)||((it.id==='cat'||it.id==='dog')&&state.pet))?'disabled':''}><b>${it.name}</b><small>${it.price} BrightCoins</small></button>`).join('')}</div><div id="shopStatus" role="status"></div>`);$('#modalBody').onclick=e=>{let id=e.target.closest('[data-buy]')?.dataset.buy;if(!id)return;let it=shop.find(i=>i.id===id);try{commitEconomy(current=>purchaseItem(current,it));rebuildCompanion();refresh();showShop()}catch(err){$('#shopStatus').textContent=err.message}}}
 function showPetCare(){
  const status=petStatus(state);
- modal(`<h2>My Pet 🐾</h2><p>${status.adopted?`Your ${state.pet} is ${status.label.toLowerCase()}! · Happiness ${status.mood}/100`:'Visit the BrightCoins Shop to adopt a cat or dog.'}</p>${status.adopted?Object.entries(PET_ACTIONS).map(([key,activity])=>`<button data-pet-action="${key}">${activity.label}</button>`).join(''):''}<p id="petCareMessage" role="status"></p><button id="petBack">Back to profile</button>`);
+ modal(`<h2>My Pet 🐾</h2><p>${status.adopted?`Your ${state.pet} is ${status.label.toLowerCase()}! · Happiness ${status.mood}/100`:'Visit the BrightCoins Shop to adopt a cat or dog.'}</p>${status.adopted?`<p id="petDisplayName"></p><label for="petNameInput">Pet name</label><input id="petNameInput" maxlength="20" aria-label="Pet name"><button id="savePetName">Save pet name</button>`:''}${status.adopted?Object.entries(PET_ACTIONS).map(([key,activity])=>`<button data-pet-action="${key}">${activity.label}</button>`).join(''):''}<p id="petCareMessage" role="status"></p><button id="petBack">Back to profile</button>`);
+ if(status.adopted){$('#petDisplayName').textContent=petDisplayName(state);$('#petNameInput').value=state.petName||'';$('#savePetName').onclick=()=>{try{commitEconomy(current=>renamePet(current,$('#petNameInput').value));showPetCare();$('#petCareMessage').textContent='Pet name saved!'}catch(err){$('#petCareMessage').textContent=err.message}}};
+ if(status.adopted){const choices=document.createElement('div');choices.innerHTML='<label for="petPersonalityChoice">Pet personality</label><select id="petPersonalityChoice"></select><button id="savePetPersonality">Save personality</button>';$('#petBack').before(choices);const selector=$('#petPersonalityChoice');for(const [id,personality] of Object.entries(PET_PERSONALITIES)){const option=document.createElement('option');option.value=id;option.textContent=personality.label+' — '+personality.description;selector.append(option)}selector.value=petPersonality(state);$('#savePetPersonality').onclick=()=>{try{commitEconomy(current=>choosePetPersonality(current,selector.value));showPetCare();$('#petCareMessage').textContent='Pet personality saved!'}catch(err){$('#petCareMessage').textContent=err.message}}}
  $('#petBack').onclick=showProfile;
  $('#modalBody').onclick=e=>{const action=e.target.closest('[data-pet-action]')?.dataset.petAction;if(!action)return;try{commitEconomy(current=>careForPet(current,action));petActivity={action,start:performance.now(),...activityAnimation(action)};showPetCare()}catch(err){$('#petCareMessage').textContent=err.message}};
 }
@@ -226,9 +240,26 @@ function showBackupControls(){
   $('#downloadBackup').onclick=()=>{try{const data=makeBackup(state,Number(localStorage.getItem('bp-age')||9));const blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='brightpath-explorer-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#backupMessage').textContent='Backup downloaded. Keep it somewhere private.'}catch(e){$('#backupMessage').textContent=e.message}};
   $('#importBackup').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2_000_000)throw Error('Backup is too large.');const backup=parseBackup(await file.text());const count=Object.keys(backup.save.completed).length;modal(`<h2>Review backup</h2><p>Explorer: <b id="importName"></b></p><p>${count} completed lessons · ${backup.save.coins} BrightCoins · Learning age ${backup.age}</p><p><strong>Warning:</strong> Restoring replaces the current guest explorer's progress on this device. Download your current backup first if you want to keep it.</p><label>Type RESTORE to confirm <input id="restoreConfirm" autocomplete="off"></label><button id="confirmImport">Restore this backup</button><button id="cancelImport">Cancel</button><div id="importError" role="alert"></div>`);$('#importName').textContent=backup.save.profile;$('#cancelImport').onclick=showBackupControls;$('#confirmImport').onclick=()=>{if($('#restoreConfirm').value!=='RESTORE'){$('#importError').textContent='Type RESTORE exactly to continue.';return}try{autoCloud.stop();family=importExplorerBackup(localStorage,family,backup);location.reload()}catch(err){$('#importError').textContent=err.message}}}catch(err){$('#backupMessage').textContent=err.message}};
 }
+function showAdventureOverview(){
+ const overview=adventureOverview(state,subjects,new Date().toISOString().slice(0,10));
+ modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
+ const stats=[['📚 Lessons completed',overview.lessons],['🌿 Village discoveries',overview.discovered+' / '+overview.discoveriesTotal],['✨ Keepsakes collected',overview.keepsakes+' / '+overview.keepsakesTotal],['🏆 Milestones earned',overview.milestones+' / '+overview.milestonesTotal],['🐾 Pet companion',overview.pet||'Not adopted yet'],['🪙 BrightCoins',overview.coins]];
+ const container=$('#adventureStats');
+ for(const [label,value] of stats){const item=document.createElement('div'),heading=document.createElement('b'),detail=document.createElement('small');heading.textContent=label;detail.textContent=String(value);item.append(heading,detail);container.append(item)}
+ const goals=personalisedAdventureGoals(state,subjects,new Date().toISOString().slice(0,10)),goalContainer=$('#adventureGoals');
+ for(const goal of goals){
+  const item=document.createElement('div'),button=document.createElement('button');
+  button.textContent=goal.emoji+' '+goal.title+' — '+goal.detail;
+  button.onclick=()=>{if(goal.destination==='learn')showSubjects();else if(goal.destination==='discoveries')showDiscoveryMenu();else if(goal.destination==='shop')showShop();else if(goal.destination==='pet')showPetCare();else if(goal.destination==='achievements')showAchievements()};
+  item.append(button);goalContainer.append(item);
+ }
+ $('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+}
 function showAchievements(){
- const summary=progressSummary(state,subjects);
- modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Achievements</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><button id="backToProfile">Back to profile</button>`);
+ const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10));
+ modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="backToProfile">Back to profile</button>`);
+ const container=$('#explorerMilestones');
+ for(const milestone of milestones.milestones){const item=document.createElement('div');const button=document.createElement('button');button.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;button.disabled=!milestone.earned;button.setAttribute('aria-label',milestone.earned?'Celebrate '+milestone.name:milestone.name+' locked');button.onclick=()=>{const celebration=milestoneCelebration(milestone);if(celebration){$('#milestoneCelebration').textContent=celebration.title+' '+celebration.message;const banner=$('#milestoneCelebration');banner.classList.remove('milestone-pop');void banner.offsetWidth;banner.classList.add('milestone-pop')}};item.append(button);container.append(item)}
  $('#backToProfile').onclick=showProfile;
 }
 function showDailyQuests(){
@@ -243,7 +274,7 @@ function requireParentAccess(next){
  $('#parentPinCancel').onclick=showProfile;
  $('#parentPinContinue').onclick=async()=>{const button=$('#parentPinContinue');button.disabled=true;try{const pin=$('#parentPinEntry').value;if(setup)await setParentPin(localStorage,pin);else if(!await verifyParentPin(localStorage,pin))throw Error('Incorrect parent PIN.');next()}catch(e){$('#parentPinError').textContent=e.message;button.disabled=false}};
 }
-function showProfile(){modal(`<h2>My Explorer</h2><label>Explorer name <input id="profileName" maxlength="20" value="${state.profile.replaceAll('"','&quot;')}"></label><p>Choose skin tone</p><div class="swatches">${palette.map(c=>`<button data-skin="${c}" style="background:${c}" aria-label="Skin tone"></button>`).join('')}</div><p>Choose outfit colour</p><div class="swatches">${['#7b5ee8','#28a8a4','#f080b0','#f2aa35','#4a79df'].map(c=>`<button data-outfit="${c}" style="background:${c}" aria-label="Outfit colour"></button>`).join('')}</div><p>Completed lessons: ${Object.keys(state.completed).length} · Pet: ${state.pet||'none yet'}</p><label>Practice difficulty <select id="age">${[4,6,8,10,12,14,16].map(a=>`<option value="${a}" ${Number(localStorage.getItem('bp-age')||9)===a?'selected':''}>Approx. age ${a}</option>`).join('')}</select></label><button id="saveProfile">Save profile</button><button id="achievements">My achievements</button><button id="dailyQuests">Daily adventures ✨</button><button id="discoveryShortcut">Village discoveries 🌿</button><button id="petCare">Care for my pet 🐾</button><button id="shopShortcut">BrightCoins Shop 🛍️</button><button id="homeShortcut">My 3D Home 🏠</button><button id="backupControls">Backup & restore progress</button><button id="familyControls">Family explorers</button><button id="cloudControls">Parent cloud account (optional)</button><button id="parentReport">Parent learning report</button><button id="revisionStudio">My revision suggestions</button>`);$('#modalBody').onclick=e=>{let skin=e.target.dataset.skin,outfit=e.target.dataset.outfit;if(skin){state.avatar=skin;explorer.setAppearance(state.avatar,state.outfit)}if(outfit){state.outfit=outfit;explorer.setAppearance(state.avatar,state.outfit)}if(e.target.id==='achievements'){showAchievements();return}if(e.target.id==='dailyQuests'){showDailyQuests();return}if(e.target.id==='discoveryShortcut'){showDiscoveryMenu();return}if(e.target.id==='petCare'){showPetCare();return}if(e.target.id==='shopShortcut'){showShop();return}if(e.target.id==='homeShortcut'){showHome();return}if(e.target.id==='backupControls'){requireParentAccess(showBackupControls);return}if(e.target.id==='familyControls'){requireParentAccess(showFamilyExplorers);return}if(e.target.id==='cloudControls'){requireParentAccess(showCloudControls);return}if(e.target.id==='parentReport'){requireParentAccess(showParentReport);return}if(e.target.id==='revisionStudio'){showRevisionStudio();return}if(e.target.id==='saveProfile'){state.profile=$('#profileName').value.trim()||'Explorer';localStorage.setItem('bp-age',$('#age').value);save();close()}}}
+function showProfile(){modal(`<h2>My Explorer</h2><label>Explorer name <input id="profileName" maxlength="20" value="${state.profile.replaceAll('"','&quot;')}"></label><p>Choose skin tone</p><div class="swatches">${palette.map(c=>`<button data-skin="${c}" style="background:${c}" aria-label="Skin tone"></button>`).join('')}</div><p>Choose outfit colour</p><div class="swatches">${['#7b5ee8','#28a8a4','#f080b0','#f2aa35','#4a79df'].map(c=>`<button data-outfit="${c}" style="background:${c}" aria-label="Outfit colour"></button>`).join('')}</div><p>Completed lessons: ${Object.keys(state.completed).length} · Pet: ${state.pet||'none yet'}</p><label>Practice difficulty <select id="age">${[4,6,8,10,12,14,16].map(a=>`<option value="${a}" ${Number(localStorage.getItem('bp-age')||9)===a?'selected':''}>Approx. age ${a}</option>`).join('')}</select></label><button id="saveProfile">Save profile</button><button id="adventureOverview">My adventure progress 🌟</button><button id="achievements">My achievements</button><button id="dailyQuests">Daily adventures ✨</button><button id="discoveryShortcut">Village discoveries 🌿</button><button id="petCare">Care for my pet 🐾</button><button id="shopShortcut">BrightCoins Shop 🛍️</button><button id="homeShortcut">My 3D Home 🏠</button><button id="backupControls">Backup & restore progress</button><button id="familyControls">Family explorers</button><button id="cloudControls">Parent cloud account (optional)</button><button id="parentReport">Parent learning report</button><button id="revisionStudio">My revision suggestions</button>`);$('#modalBody').onclick=e=>{let skin=e.target.dataset.skin,outfit=e.target.dataset.outfit;if(skin){state.avatar=skin;explorer.setAppearance(state.avatar,state.outfit)}if(outfit){state.outfit=outfit;explorer.setAppearance(state.avatar,state.outfit)}if(e.target.id==='adventureOverview'){showAdventureOverview();return}if(e.target.id==='achievements'){showAchievements();return}if(e.target.id==='dailyQuests'){showDailyQuests();return}if(e.target.id==='discoveryShortcut'){showDiscoveryMenu();return}if(e.target.id==='petCare'){showPetCare();return}if(e.target.id==='shopShortcut'){showShop();return}if(e.target.id==='homeShortcut'){showHome();return}if(e.target.id==='backupControls'){requireParentAccess(showBackupControls);return}if(e.target.id==='familyControls'){requireParentAccess(showFamilyExplorers);return}if(e.target.id==='cloudControls'){requireParentAccess(showCloudControls);return}if(e.target.id==='parentReport'){requireParentAccess(showParentReport);return}if(e.target.id==='revisionStudio'){showRevisionStudio();return}if(e.target.id==='saveProfile'){state.profile=$('#profileName').value.trim()||'Explorer';localStorage.setItem('bp-age',$('#age').value);save();close()}}}
 function showRevisionStudio(){
  const suggestions=revisionRecommendations(state,subjects);
  modal(`<h2>My revision suggestions 📚</h2><p>Based on your recent lesson results. These are practice suggestions, not a judgement of ability. Complete lessons to receive suggestions.</p>${suggestions.length?`<div class="cards">${suggestions.map((r,i)=>`<button data-revise="${i}"><b>${escapeReport(r.subject)} · ${escapeReport(r.topic)}</b><small>${r.priority} · Recent average ${r.average}%</small></button>`).join('')}</div>`:'<p>No topics need extra practice based on recorded results yet. Try a lesson to get started!</p>'}<button id="revisionBack">Back to profile</button>`);
@@ -285,9 +316,34 @@ for(const discovery of DISCOVERIES){
  sphere(.55,discovery.color,discovery.x,1.25,discovery.z);
  label(discovery.name,discovery.x,2.15,discovery.z);
 }
+function showVillageKeepsakes(){
+ const keepsakes=villageKeepsakes(state),progress=keepsakeProgress(state);
+ modal(`<h2>My Village Keepsakes ✨</h2><p>You've unlocked ${progress.unlocked} of ${progress.total} keepsakes. Earn each by completing its village discovery. No extra BrightCoins are needed.</p><div id="keepsakeGallery"></div><button id="keepsakeBack">Back to discoveries</button>`);
+ const gallery=$('#keepsakeGallery');
+ for(const keepsake of keepsakes){
+  const item=document.createElement('p');
+  item.textContent=keepsake.unlocked?keepsake.emoji+' '+keepsake.name:'🔒 Mystery keepsake — '+keepsake.id;
+  gallery.append(item);
+ }
+ $('#keepsakeBack').onclick=showDiscoveryMenu;
+}
+function showVillageJournal(){
+ const day=new Date().toISOString().slice(0,10),entries=villageJournal(state,day),summary=journalSummary(state,day);
+ modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ const container=$('#journalEntries');
+ for(const entry of entries){
+  const item=document.createElement('section');
+  const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
+  const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
+  item.append(heading,description);container.append(item);
+ }
+ $('#journalBack').onclick=showDiscoveryMenu;
+}
 function showDiscoveryMenu(){
- modal(`<h2>Village discoveries 🌿</h2><p>Explore the pond, garden and stars. Each correct discovery earns 8 BrightCoins once per day.</p><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
+ modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><button id="openVillageJournal">My Village Journal 📖</button><button id="openVillageKeepsakes">My Keepsakes ✨</button><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
  $('#discoveryMenuBack').onclick=showProfile;
+ $('#openVillageJournal').onclick=showVillageJournal;
+ $('#openVillageKeepsakes').onclick=showVillageKeepsakes;
  $('#modalBody').onclick=e=>{const id=e.target.closest('[data-open-discovery]')?.dataset.openDiscovery;if(id){const activity=DISCOVERIES.find(d=>d.id===id);if(activity)showDiscovery(activity)}};
 }
 function showDiscovery(activity){
@@ -304,6 +360,19 @@ function showDiscovery(activity){
 }
 function interact(b){if(!b)return;if(b.id&&DISCOVERIES.some(d=>d.id===b.id)){showDiscovery(b);return}if(b.name==='My Home')showHome();else if(b.name==='Shop')showShop();else showLessons(b.name)}
 $('#learnBtn').onclick=showSubjects;$('#profileBtn').onclick=showProfile;$('#helpBtn').onclick=()=>modal('<h2>How to play</h2><p>Use arrow keys, WASD or the on-screen direction buttons to walk around the 3D world. Approach a building and press Enter or Interact. Tap buildings directly too.</p><p>Complete lessons to earn BrightCoins, buy furniture, decorate your home and adopt a pet.</p><p><b>Guest mode:</b> Progress saves on this device only. Secure family accounts are not yet connected.</p>');$('#interact').onclick=()=>interact(near);
+const villageGuide=document.createElement('button');villageGuide.id='villageGuide';villageGuide.textContent='🧭 Village guide';villageGuide.setAttribute('aria-label','Open village directions');$('#interact').after(villageGuide);
+let activeWaypoint=null;
+const waypointStatus=document.createElement('div');waypointStatus.id='waypointStatus';waypointStatus.setAttribute('role','status');waypointStatus.setAttribute('aria-live','off');villageGuide.after(waypointStatus);
+const cancelWaypoint=document.createElement('button');cancelWaypoint.id='cancelWaypoint';cancelWaypoint.textContent='✕ Clear directions';cancelWaypoint.hidden=true;waypointStatus.after(cancelWaypoint);
+cancelWaypoint.onclick=()=>{activeWaypoint=null;waypointStatus.textContent='';cancelWaypoint.hidden=true};
+villageGuide.onclick=()=>{
+ const destinations=[...DISCOVERIES,...buildings.map(b=>({...b,x:b.x,z:b.z+4}))];
+ const directions=villageDirections(position,destinations);
+ modal('<h2>Village guide 🧭</h2><p>Choose a destination to see how far away it is.</p><div id="villageGuideList"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
+ const list=$('#villageGuideList');
+ for(const d of directions){const button=document.createElement('button');button.textContent=d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{activeWaypoint={name:d.name,x:d.x,z:d.z};close();waypointStatus.textContent='🧭 Head '+d.direction+' towards '+d.name+'.';cancelWaypoint.hidden=false};list.append(button)}
+ $('#closeVillageGuide').onclick=close;
+};
 const movementKeys=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d']);
 const typingTarget=element=>element?.closest?.('input,textarea,select,[contenteditable]');
 function clearMovement(){for(const key of movementKeys)keys.delete(key)}
@@ -355,13 +424,14 @@ renderer.domElement.addEventListener('click',e=>{
 });
 function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);villageMagic.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(keys.has('arrowright')||keys.has('d'))-Number(keys.has('arrowleft')||keys.has('a')),dz=Number(keys.has('arrowdown')||keys.has('s'))-Number(keys.has('arrowup')||keys.has('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(keys.has('arrowright')||keys.has('arrowleft')||keys.has('arrowup')||keys.has('arrowdown')||keys.has('w')||keys.has('a')||keys.has('s')||keys.has('d')));
  if(companion.visible){
-  const goal=companionTarget(position,now),next=companionMotion(companion.position,goal,dt);
+  const behaviour=petBehaviour(petPersonality(state));
+  const goal=companionTarget(position,now),next=companionMotion(companion.position,{x:position.x+1.35+(goal.x-position.x-1.35)*behaviour.sway/.22,z:position.z+1.05+(goal.z-position.z-1.05)*behaviour.sway/.22},dt*behaviour.speed);
   companion.position.x=next.x;companion.position.z=next.z;
   const active=petActivity&&now-petActivity.start<petActivity.duration;
-  companion.position.y=active?Math.abs(Math.sin((now-petActivity.start)*.011))*petActivity.bounce:Math.sin(now*.004)*.025;
+  companion.position.y=active?Math.abs(Math.sin((now-petActivity.start)*.011))*petActivity.bounce:Math.sin(now*.004)*behaviour.bob;
   if(petActivity&&!active)petActivity=null;
   companion.rotation.y=Math.atan2(position.x-companion.position.x,position.z-companion.position.z);
   petModel?.animate(now,Math.hypot(goal.x-companion.position.x,goal.z-companion.position.z)>.12,active?petActivity.action:null);
  }
- let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(DISCOVERIES.find(d=>Math.hypot(position.x-d.x,position.z-d.z)<2.7)||buildings.find(b=>Math.hypot(position.x-b.x,position.z-(b.z+4))<3.5)):null;$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
+ let target=new THREE.Vector3(position.x,2,position.z);camera.position.lerp(new THREE.Vector3(position.x,8,position.z+12),.07);camera.lookAt(target);near=mode==='world'?(nearestVillageDestination(position,DISCOVERIES,2.7)||buildings.find(b=>Math.hypot(position.x-b.x,position.z-(b.z+4))<3.5)):null;villageGuide.hidden=mode!=='world';cancelWaypoint.hidden=mode!=='world'||!activeWaypoint;waypointStatus.hidden=mode!=='world';if(activeWaypoint&&mode==='world'){const hint=waypointHint(position,activeWaypoint);if(hint){const message=hint.arrived?'🎉 You reached '+activeWaypoint.name+'!':'🧭 '+activeWaypoint.name+' · '+hint.distance+' steps · Head '+hint.direction;if(waypointStatus.textContent!==message)waypointStatus.textContent=message;if(hint.arrived){activeWaypoint=null;cancelWaypoint.hidden=true}}}$('#tip').innerHTML=near?`Near <b>${near.name}</b> — press Enter or Interact`:'Explore the world · Visit a glowing portal to learn';$('#interact').style.display=near?'block':'none';renderer.render(mode==='home'?home.scene:scene,camera)}requestAnimationFrame(frame);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
