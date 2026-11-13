@@ -39,6 +39,7 @@ import {challengeKeepsakes} from './challengeKeepsakes.js';
 import {learningJourney} from './learningJourney.js';
 import {journeySuggestions} from './journeySuggestions.js';
 import {learningDashboard} from './learningDashboard.js';
+import {chooseLearningGoal,clearLearningGoal,learningGoalProgress} from './learningGoals.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -267,9 +268,23 @@ function showAdventureOverview(){
  }
  $('#overviewDashboard').onclick=showLearningDashboard;$('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
+function showLearningGoals(){
+ const goal=learningGoalProgress(state,subjects);
+ modal(`<h2>My Learning Goal 🎯</h2><p>Pick a subject and a goal that feels fun. There is no deadline or penalty for changing your mind.</p><section class="learning-goal-panel"><div id="learningGoalStatus"></div><label for="learningGoalSubject">Subject</label><select id="learningGoalSubject"></select><label for="learningGoalTarget">Topics to complete</label><select id="learningGoalTarget"><option value="1">1 topic</option><option value="3">3 topics</option><option value="5">5 topics</option><option value="10">10 topics</option></select><button id="learningGoalSave">Set my goal</button><button id="learningGoalClear">Clear goal</button><p id="learningGoalMessage" role="alert"></p></section><button id="learningGoalBack">Back to my dashboard</button>`);
+ const select=$('#learningGoalSubject');
+ for(const subject of subjects){const option=document.createElement('option');option.value=subject;option.textContent=subject;select.append(option)}
+ if(goal){select.value=goal.subject;$('#learningGoalTarget').value=String(goal.target)}
+ const status=$('#learningGoalStatus');
+ if(goal){const title=document.createElement('strong'),bar=document.createElement('progress'),message=document.createElement('p');title.textContent=goal.subject+': '+goal.completed+' of '+goal.target+' topics completed';bar.max=goal.target;bar.value=goal.progress;bar.setAttribute('aria-label','Learning goal progress');message.textContent=goal.achieved?'🎉 Goal achieved! Well done!':'Every completed topic brings you closer!';status.append(title,bar,message)}
+ else status.textContent='No goal chosen yet — you can start whenever you like.';
+ const persist=next=>{const previous=state;state=next;try{save();showLearningGoals()}catch(err){state=previous;$('#learningGoalMessage').textContent='Could not save goal: '+err.message}};
+ $('#learningGoalSave').onclick=()=>{try{persist(chooseLearningGoal(state,subjects,select.value,Number($('#learningGoalTarget').value)))}catch(err){$('#learningGoalMessage').textContent=err.message}};
+ $('#learningGoalClear').onclick=()=>persist(clearLearningGoal(state));
+ $('#learningGoalBack').onclick=showLearningDashboard;
+}
 function showLearningDashboard(){
  const dashboard=learningDashboard(state,subjects);
- modal(`<h2>My Learning Dashboard 📊</h2><p>See what you've explored and where you'd like to practise next.</p><div class="learning-dashboard-summary"><strong>${dashboard.completed} topics completed</strong><span>${dashboard.attempts} recorded lesson attempts</span><span>${dashboard.challenges} daily challenges completed</span></div><div id="learningDashboardRows"></div><button id="dashboardBack">Back to my progress</button>`);
+ modal(`<h2>My Learning Dashboard 📊</h2><p>See what you've explored and where you'd like to practise next.</p><div class="learning-dashboard-summary"><strong>${dashboard.completed} topics completed</strong><span>${dashboard.attempts} recorded lesson attempts</span><span>${dashboard.challenges} daily challenges completed</span></div><div id="learningDashboardRows"></div><button id="dashboardGoals">Set my learning goal 🎯</button><button id="dashboardBack">Back to my progress</button>`);
  const container=$('#learningDashboardRows');
  for(const row of dashboard.rows){
   const section=document.createElement('section'),heading=document.createElement('h3'),details=document.createElement('p'),bar=document.createElement('progress'),note=document.createElement('p'),button=document.createElement('button');
@@ -281,6 +296,7 @@ function showLearningDashboard(){
   button.textContent='Explore '+row.subject;button.onclick=()=>showLessons(row.subject);
   section.append(heading,details,bar,note,button);container.append(section);
  }
+ $('#dashboardGoals').onclick=showLearningGoals;
  $('#dashboardBack').onclick=showAdventureOverview;
 }
 function showLearningJourney(){
