@@ -40,6 +40,7 @@ import {learningJourney} from './learningJourney.js';
 import {journeySuggestions} from './journeySuggestions.js';
 import {learningDashboard} from './learningDashboard.js';
 import {chooseLearningGoal,clearLearningGoal,learningGoalProgress} from './learningGoals.js';
+import {recogniseLearningGoal,learningGoalCelebration} from './learningGoalCelebrations.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -160,6 +161,7 @@ function showQuestion(){let c=current;if(c.i>=c.q.length){
   const previous=state;
   state=recordLearningDay(recordPracticeNeed(result.save,c.s,c.t,c.missed>0),localLearningDate());
   if(result.passed)state=recordDailySubject(state,new Date().toISOString().slice(0,10),c.s);
+  state=recogniseLearningGoal(state,subjects);
   try{save()}catch(err){state=previous;throw err}
   c.settled=true;
   refresh();
@@ -269,15 +271,18 @@ function showAdventureOverview(){
  $('#overviewDashboard').onclick=showLearningDashboard;$('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
 function showLearningGoals(){
- const goal=learningGoalProgress(state,subjects);
- modal(`<h2>My Learning Goal 🎯</h2><p>Pick a subject and a goal that feels fun. There is no deadline or penalty for changing your mind.</p><section class="learning-goal-panel"><div id="learningGoalStatus"></div><label for="learningGoalSubject">Subject</label><select id="learningGoalSubject"></select><label for="learningGoalTarget">Topics to complete</label><select id="learningGoalTarget"><option value="1">1 topic</option><option value="3">3 topics</option><option value="5">5 topics</option><option value="10">10 topics</option></select><button id="learningGoalSave">Set my goal</button><button id="learningGoalClear">Clear goal</button><p id="learningGoalMessage" role="alert"></p></section><button id="learningGoalBack">Back to my dashboard</button>`);
+ const celebration=learningGoalCelebration(state,subjects),goal=celebration.goal;
+ modal(`<h2>My Learning Goal 🎯</h2><p>Pick a subject and a goal that feels fun. There is no deadline or penalty for changing your mind.</p><section class="learning-goal-panel"><div id="learningGoalStatus"></div><label for="learningGoalSubject">Subject</label><select id="learningGoalSubject"></select><label for="learningGoalTarget">Topics to complete</label><select id="learningGoalTarget"><option value="1">1 topic</option><option value="3">3 topics</option><option value="5">5 topics</option><option value="10">10 topics</option></select><button id="learningGoalSave">Set my goal</button><button id="learningGoalClear">Clear goal</button><p id="learningGoalMessage" role="alert"></p></section><section class="goal-keepsakes"><h3>🌟 My goal stars</h3><p>Every completed goal stays in your collection, even when you choose a new one.</p><div id="goalKeepsakes" aria-live="polite"></div></section><button id="learningGoalBack">Back to my dashboard</button>`);
  const select=$('#learningGoalSubject');
  for(const subject of subjects){const option=document.createElement('option');option.value=subject;option.textContent=subject;select.append(option)}
  if(goal){select.value=goal.subject;$('#learningGoalTarget').value=String(goal.target)}
  const status=$('#learningGoalStatus');
- if(goal){const title=document.createElement('strong'),bar=document.createElement('progress'),message=document.createElement('p');title.textContent=goal.subject+': '+goal.completed+' of '+goal.target+' topics completed';bar.max=goal.target;bar.value=goal.progress;bar.setAttribute('aria-label','Learning goal progress');message.textContent=goal.achieved?'🎉 Goal achieved! Well done!':'Every completed topic brings you closer!';status.append(title,bar,message)}
+ if(goal){const title=document.createElement('strong'),bar=document.createElement('progress'),message=document.createElement('p');title.textContent=goal.subject+': '+goal.completed+' of '+goal.target+' topics completed';bar.max=goal.target;bar.value=goal.progress;bar.setAttribute('aria-label','Learning goal progress');message.textContent=goal.achieved?'🎉 Goal achieved! Well done! You collected a learning star!':'Every completed topic brings you closer!';status.append(title,bar,message)}
  else status.textContent='No goal chosen yet — you can start whenever you like.';
- const persist=next=>{const previous=state;state=next;try{save();showLearningGoals()}catch(err){state=previous;$('#learningGoalMessage').textContent='Could not save goal: '+err.message}};
+ const persist=next=>{const previous=state;state=recogniseLearningGoal(next,subjects);try{save();showLearningGoals()}catch(err){state=previous;$('#learningGoalMessage').textContent='Could not save goal: '+err.message}};
+ const keepsakeArea=$('#goalKeepsakes');
+ if(!celebration.earned.length)keepsakeArea.textContent='Your first learning star is waiting for you! ✨';
+ for(const badge of celebration.earned){const item=document.createElement('span');item.className='goal-keepsake';item.textContent='⭐ '+badge;keepsakeArea.append(item)}
  $('#learningGoalSave').onclick=()=>{try{persist(chooseLearningGoal(state,subjects,select.value,Number($('#learningGoalTarget').value)))}catch(err){$('#learningGoalMessage').textContent=err.message}};
  $('#learningGoalClear').onclick=()=>persist(clearLearningGoal(state));
  $('#learningGoalBack').onclick=showLearningDashboard;
