@@ -1,15 +1,17 @@
 /** Slow ambient drifting lights and floating seed fluff, with no gameplay collisions. */
 export function addVillageMagic(THREE,scene){
- const count=48;
+ const count=64;
  const geo=new THREE.SphereGeometry(.065,6,4);
  const mat=new THREE.MeshBasicMaterial({color:0xffe6a7,transparent:true,opacity:.7,depthWrite:false});
  const motes=new THREE.InstancedMesh(geo,mat,count);
  motes.frustumCulled=false;motes.name='Floating woodland motes';scene.add(motes);
  const dummy=new THREE.Object3D();
  const particles=[];
+ const colors=[0xffe6a7,0xb6f0db,0xf8c3e2,0xd5c5ff].map(c=>new THREE.Color(c));
  for(let i=0;i<count;i++){
   const angle=i*2.39996323,r=11+(i%7)*4.1;
   particles.push({x:Math.cos(angle)*r,z:Math.sin(angle)*r,y:1.1+(i%9)*.38,phase:i*.93,speed:.25+(i%5)*.07});
+  motes.setColorAt(i,colors[i%colors.length]);
  }
  let previous=-1;
  function update(now){
@@ -25,6 +27,7 @@ export function addVillageMagic(THREE,scene){
   }
   motes.instanceMatrix.needsUpdate=true;
  }
+ if(motes.instanceColor)motes.instanceColor.needsUpdate=true;
  update(0);
  return {update};
 }
