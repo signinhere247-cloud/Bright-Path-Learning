@@ -26,6 +26,7 @@ import {adventureDestinations} from './adventureDestinations.js';
 import {destinationDiscoveryProgress} from './destinationDiscoveryProgress.js';
 import {destinationRecommendations} from './destinationRecommendations.js';
 import {destinationMilestones} from './destinationMilestones.js';
+import {createDirectionalInput} from './directionalInput.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -626,28 +627,31 @@ villageGuide.onclick=()=>{
  $('#closeVillageGuide').onclick=close;
 };
 const movementKeys=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d']);
+const touchMovement=createDirectionalInput();
+const movingKey=key=>keys.has(key)||touchMovement.keys.has(key);
 const typingTarget=element=>element?.closest?.('input,textarea,select,[contenteditable]');
-function clearMovement(){for(const key of movementKeys)keys.delete(key)}
+function clearMovement(){for(const key of movementKeys)keys.delete(key);touchMovement.clear()}
 window.addEventListener('keydown',e=>{
  if(typingTarget(e.target)||!$('#modal').classList.contains('hidden'))return;
  const key=e.key.toLowerCase();
  if(movementKeys.has(key)||key===' ')e.preventDefault();
  if(movementKeys.has(key))keys.add(key);
- if(e.key==='Enter')interact(near);
+ if(e.key==='Enter'&&!e.repeat&&e.target===document.body)interact(near);
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 window.addEventListener('blur',clearMovement);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearMovement()});
 for(const button of document.querySelectorAll('[data-dir]')){
  const key={up:'arrowup',down:'arrowdown',left:'arrowleft',right:'arrowright'}[button.dataset.dir];
- const release=()=>keys.delete(key);
+ const release=e=>touchMovement.release(e.pointerId);
  button.setAttribute('aria-label',`${button.dataset.dir} movement`);
+ button.style.touchAction='none';
  button.addEventListener('pointerdown',e=>{
   if(!$('#modal').classList.contains('hidden'))return;
-  e.preventDefault();keys.add(key);
+  e.preventDefault();touchMovement.press(e.pointerId,key);
   if(button.setPointerCapture)button.setPointerCapture(e.pointerId);
  });
- for(const event of ['pointerup','pointercancel','lostpointercapture','pointerleave'])button.addEventListener(event,release);
+ for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,release);
 }
 
 const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
@@ -674,7 +678,7 @@ renderer.domElement.addEventListener('click',e=>{
  const building=buildings.find(b=>Math.hypot(x-b.x,z-b.z)<4);
  if(discovery)interact(discovery);else if(building)interact(building);
 });
-function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);villageMagic.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(keys.has('arrowright')||keys.has('d'))-Number(keys.has('arrowleft')||keys.has('a')),dz=Number(keys.has('arrowdown')||keys.has('s'))-Number(keys.has('arrowup')||keys.has('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(keys.has('arrowright')||keys.has('arrowleft')||keys.has('arrowup')||keys.has('arrowdown')||keys.has('w')||keys.has('a')||keys.has('s')||keys.has('d')));
+function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);villageMagic.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(movingKey('arrowright')||movingKey('d'))-Number(movingKey('arrowleft')||movingKey('a')),dz=Number(movingKey('arrowdown')||movingKey('s'))-Number(movingKey('arrowup')||movingKey('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(movingKey('arrowright')||movingKey('arrowleft')||movingKey('arrowup')||movingKey('arrowdown')||movingKey('w')||movingKey('a')||movingKey('s')||movingKey('d')));
  if(companion.visible){
   const behaviour=petBehaviour(petPersonality(state));
   const goal=companionTarget(position,now),next=companionMotion(companion.position,{x:position.x+1.35+(goal.x-position.x-1.35)*behaviour.sway/.22,z:position.z+1.05+(goal.z-position.z-1.05)*behaviour.sway/.22},dt*behaviour.speed);
