@@ -17,5 +17,7 @@ export function learningHubSuggestions(save,subjects,day){
   detail:challenge.count+' of '+challenge.goal+' different subjects explored.',destination:'challenges',priority:2
  });
  if(!goal)suggestions.push({id:'choose-goal',title:'Choose your own learning goal',detail:'Pick something fun to work towards at your own pace.',destination:'goals',priority:3});
- return suggestions.sort((a,b)=>a.priority-b.priority).slice(0,3);
+ // Keep suggestions varied: avoid repeating the active goal's subject as a generic exploration card.
+ const unique=suggestions.filter((item,index,all)=>!item.id.startsWith('explore:')||!all.some(other=>other.id==='active-goal'&&other.title.endsWith(item.subject||'')));
+ return unique.sort((a,b)=>a.priority-b.priority).slice(0,3);
 }
