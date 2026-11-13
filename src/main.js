@@ -10,6 +10,7 @@ import {revisionRecommendations} from './revisionRecommendations.js';
 import * as THREE from 'three';
 import {buildFantasyVillage} from './fantasyVillage.js';
 import {addCottageLandscape} from './cottageLandscape.js';
+import {addStorybookTrees} from './storybookTrees.js';
 import {loadVillageModels} from './villageModels.js';
 import {villageModelManifest} from './villageModelManifest.js';
 import {buildFantasyAcademy} from './fantasyAcademies.js';
@@ -87,7 +88,7 @@ const box=(w,h,d,c,x,y,z)=>mesh(new THREE.BoxGeometry(w,h,d),c,x,y,z);
 const sphere=(r,c,x,y,z)=>mesh(new THREE.SphereGeometry(r,12,10),c,x,y,z);
 const cylinder=(rt,rb,h,c,x,y,z)=>mesh(new THREE.CylinderGeometry(rt,rb,h,10),c,x,y,z);
 box(140,.2,140,0x83c57a,0,-.17,0);
-for(let i=0;i<30;i++){let a=i*2.4,r=21+i%4*3,x=Math.cos(a)*r,z=Math.sin(a)*r;cylinder(.25,.36,2.1,0x8d6947,x,1,z);sphere(1.4+(i%3)*.2,0x48a66c,x,2.8,z)}
+addStorybookTrees(THREE,scene);
 for(let i=0;i<25;i++){let x=Math.sin(i*18)*19,z=Math.cos(i*23)*18;sphere(.22,[0xffe69d,0xf79bca,0xffffff][i%3],x,.25,z)}
 // Layered fantasy scenery is decorative: existing interactive portals retain their positions.
 const fantasyVillage=buildFantasyVillage(THREE,scene);
