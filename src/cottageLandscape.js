@@ -55,5 +55,47 @@ export function addCottageLandscape(THREE, scene) {
     tufts.setMatrixAt(i,dummy.matrix);
   }
   group.add(tufts);
+
+  // Storybook garden beds flank the entrance without blocking the walkway.
+  const timber=new THREE.MeshStandardMaterial({color:0x806044,roughness:.92});
+  const earth=new THREE.MeshStandardMaterial({color:0x59432e,roughness:1});
+  const leaf=new THREE.MeshStandardMaterial({color:0x48835a,roughness:.9});
+  const petals=[0xf5b4ca,0xffdf8b,0xc6a5f1,0xf6f0e1].map(color=>new THREE.MeshStandardMaterial({color,roughness:.85}));
+  const petalGeo=new THREE.SphereGeometry(.105,7,5);
+  const stemGeo=new THREE.CylinderGeometry(.022,.027,.32,5);
+  const stemMat=new THREE.MeshStandardMaterial({color:0x447a42,roughness:1});
+  function block(w,h,d,material,x,y,z){
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+    mesh.position.set(x,y,z);mesh.receiveShadow=true;group.add(mesh);return mesh;
+  }
+  for(const x of [-20.6,-13.4]){
+    block(2.3,.13,2.45,earth,x,-.008,3.7);
+    for(const side of [-1,1]){
+      block(.12,.24,2.55,timber,x+side*1.17,.09,3.7);
+      block(2.45,.24,.12,timber,x,.09,3.7+side*1.25);
+    }
+    for(let i=0;i<16;i++){
+      const px=x+(rand()-.5)*1.9,pz=3.7+(rand()-.5)*2.1;
+      const stem=new THREE.Mesh(stemGeo,stemMat);stem.position.set(px,.23,pz);group.add(stem);
+      const bloom=new THREE.Mesh(petalGeo,petals[i%petals.length]);
+      bloom.position.set(px,.44,pz);group.add(bloom);
+      const foliage=new THREE.Mesh(petalGeo,leaf);
+      foliage.scale.set(1.15,.55,1.35);foliage.position.set(px+.09,.2,pz);group.add(foliage);
+    }
+  }
+  // A small pet rest nook, positioned beside the cottage garden.
+  // This is scenery only; pet care state and rewards remain unchanged.
+  const cushion=new THREE.MeshStandardMaterial({color:0xb77d68,roughness:1});
+  block(1.65,.14,1.35,timber,-21.1,.04,6.65);
+  block(1.3,.13,1.05,cushion,-21.1,.17,6.65);
+  const bowl=new THREE.Mesh(new THREE.CylinderGeometry(.26,.21,.14,12),new THREE.MeshStandardMaterial({color:0x9fc6c5,roughness:.5}));
+  bowl.position.set(-20.0,.08,6.65);group.add(bowl);
+  // Low garden lanterns add a gentle glow without expensive dynamic lights.
+  const lanternMat=new THREE.MeshStandardMaterial({color:0xffd995,emissive:0xffae58,emissiveIntensity:.35});
+  for(const x of [-18.6,-15.4]){
+    block(.11,.66,.11,timber,x,.3,1.35);
+    block(.28,.3,.28,lanternMat,x,.76,1.35);
+    block(.38,.08,.38,timber,x,.95,1.35);
+  }
   return group;
 }
