@@ -32,6 +32,7 @@ import {purchaseItem,placeFurniture,moveFurniture,removeFurniture} from './world
 import {commitEconomyChange} from './economyCommit.js';
 import {commitRewardChange} from './rewardCommit.js';
 import {careForPet,petStatus,PET_ACTIONS} from './petCare.js';
+import {petDisplayName,renamePet} from './petIdentity.js';
 import {companionTarget,companionMotion,activityAnimation} from './petWorld.js';
 import {DISCOVERIES,completeDiscovery,discoveryStatus} from './villageActivities.js';
 import {questProgress,claimDailyQuest} from './dailyQuests.js';
@@ -218,7 +219,8 @@ function exitHome(){if(mode!=='home')return;decorating=false;dragFurniture=null;
 function showShop(){modal(`<h2>BrightCoins Shop</h2><p>Your balance: <b>${state.coins}</b> BrightCoins</p><div class="cards">${shop.map(it=>`<button data-buy="${it.id}" ${(state.inventory.includes(it.id)||((it.id==='cat'||it.id==='dog')&&state.pet))?'disabled':''}><b>${it.name}</b><small>${it.price} BrightCoins</small></button>`).join('')}</div><div id="shopStatus" role="status"></div>`);$('#modalBody').onclick=e=>{let id=e.target.closest('[data-buy]')?.dataset.buy;if(!id)return;let it=shop.find(i=>i.id===id);try{commitEconomy(current=>purchaseItem(current,it));rebuildCompanion();refresh();showShop()}catch(err){$('#shopStatus').textContent=err.message}}}
 function showPetCare(){
  const status=petStatus(state);
- modal(`<h2>My Pet 🐾</h2><p>${status.adopted?`Your ${state.pet} is ${status.label.toLowerCase()}! · Happiness ${status.mood}/100`:'Visit the BrightCoins Shop to adopt a cat or dog.'}</p>${status.adopted?Object.entries(PET_ACTIONS).map(([key,activity])=>`<button data-pet-action="${key}">${activity.label}</button>`).join(''):''}<p id="petCareMessage" role="status"></p><button id="petBack">Back to profile</button>`);
+ modal(`<h2>My Pet 🐾</h2><p>${status.adopted?`Your ${state.pet} is ${status.label.toLowerCase()}! · Happiness ${status.mood}/100`:'Visit the BrightCoins Shop to adopt a cat or dog.'}</p>${status.adopted?`<p id="petDisplayName"></p><label for="petNameInput">Pet name</label><input id="petNameInput" maxlength="20" aria-label="Pet name"><button id="savePetName">Save pet name</button>`:''}${status.adopted?Object.entries(PET_ACTIONS).map(([key,activity])=>`<button data-pet-action="${key}">${activity.label}</button>`).join(''):''}<p id="petCareMessage" role="status"></p><button id="petBack">Back to profile</button>`);
+ if(status.adopted){$('#petDisplayName').textContent=petDisplayName(state);$('#petNameInput').value=state.petName||'';$('#savePetName').onclick=()=>{try{commitEconomy(current=>renamePet(current,$('#petNameInput').value));showPetCare();$('#petCareMessage').textContent='Pet name saved!'}catch(err){$('#petCareMessage').textContent=err.message}}}
  $('#petBack').onclick=showProfile;
  $('#modalBody').onclick=e=>{const action=e.target.closest('[data-pet-action]')?.dataset.petAction;if(!action)return;try{commitEconomy(current=>careForPet(current,action));petActivity={action,start:performance.now(),...activityAnimation(action)};showPetCare()}catch(err){$('#petCareMessage').textContent=err.message}};
 }
