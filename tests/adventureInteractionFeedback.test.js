@@ -17,7 +17,7 @@ test('empty destinations have no action and labels remain plain text',()=>{
 });
 test('game uses contextual prompt, visible action and accessible label',()=>{
  const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
- assert.ok(main.includes("adventureInteractionFeedback(mode==='world'?near:null)"));
+ assert.ok(main.includes("adventureInteractionFeedback(mode==='world'?near:null,Boolean("));
  assert.ok(main.includes("$('#tip').textContent=feedback.hint"));
  assert.ok(main.includes("$('#interact').textContent=feedback.action"));
  assert.ok(main.includes("$('#interact').setAttribute('aria-label',feedback.label)"));
