@@ -1,0 +1,49 @@
+name: Dependency and full validation (development only)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - development/dependency-validation
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check source imports and lockfile
+        run: npm run check:build
+      - name: Unit tests
+        run: npm test
+      - name: Source audit
+        run: npm run audit
+      - name: Deployment and preview checks
+        run: |
+          npm run check:deploy
+          npm run check:preview
+      - name: Production build
+        run: npm run build
+      - name: Validate production output
+        run: npm run check:output
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser smoke tests
+        run: npm run test:browser:production
+        env:
+          BRIGHTPATH_BROWSER_MODE: production
+      - name: Upload browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightpath-development-browser-diagnostics
+          path: test-artifacts/browser/
+          if-no-files-found: warn
+          retention-days: 14
