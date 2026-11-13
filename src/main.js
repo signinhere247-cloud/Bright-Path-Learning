@@ -45,6 +45,7 @@ import {achievementGallery} from './achievementGallery.js';
 import {galleryCelebration} from './galleryCelebrations.js';
 import {filterAchievementGallery} from './galleryFilters.js';
 import {achievementNextStep} from './achievementNextSteps.js';
+import {achievementProgress} from './achievementProgress.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -357,6 +358,13 @@ function showAchievementGallery(){
    }else{
     const step=achievementNextStep(badge);
     card.append(symbol,name,detail);
+    const progress=achievementProgress(badge);
+    if(progress){
+     const bar=document.createElement('progress'),count=document.createElement('small');
+     bar.className='gallery-progress';bar.max=progress.max;bar.value=progress.value;
+     bar.setAttribute('aria-label',badge.title+' progress');
+     count.textContent=progress.label;card.append(bar,count);
+    }
     if(step){
      const explain=document.createElement('p'),action=document.createElement('button');
      explain.className='gallery-next-step';explain.textContent=step.description;
