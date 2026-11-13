@@ -38,6 +38,7 @@ import {recordDailySubject,dailyLearningChallenge} from './dailyLearningChalleng
 import {challengeKeepsakes} from './challengeKeepsakes.js';
 import {learningJourney} from './learningJourney.js';
 import {journeySuggestions} from './journeySuggestions.js';
+import {learningDashboard} from './learningDashboard.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -253,7 +254,7 @@ function showBackupControls(){
 }
 function showAdventureOverview(){
  const overview=adventureOverview(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewJourney">My learning journey map 🗺️</button><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
+ modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewDashboard">My learning dashboard 📊</button><button id="overviewJourney">My learning journey map 🗺️</button><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
  const stats=[['📚 Lessons completed',overview.lessons],['🌿 Village discoveries',overview.discovered+' / '+overview.discoveriesTotal],['✨ Keepsakes collected',overview.keepsakes+' / '+overview.keepsakesTotal],['🏆 Milestones earned',overview.milestones+' / '+overview.milestonesTotal],['🐾 Pet companion',overview.pet||'Not adopted yet'],['🪙 BrightCoins',overview.coins]];
  const container=$('#adventureStats');
  for(const [label,value] of stats){const item=document.createElement('div'),heading=document.createElement('b'),detail=document.createElement('small');heading.textContent=label;detail.textContent=String(value);item.append(heading,detail);container.append(item)}
@@ -264,7 +265,23 @@ function showAdventureOverview(){
   button.onclick=()=>{if(goal.destination==='learn')showSubjects();else if(goal.destination==='discoveries')showDiscoveryMenu();else if(goal.destination==='shop')showShop();else if(goal.destination==='pet')showPetCare();else if(goal.destination==='achievements')showAchievements()};
   item.append(button);goalContainer.append(item);
  }
- $('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+ $('#overviewDashboard').onclick=showLearningDashboard;$('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+}
+function showLearningDashboard(){
+ const dashboard=learningDashboard(state,subjects);
+ modal(`<h2>My Learning Dashboard 📊</h2><p>See what you've explored and where you'd like to practise next.</p><div class="learning-dashboard-summary"><strong>${dashboard.completed} topics completed</strong><span>${dashboard.attempts} recorded lesson attempts</span><span>${dashboard.challenges} daily challenges completed</span></div><div id="learningDashboardRows"></div><button id="dashboardBack">Back to my progress</button>`);
+ const container=$('#learningDashboardRows');
+ for(const row of dashboard.rows){
+  const section=document.createElement('section'),heading=document.createElement('h3'),details=document.createElement('p'),bar=document.createElement('progress'),note=document.createElement('p'),button=document.createElement('button');
+  section.className='learning-dashboard-subject';heading.textContent=row.subject;
+  details.textContent=row.completed+' topics completed · '+row.attempts+' scored attempts';
+  bar.max=100;bar.value=row.recentAverage??0;bar.setAttribute('aria-label',row.subject+' recent average score');
+  note.textContent=row.recentAverage===null?'No scored attempts yet — start whenever you like.':'Recent average: '+row.recentAverage+'% across up to five attempts.';
+  if(row.practice.length)note.textContent+=' Suggested practice: '+row.practice.join(', ')+'.';
+  button.textContent='Explore '+row.subject;button.onclick=()=>showLessons(row.subject);
+  section.append(heading,details,bar,note,button);container.append(section);
+ }
+ $('#dashboardBack').onclick=showAdventureOverview;
 }
 function showLearningJourney(){
  const stops=learningJourney(state,subjects),suggestions=journeySuggestions(state,subjects);
