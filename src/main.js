@@ -33,6 +33,7 @@ import {commitEconomyChange} from './economyCommit.js';
 import {commitRewardChange} from './rewardCommit.js';
 import {careForPet,petStatus,PET_ACTIONS} from './petCare.js';
 import {petDisplayName,renamePet} from './petIdentity.js';
+import {PET_PERSONALITIES,petPersonality,choosePetPersonality,petBehaviour} from './petPersonality.js';
 import {companionTarget,companionMotion,activityAnimation} from './petWorld.js';
 import {DISCOVERIES,completeDiscovery,discoveryStatus} from './villageActivities.js';
 import {questProgress,claimDailyQuest} from './dailyQuests.js';
@@ -220,7 +221,8 @@ function showShop(){modal(`<h2>BrightCoins Shop</h2><p>Your balance: <b>${state.
 function showPetCare(){
  const status=petStatus(state);
  modal(`<h2>My Pet 🐾</h2><p>${status.adopted?`Your ${state.pet} is ${status.label.toLowerCase()}! · Happiness ${status.mood}/100`:'Visit the BrightCoins Shop to adopt a cat or dog.'}</p>${status.adopted?`<p id="petDisplayName"></p><label for="petNameInput">Pet name</label><input id="petNameInput" maxlength="20" aria-label="Pet name"><button id="savePetName">Save pet name</button>`:''}${status.adopted?Object.entries(PET_ACTIONS).map(([key,activity])=>`<button data-pet-action="${key}">${activity.label}</button>`).join(''):''}<p id="petCareMessage" role="status"></p><button id="petBack">Back to profile</button>`);
- if(status.adopted){$('#petDisplayName').textContent=petDisplayName(state);$('#petNameInput').value=state.petName||'';$('#savePetName').onclick=()=>{try{commitEconomy(current=>renamePet(current,$('#petNameInput').value));showPetCare();$('#petCareMessage').textContent='Pet name saved!'}catch(err){$('#petCareMessage').textContent=err.message}}}
+ if(status.adopted){$('#petDisplayName').textContent=petDisplayName(state);$('#petNameInput').value=state.petName||'';$('#savePetName').onclick=()=>{try{commitEconomy(current=>renamePet(current,$('#petNameInput').value));showPetCare();$('#petCareMessage').textContent='Pet name saved!'}catch(err){$('#petCareMessage').textContent=err.message}}};
+ if(status.adopted){const choices=document.createElement('div');choices.innerHTML='<label for="petPersonalityChoice">Pet personality</label><select id="petPersonalityChoice"></select><button id="savePetPersonality">Save personality</button>';$('#petBack').before(choices);const selector=$('#petPersonalityChoice');for(const [id,personality] of Object.entries(PET_PERSONALITIES)){const option=document.createElement('option');option.value=id;option.textContent=personality.label+' — '+personality.description;selector.append(option)}selector.value=petPersonality(state);$('#savePetPersonality').onclick=()=>{try{commitEconomy(current=>choosePetPersonality(current,selector.value));showPetCare();$('#petCareMessage').textContent='Pet personality saved!'}catch(err){$('#petCareMessage').textContent=err.message}}}
  $('#petBack').onclick=showProfile;
  $('#modalBody').onclick=e=>{const action=e.target.closest('[data-pet-action]')?.dataset.petAction;if(!action)return;try{commitEconomy(current=>careForPet(current,action));petActivity={action,start:performance.now(),...activityAnimation(action)};showPetCare()}catch(err){$('#petCareMessage').textContent=err.message}};
 }
@@ -359,10 +361,11 @@ renderer.domElement.addEventListener('click',e=>{
 });
 function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);villageMagic.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(keys.has('arrowright')||keys.has('d'))-Number(keys.has('arrowleft')||keys.has('a')),dz=Number(keys.has('arrowdown')||keys.has('s'))-Number(keys.has('arrowup')||keys.has('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(keys.has('arrowright')||keys.has('arrowleft')||keys.has('arrowup')||keys.has('arrowdown')||keys.has('w')||keys.has('a')||keys.has('s')||keys.has('d')));
  if(companion.visible){
-  const goal=companionTarget(position,now),next=companionMotion(companion.position,goal,dt);
+  const behaviour=petBehaviour(petPersonality(state));
+  const goal=companionTarget(position,now),next=companionMotion(companion.position,{x:position.x+1.35+(goal.x-position.x-1.35)*behaviour.sway/.22,z:position.z+1.05+(goal.z-position.z-1.05)*behaviour.sway/.22},dt*behaviour.speed);
   companion.position.x=next.x;companion.position.z=next.z;
   const active=petActivity&&now-petActivity.start<petActivity.duration;
-  companion.position.y=active?Math.abs(Math.sin((now-petActivity.start)*.011))*petActivity.bounce:Math.sin(now*.004)*.025;
+  companion.position.y=active?Math.abs(Math.sin((now-petActivity.start)*.011))*petActivity.bounce:Math.sin(now*.004)*behaviour.bob;
   if(petActivity&&!active)petActivity=null;
   companion.rotation.y=Math.atan2(position.x-companion.position.x,position.z-companion.position.z);
   petModel?.animate(now,Math.hypot(goal.x-companion.position.x,goal.z-companion.position.z)>.12,active?petActivity.action:null);
