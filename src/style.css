@@ -170,3 +170,11 @@ canvas{touch-action:none}
 .learning-hub-actions button{min-height:52px;white-space:normal;border-radius:14px}
 @media(max-width:480px){.learning-hub-actions{grid-template-columns:1fr 1fr}.learning-hub-actions button{padding:10px 6px;font-size:.9rem}}
 @media(max-width:340px){.learning-hub-actions{grid-template-columns:1fr}}
+
+.learning-hub-suggestions{margin:18px 0;padding:16px;border-radius:18px;background:#f4efff}
+.learning-hub-suggestions h3{margin:0 0 8px}
+#hubSuggestions{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.learning-hub-suggestion{padding:14px;border-radius:14px;background:white;display:flex;flex-direction:column;gap:8px}
+.learning-hub-suggestion p{margin:0;flex:1;line-height:1.45}
+.learning-hub-suggestion button{min-height:44px;white-space:normal}
+@media(max-width:480px){#hubSuggestions{grid-template-columns:1fr}}
