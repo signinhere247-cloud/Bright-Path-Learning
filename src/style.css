@@ -226,3 +226,12 @@ canvas{touch-action:none}
 .destination-milestones h3{margin:0 0 8px}
 .destination-milestones p{margin:0 0 10px}
 #guideMilestoneMessage:not(:empty){margin-top:10px;font-weight:700}
+
+/* Step 3.58: accessible touch controls, with safe-area spacing for mobile devices. */
+#joystick{bottom:max(48px,calc(env(safe-area-inset-bottom,0px) + 30px))}
+#joystick button{min-width:52px;min-height:52px;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+#joystick button[aria-pressed="true"]{background:#ffe39a;transform:scale(.96)}
+#joystick button:focus-visible,#interact:focus-visible,#villageGuide:focus-visible{outline:3px solid #372c79;outline-offset:3px}
+#interact{min-height:52px;min-width:88px;bottom:max(65px,calc(env(safe-area-inset-bottom,0px) + 45px))}
+@media(max-width:550px){#joystick{bottom:max(40px,calc(env(safe-area-inset-bottom,0px) + 22px))}#joystick button{width:52px;height:52px}#interact{bottom:max(60px,calc(env(safe-area-inset-bottom,0px) + 42px))}}
+@media(prefers-reduced-motion:reduce){#joystick button{transition:none}}
