@@ -47,6 +47,7 @@ import {filterAchievementGallery} from './galleryFilters.js';
 import {achievementNextStep} from './achievementNextSteps.js';
 import {achievementProgress} from './achievementProgress.js';
 import {achievementRecommendations} from './achievementRecommendations.js';
+import {achievementSpotlight} from './achievementSpotlight.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -336,7 +337,17 @@ function showLearningJourney(){
 }
 function showAchievementGallery(){
  const gallery=achievementGallery(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div class="gallery-filters" role="group" aria-label="Filter achievements"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="earned" aria-pressed="false">Collected</button><button type="button" data-gallery-filter="upcoming" aria-pressed="false">Still to unlock</button></div><p id="galleryFilterStatus" role="status"></p><section class="gallery-recommendations"><h3>🌟 Almost there!</h3><p>Here are a few achievements you could work towards next.</p><div id="galleryRecommendations"></div></section><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div class="gallery-filters" role="group" aria-label="Filter achievements"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="earned" aria-pressed="false">Collected</button><button type="button" data-gallery-filter="upcoming" aria-pressed="false">Still to unlock</button></div><p id="galleryFilterStatus" role="status"></p><section class="gallery-spotlight" aria-labelledby="gallerySpotlightHeading"><h3 id="gallerySpotlightHeading">✨ Your achievement spotlight</h3><div id="gallerySpotlightContent"></div></section><section class="gallery-recommendations"><h3>🌟 Almost there!</h3><p>Here are a few achievements you could work towards next.</p><div id="galleryRecommendations"></div></section><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ const spotlight=achievementSpotlight(gallery),spotlightRoot=$('#gallerySpotlightContent');
+ if(spotlight){
+  const title=document.createElement('strong'),bar=document.createElement('progress'),count=document.createElement('p'),button=document.createElement('button');
+  title.textContent=spotlight.emoji+' '+spotlight.title;
+  bar.max=spotlight.progress.max;bar.value=spotlight.progress.value;bar.setAttribute('aria-label',spotlight.title+' progress');
+  count.textContent=spotlight.progress.label+' · '+spotlight.remaining+' to go';
+  button.type='button';button.textContent=spotlight.next.label+' →';
+  button.onclick=()=>{if(spotlight.next.destination==='learn')showSubjects();else if(spotlight.next.destination==='discoveries')showDiscoveryMenu();else if(spotlight.next.destination==='shop')showShop();else if(spotlight.next.destination==='challenges')showDailyQuests()};
+  spotlightRoot.append(title,bar,count,button);
+ }else spotlightRoot.textContent='Keep exploring! New achievements will appear as you play and learn.';
  const suggestions=$('#galleryRecommendations');
  const recommended=achievementRecommendations(gallery);
  if(!recommended.length)suggestions.textContent='Explore the village and academy to discover more achievements!';
