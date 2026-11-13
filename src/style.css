@@ -121,3 +121,8 @@ canvas{touch-action:none}
 .gallery-celebration-pop{animation:gallery-celebrate-pop .45s ease-out}
 @keyframes gallery-celebrate-pop{0%{transform:scale(.96);opacity:.55}100%{transform:scale(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.gallery-celebration-pop{animation:none}}
+
+.gallery-filters{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.gallery-filters button{min-height:44px;border-radius:999px;padding:8px 14px;background:#f1eefb}
+.gallery-filters button[aria-pressed="true"]{background:#6350aa;color:white;font-weight:700}
+#galleryFilterStatus{font-size:.9rem}
