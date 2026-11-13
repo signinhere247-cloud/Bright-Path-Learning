@@ -74,3 +74,11 @@ canvas{touch-action:none}
 .challenge-keepsake small{font-size:.8rem}
 .challenge-keepsake.locked{opacity:.65}
 #challengeCelebration:not(:empty){font-weight:700;color:#346c51}
+
+.learning-journey-map{list-style:none;margin:18px 0;padding:0 0 0 18px;border-left:4px solid #c5b8ef}
+.journey-stop{position:relative;display:flex;flex-direction:column;gap:8px;margin:0 0 16px 14px;padding:14px;border-radius:15px;background:#f2effb}
+.journey-stop::before{content:'';position:absolute;left:-26px;top:20px;width:13px;height:13px;border-radius:50%;background:#a69acb;border:3px solid white}
+.journey-stop.journey-complete{background:#edf8ed}
+.journey-stop.journey-complete::before{background:#3f9d74}
+.journey-stop progress{width:100%;height:12px;accent-color:#7b5ee8}
+.journey-stop button{align-self:flex-start;min-height:44px;background:white}
