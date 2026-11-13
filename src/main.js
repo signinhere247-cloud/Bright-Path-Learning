@@ -205,7 +205,7 @@ function finishFurnitureDrag(e){
 renderer.domElement.addEventListener('pointerup',finishFurnitureDrag);
 renderer.domElement.addEventListener('pointercancel',()=>{dragFurniture=null;renderFurniture()});
 function showHome(){
- if(mode!=='home'){worldPosition={...position};scene.remove(avatar);home.scene.add(avatar)}
+ if(mode!=='home'){worldPosition={...position};scene.remove(avatar);home.scene.add(avatar);if(companionKind){scene.remove(companion);home.scene.add(companion);companion.position.set(1.35,0,4.05)}}
  mode='home';position={x:0,z:3};avatar.position.set(0,0,3);renderFurniture();
  if(decorating){$('#modal').classList.add('hidden');furnitureControls();return}
  furnitureControls();
@@ -214,7 +214,7 @@ function showHome(){
  $('#startDecorating').onclick=()=>{decorating=true;showHome()};
  $('#exitHome').onclick=exitHome;
 }
-function exitHome(){if(mode!=='home')return;decorating=false;dragFurniture=null;selectedFurniture=null;furnitureControls();mode='world';clearHome();home.scene.remove(avatar);scene.add(avatar);position={...worldPosition};$('#modal').classList.add('hidden')}
+function exitHome(){if(mode!=='home')return;decorating=false;dragFurniture=null;selectedFurniture=null;furnitureControls();mode='world';clearHome();home.scene.remove(avatar);scene.add(avatar);if(companionKind){home.scene.remove(companion);scene.add(companion);companion.position.set(worldPosition.x+1.35,0,worldPosition.z+1.05)}position={...worldPosition};$('#modal').classList.add('hidden')}
 function showShop(){modal(`<h2>BrightCoins Shop</h2><p>Your balance: <b>${state.coins}</b> BrightCoins</p><div class="cards">${shop.map(it=>`<button data-buy="${it.id}" ${(state.inventory.includes(it.id)||((it.id==='cat'||it.id==='dog')&&state.pet))?'disabled':''}><b>${it.name}</b><small>${it.price} BrightCoins</small></button>`).join('')}</div><div id="shopStatus" role="status"></div>`);$('#modalBody').onclick=e=>{let id=e.target.closest('[data-buy]')?.dataset.buy;if(!id)return;let it=shop.find(i=>i.id===id);try{commitEconomy(current=>purchaseItem(current,it));rebuildCompanion();refresh();showShop()}catch(err){$('#shopStatus').textContent=err.message}}}
 function showPetCare(){
  const status=petStatus(state);
