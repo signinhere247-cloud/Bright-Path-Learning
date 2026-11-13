@@ -9,6 +9,7 @@ import {buildProgressCharts} from './progressCharts.js';
 import {revisionRecommendations} from './revisionRecommendations.js';
 import * as THREE from 'three';
 import {buildFantasyVillage} from './fantasyVillage.js';
+import {addCottageLandscape} from './cottageLandscape.js';
 import {loadVillageModels} from './villageModels.js';
 import {villageModelManifest} from './villageModelManifest.js';
 import {buildFantasyAcademy} from './fantasyAcademies.js';
@@ -90,6 +91,7 @@ for(let i=0;i<30;i++){let a=i*2.4,r=21+i%4*3,x=Math.cos(a)*r,z=Math.sin(a)*r;cyl
 for(let i=0;i<25;i++){let x=Math.sin(i*18)*19,z=Math.cos(i*23)*18;sphere(.22,[0xffe69d,0xf79bca,0xffffff][i%3],x,.25,z)}
 // Layered fantasy scenery is decorative: existing interactive portals retain their positions.
 const fantasyVillage=buildFantasyVillage(THREE,scene);
+addCottageLandscape(THREE,scene);
 // Approved GLB scenery loads alongside the existing interactive village.
 // Missing models never prevent lessons or movement from working.
 void loadVillageModels(scene,villageModelManifest).catch(error=>console.warn('Village scenery load failed',error));
