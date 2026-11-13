@@ -30,6 +30,7 @@ import {createDirectionalInput} from './directionalInput.js';
 import {adventureInteractionFeedback} from './adventureInteractionFeedback.js';
 import {discoveryLearningLink} from './discoveryLearningLinks.js';
 import {villageLearningSuggestion} from './villageLearningSuggestion.js';
+import {villageLearningHighlights} from './villageLearningHighlights.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -557,7 +558,13 @@ function showVillageKeepsakes(){
 }
 function showVillageJournal(){
  const day=new Date().toISOString().slice(0,10),entries=villageJournal(state,day),summary=journalSummary(state,day);
- modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ modal(`<h2>My Village Journal 📖</h2><p>You've discovered ${summary.discovered} of ${summary.total} village secrets. Today: ${summary.today} completed.</p><section aria-labelledby="villageLearningHighlightsHeading"><h3 id="villageLearningHighlightsHeading">🌟 My adventure learning highlights</h3><div id="villageLearningHighlights"></div></section><div id="journalEntries"></div><button id="journalBack">Back to discoveries</button>`);
+ const highlights=villageLearningHighlights(state,subjects,day);
+ const highlightContainer=$('#villageLearningHighlights');
+ const summaryText=document.createElement('p');
+ summaryText.textContent=highlights.discoveries+' village discoveries explored · '+highlights.lessons+' Academy lessons completed.';
+ highlightContainer.append(summaryText);
+ for(const link of highlights.links){const row=document.createElement('p');row.textContent=link.subject+': '+link.discoveries+' village discoveries · '+link.lessons+' completed lessons';highlightContainer.append(row)}
  const container=$('#journalEntries');
  for(const entry of entries){
   const item=document.createElement('section');
