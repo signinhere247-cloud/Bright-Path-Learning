@@ -130,3 +130,6 @@ canvas{touch-action:none}
 .gallery-next-step{font-size:.85rem;line-height:1.45;margin:2px 0;color:#464659}
 .gallery-next-button{min-height:44px;border-radius:12px;padding:8px 12px;background:white}
 .achievement-gallery-card.locked:has(.gallery-next-button){opacity:1}
+
+.achievement-gallery-card .gallery-progress{display:block;width:100%;height:13px;accent-color:#8b71c8}
+.achievement-gallery-card .gallery-progress+small{font-weight:700}
