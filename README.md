@@ -1,21 +1,32 @@
-# BrightPath Learning — Playable 3D guest-mode build
+# BrightPath Learning
 
-This package is a **playable 3D foundation**, NOT the complete final game. It replaces the V3 illustrated landing page with a procedural 3D world, walking controls, interactive subject buildings, lessons and questions, BrightCoins, a shop, a basic 3D furniture preview/placement scene, avatar colour options, and local device save data.
+BrightPath Learning is an **in-development** 3D educational adventure for children. This repository contains the Vite/Three.js application, village and cottage experiences, Academy lessons, child-profile and learning-progress modules, cloud-sync integration code, and automated checks. A complete production release has **not** yet been verified.
 
-## Deployment
-- Upload all project files to your GitHub repository preserving `src/` and `public/` folders.
-- Render static site: build command `npm install && npm run build`, publish directory `dist`.
-- Dependencies include Three.js and Vite; Render must be able to install them.
-- Keep the existing live website until the new build has been tested in a separate preview service or branch.
+## Project layout
 
-## What is not finished
-- No secure family login or cloud syncing. Guest progress is saved only in the browser's localStorage.
-- No production database; Supabase is not configured.
-- Character models are simple procedural 3D shapes, not production-quality rigged animated game characters.
-- The home is a basic 3D furniture display, not an enterable multi-room furnished house.
-- Pets can be purchased but are not yet animated or interactive.
-- The lessons are starter practice material, not a complete reviewed curriculum for ages 3–16. Some questions repeat; no formal age differentiation or complete assessment.
-- This package has passed JavaScript syntax checking and ZIP integrity checking, but not a browser or production deployment test.
+See [Repository structure and file placement](docs/repository-structure.md). Build and review documents are in [docs/reviews](docs/reviews).
 
-## Security
-Do not treat guest profiles as secure accounts. Never put service-role keys or passwords in client-side code. A secure family login requires an authentication provider and database access policies.
+- `src/main.js` — application entry point; `src/style.css` — application styles.
+- `src/*.js` — game, learning, profiles, rewards and cloud modules.
+- `tests/*.test.js` — regression tests.
+- `public/` — static assets and models.
+- `scripts/` — build-readiness, release and browser checks.
+- `supabase/migrations/` — database migration scripts.
+- `.github/workflows/` — GitHub Actions configuration.
+
+## Local commands
+
+```sh
+npm install
+npm test
+npm run build
+npm run dev
+```
+
+These commands require dependencies to install successfully. The outstanding npm registry DNS issue has prevented complete dependency installation and full build/browser verification in the current development workflow; **do not assume these checks have passed**.
+
+## Deployment and security
+
+Render configuration lives in `render.yaml` and `render.preview.yaml`. Keep production deployment separate from unverified preview checks. Never place private credentials or Supabase service-role keys in client-side code. Review authentication, data access policies, child-profile isolation and deployment settings before a public launch.
+
+The project is being developed directly in GitHub with a single consolidated final ZIP planned **after** successful verification. Do not treat intermediate commits as a finished, tested release.
