@@ -55,3 +55,8 @@ canvas{touch-action:none}
 .practice-recommendations h3{margin:0 0 8px;color:#245b45}
 .practice-recommendations p{margin:0 0 10px}
 .practice-recommendations button{display:block;width:100%;text-align:left;min-height:50px;margin:8px 0;background:white}
+
+.learning-streak{padding:14px 16px;border-radius:16px;background:#fff0d6;margin:16px 0}
+.learning-streak h3{margin:0 0 8px;color:#794b21}
+.learning-streak p{margin:8px 0;line-height:1.5}
+.learning-streak small{color:#654d38}
