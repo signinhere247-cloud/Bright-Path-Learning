@@ -32,6 +32,31 @@ export function buildFantasyAcademy(THREE,scene,building,addLabel){
  box(1.3,2,.13,0x5c4472,0,1,2.08);
  box(1.05,1.05,.14,0xfff0b4,-1.5,2,2.08);
  box(1.05,1.05,.14,0xfff0b4,1.5,2,2.08);
+ // Handcrafted facade details: timber framing, stone plinth, arched windows and lanterns.
+ // Keep the portal at local z=4 unobstructed.
+ const timber=0x76543c,stone=0x9c927e,glass=0xffd99a;
+ box(5.05,.42,4.18,stone,0,.21,0);
+ for(const side of [-1,1]){
+   box(.17,3.05,.18,timber,side*2.29,1.68,2.1);
+   box(.17,3.05,.18,timber,side*2.29,1.68,-2.1);
+   box(.18,.18,4.25,timber,side*2.29,2.86,0);
+   // Arched, warm-lit windows and carved frames.
+   box(.88,1.15,.08,timber,side*1.45,1.85,2.16);
+   box(.66,.94,.09,glass,side*1.45,1.86,2.22);
+   const arch=shape(new THREE.TorusGeometry(.33,.09,6,12,Math.PI),timber,side*1.45,2.34,2.22);
+   arch.rotation.z=0;
+   box(.09,.95,.11,timber,side*1.45,1.84,2.29);
+   box(.73,.09,.12,timber,side*1.45,1.83,2.29);
+   const lantern=shape(new THREE.OctahedronGeometry(.22,0),0xffd58b,side*.95,2.72,2.4);
+   lantern.material.emissive=new THREE.Color(0xffa84a);
+   lantern.material.emissiveIntensity=.6;
+ }
+ box(4.9,.2,.2,timber,0,2.92,2.11);
+ box(1.52,.18,.18,timber,0,2.1,2.17);
+ for(let i=0;i<6;i++){
+   const px=-2.05+i*.82;
+   box(.07,.34,.16,style.roof,px,3.36,2.12);
+ }
  for(const side of [-1,1]){
   tower(.42,3.9,style.trim,side*2.15,1.95,-1.45);
   spire(.67,1.25,style.roof,side*2.15,4.55,-1.45);
