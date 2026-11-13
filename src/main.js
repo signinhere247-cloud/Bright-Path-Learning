@@ -24,6 +24,7 @@ import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
 import {worldLearningRoutes} from './worldLearningRoutes.js';
 import {adventureDestinations} from './adventureDestinations.js';
 import {destinationDiscoveryProgress} from './destinationDiscoveryProgress.js';
+import {destinationRecommendations} from './destinationRecommendations.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -591,8 +592,18 @@ cancelWaypoint.onclick=()=>{activeWaypoint=null;waypointStatus.textContent='';ca
 villageGuide.onclick=()=>{
  const destinations=destinationDiscoveryProgress(state,new Date().toISOString().slice(0,10),adventureDestinations(position,DISCOVERIES,buildings,worldLearningRoutes('world')));
  const directions=villageDirections(position,destinations.physical);
- modal('<h2>Adventure destinations 🧭</h2><p>Choose a village location for walking directions, or jump straight into a learning activity.</p><p id="guideDiscoveryProgress" class="guide-discovery-progress" role="status"></p><h3 id="guidePlacesHeading">🗺️ Places to explore</h3><div id="villageGuideList" class="adventure-destination-grid" aria-labelledby="guidePlacesHeading"></div><h3 id="guideActivitiesHeading">📚 Learning activities</h3><div id="guideLearningList" class="adventure-destination-grid" aria-labelledby="guideActivitiesHeading"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
+ const recommendations=destinationRecommendations(position,destinations);
+ modal('<h2>Adventure destinations 🧭</h2><p>Choose a village location for walking directions, or jump straight into a learning activity.</p><p id="guideDiscoveryProgress" class="guide-discovery-progress" role="status"></p><section class="destination-recommendations" aria-labelledby="guideRecommendedHeading"><h3 id="guideRecommendedHeading">🌟 Where could I explore next?</h3><p>These are just ideas — choose anywhere you like.</p><div id="guideRecommendations" class="adventure-destination-grid"></div></section><h3 id="guidePlacesHeading">🗺️ Places to explore</h3><div id="villageGuideList" class="adventure-destination-grid" aria-labelledby="guidePlacesHeading"></div><h3 id="guideActivitiesHeading">📚 Learning activities</h3><div id="guideLearningList" class="adventure-destination-grid" aria-labelledby="guideActivitiesHeading"></div><p id="villageGuideMessage" role="status"></p><button id="closeVillageGuide">Back to exploring</button>');
  $('#guideDiscoveryProgress').textContent='🌟 '+destinations.summary.discovered+' of '+destinations.summary.total+' village discoveries explored · '+destinations.summary.today+' completed today';
+ const recommendedRoot=$('#guideRecommendations');
+ if(!recommendations.length){const note=document.createElement('p');note.textContent='You have explored every village discovery! You can revisit your favourites anytime.';recommendedRoot.append(note)}
+ for(const place of recommendations){
+  const button=document.createElement('button');button.type='button';
+  button.textContent='🔎 '+place.name+' · '+place.distance+' steps · '+place.direction;
+  button.setAttribute('aria-label','Get walking directions to unexplored '+place.name);
+  button.onclick=()=>{activeWaypoint={name:place.name,x:place.x,z:place.z};close();waypointStatus.textContent='🧭 Head '+place.direction+' towards '+place.name+'.';cancelWaypoint.hidden=false};
+  recommendedRoot.append(button);
+ }
  const list=$('#villageGuideList');
  for(const d of directions){const button=document.createElement('button');button.type='button';button.textContent=(d.discovery?(d.discovery.visited?'✨ Explored · ':'🔎 Not yet discovered · '):'📍 ')+d.name+' · '+d.distance+' steps · '+d.direction;button.onclick=()=>{activeWaypoint={name:d.name,x:d.x,z:d.z};close();waypointStatus.textContent='🧭 Head '+d.direction+' towards '+d.name+'.';cancelWaypoint.hidden=false};list.append(button)}
  const learningList=$('#guideLearningList');
