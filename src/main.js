@@ -36,6 +36,7 @@ import {practiceTopics,recordPracticeNeed} from './practiceTopics.js';
 import {recordLearningDay,learningStreak} from './learningStreaks.js';
 import {recordDailySubject,dailyLearningChallenge} from './dailyLearningChallenges.js';
 import {challengeKeepsakes} from './challengeKeepsakes.js';
+import {learningJourney} from './learningJourney.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -251,7 +252,7 @@ function showBackupControls(){
 }
 function showAdventureOverview(){
  const overview=adventureOverview(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
+ modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewJourney">My learning journey map 🗺️</button><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
  const stats=[['📚 Lessons completed',overview.lessons],['🌿 Village discoveries',overview.discovered+' / '+overview.discoveriesTotal],['✨ Keepsakes collected',overview.keepsakes+' / '+overview.keepsakesTotal],['🏆 Milestones earned',overview.milestones+' / '+overview.milestonesTotal],['🐾 Pet companion',overview.pet||'Not adopted yet'],['🪙 BrightCoins',overview.coins]];
  const container=$('#adventureStats');
  for(const [label,value] of stats){const item=document.createElement('div'),heading=document.createElement('b'),detail=document.createElement('small');heading.textContent=label;detail.textContent=String(value);item.append(heading,detail);container.append(item)}
@@ -262,7 +263,23 @@ function showAdventureOverview(){
   button.onclick=()=>{if(goal.destination==='learn')showSubjects();else if(goal.destination==='discoveries')showDiscoveryMenu();else if(goal.destination==='shop')showShop();else if(goal.destination==='pet')showPetCare();else if(goal.destination==='achievements')showAchievements()};
   item.append(button);goalContainer.append(item);
  }
- $('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+ $('#overviewJourney').onclick=showLearningJourney;$('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
+}
+function showLearningJourney(){
+ const stops=learningJourney(state,subjects);
+ modal(`<h2>My Learning Journey Map 🗺️</h2><p>Follow your learning path at your own pace. Every achievement stays collected!</p><ol class="learning-journey-map" id="journeyStops"></ol><button id="journeyBack">Back to my progress</button>`);
+ const list=$('#journeyStops');
+ for(const stop of stops){
+  const item=document.createElement('li'),heading=document.createElement('strong'),detail=document.createElement('span'),progress=document.createElement('progress'),button=document.createElement('button');
+  item.className='journey-stop '+(stop.complete?'journey-complete':'journey-upcoming');
+  heading.textContent=(stop.complete?'✓ ':'')+stop.emoji+' '+stop.title;
+  detail.textContent=stop.complete?'Milestone reached!':stop.current+' of '+stop.goal+' completed';
+  progress.value=stop.progress;progress.max=stop.goal;progress.setAttribute('aria-label',stop.title+' progress');
+  button.textContent=stop.complete?'Explore more':'Keep going →';
+  button.onclick=()=>stop.destination==='challenges'?showDailyQuests():showSubjects();
+  item.append(heading,detail,progress,button);list.append(item);
+ }
+ $('#journeyBack').onclick=showAdventureOverview;
 }
 function showAchievements(){
  const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10)),streak=learningStreak(state);
