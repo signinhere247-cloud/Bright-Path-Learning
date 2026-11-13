@@ -12,8 +12,8 @@ export function addCottageLandscape(THREE, scene) {
   group.add(border);
 
   // Uneven cobbles, with shared geometry and one draw call per material.
-  const stoneGeometry = new THREE.BoxGeometry(.45,.075,.31);
-  stoneGeometry.translate(0,.038,0);
+  const stoneGeometry = new THREE.CylinderGeometry(.24,.27,.065,7);
+  stoneGeometry.translate(0,.033,0);
   const cobbles = new THREE.InstancedMesh(stoneGeometry,new THREE.MeshStandardMaterial({color:0xc1ac8d,roughness:.96}),280);
   const dummy = new THREE.Object3D();
   const colour = new THREE.Color();
@@ -28,9 +28,9 @@ export function addCottageLandscape(THREE, scene) {
       if(rand()<.075)continue;
       const x=center+(col+(row%2)*.5)*.47+(rand()-.5)*.055;
       if(z>6.3 && x>-15.8)continue;
-      dummy.position.set(x,-.043,z+(rand()-.5)*.06);
+      dummy.position.set(x,-.045,z+(rand()-.5)*.08);
       dummy.rotation.set(0,(rand()-.5)*.13,0);
-      dummy.scale.set(.85+rand()*.2,.7+rand()*.25,.83+rand()*.15);
+      dummy.scale.set(.9+rand()*.35,.75+rand()*.3,.7+rand()*.55);
       dummy.updateMatrix();
       cobbles.setMatrixAt(n,dummy.matrix);
       colour.setHSL(.09+rand()*.025,.13+rand()*.09,.52+rand()*.16);
@@ -42,14 +42,15 @@ export function addCottageLandscape(THREE, scene) {
   cobbles.receiveShadow=true;
   group.add(cobbles);
 
-  const tuftGeometry=new THREE.ConeGeometry(.12,.42,3);
+  const tuftGeometry=new THREE.PlaneGeometry(.19,.32);
+  tuftGeometry.translate(0,.16,0);
   const tufts=new THREE.InstancedMesh(tuftGeometry,new THREE.MeshStandardMaterial({color:0x4b8346,side:THREE.DoubleSide,roughness:1}),220);
   for(let i=0;i<220;i++){
     const angle=rand()*Math.PI*2,radius=2.4+rand()*4.4;
     const x=-17+Math.cos(angle)*radius,z=4+Math.sin(angle)*radius*.7;
-    dummy.position.set(x,.13,z);
-    dummy.rotation.set(0,rand()*6.28,(rand()-.5)*.3);
-    dummy.scale.set(.65+rand(),.65+rand(),.65+rand());
+    dummy.position.set(x,-.03,z);
+    dummy.rotation.set(0,rand()*6.28,(rand()-.5)*.25);
+    dummy.scale.set(.55+rand()*.8,.45+rand()*.7,1);
     dummy.updateMatrix();
     tufts.setMatrixAt(i,dummy.matrix);
   }
