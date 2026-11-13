@@ -217,3 +217,7 @@ canvas{touch-action:none}
 @media(max-width:480px){.adventure-destination-grid{grid-template-columns:1fr}}
 
 .guide-discovery-progress{margin:12px 0;padding:12px 14px;border-radius:14px;background:#f2ebff;color:#45326e;font-weight:700;overflow-wrap:anywhere}
+
+.destination-recommendations{margin:16px 0;padding:14px;border-radius:16px;background:#f3f0ff}
+.destination-recommendations h3{margin:0 0 8px}
+.destination-recommendations p{margin:0 0 10px}
