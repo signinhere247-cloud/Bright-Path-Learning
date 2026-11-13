@@ -239,3 +239,10 @@ canvas{touch-action:none}
 /* Step 3.59: contextual interaction actions remain readable on small screens. */
 #interact{max-width:min(42vw,210px);white-space:normal;line-height:1.2;text-align:center}
 #tip{overflow-wrap:anywhere}
+
+/* Step 3.66: clear, accessible milestone progress in the village journal. */
+#adventureLearningMilestoneProgress{margin:14px 0;padding:12px;border:1px solid #d8d0e8;border-radius:14px;background:#fffaf5}
+#adventureLearningMilestoneProgress h4{margin:0 0 8px;color:#21425a}
+.adventure-learning-progress-row{display:grid;gap:5px;margin:10px 0}
+.adventure-learning-progress-row span{font-weight:600}
+.adventure-learning-progress-row progress{width:100%;height:16px;accent-color:#557e65}
