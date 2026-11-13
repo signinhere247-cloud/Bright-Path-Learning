@@ -41,6 +41,7 @@ import {journeySuggestions} from './journeySuggestions.js';
 import {learningDashboard} from './learningDashboard.js';
 import {chooseLearningGoal,clearLearningGoal,learningGoalProgress} from './learningGoals.js';
 import {recogniseLearningGoal,learningGoalCelebration} from './learningGoalCelebrations.js';
+import {achievementGallery} from './achievementGallery.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -328,11 +329,32 @@ function showLearningJourney(){
  }
  $('#journeyBack').onclick=showAdventureOverview;
 }
+function showAchievementGallery(){
+ const gallery=achievementGallery(state,subjects,new Date().toISOString().slice(0,10));
+ modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ const root=$('#achievementGalleryGroups');
+ for(const group of gallery.groups){
+  const section=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div');
+  section.className='achievement-gallery-section';heading.textContent=group.title;grid.className='achievement-gallery-grid';
+  for(const badge of group.items){
+   const card=document.createElement('div'),symbol=document.createElement('span'),name=document.createElement('strong'),detail=document.createElement('small');
+   card.className='achievement-gallery-card '+(badge.earned?'unlocked':'locked');
+   symbol.textContent=badge.earned?badge.emoji:'🔒';symbol.setAttribute('aria-hidden','true');
+   name.textContent=badge.title;detail.textContent=badge.detail;
+   card.setAttribute('aria-label',badge.title+(badge.earned?', earned':', locked'));
+   card.append(symbol,name,detail);grid.append(card);
+  }
+  if(!group.items.length){const empty=document.createElement('p');empty.textContent='Your first keepsake will appear here when you complete a goal.';grid.append(empty)}
+  section.append(heading,grid);root.append(section);
+ }
+ $('#galleryBack').onclick=showAchievements;
+}
 function showAchievements(){
  const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10)),streak=learningStreak(state);
- modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><section class="learning-streak"><h3>🔥 My learning days</h3><p><strong>${streak.learningDays}</strong> days of learning · <strong>${streak.bestRecentRun}</strong> days in my most recent run</p><p>${streak.milestones.length?'Learning milestones: '+streak.milestones.map(n=>n+' days 🌟').join(' · '):'Complete a lesson to begin collecting learning days!'}</p><small>Every day you learn counts. Taking a break never takes away your achievements.</small></section><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="backToProfile">Back to profile</button>`);
+ modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><section class="learning-streak"><h3>🔥 My learning days</h3><p><strong>${streak.learningDays}</strong> days of learning · <strong>${streak.bestRecentRun}</strong> days in my most recent run</p><p>${streak.milestones.length?'Learning milestones: '+streak.milestones.map(n=>n+' days 🌟').join(' · '):'Complete a lesson to begin collecting learning days!'}</p><small>Every day you learn counts. Taking a break never takes away your achievements.</small></section><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="openAchievementGallery">My achievement gallery 🏅</button><button id="backToProfile">Back to profile</button>`);
  const container=$('#explorerMilestones');
  for(const milestone of milestones.milestones){const item=document.createElement('div');const button=document.createElement('button');button.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;button.disabled=!milestone.earned;button.setAttribute('aria-label',milestone.earned?'Celebrate '+milestone.name:milestone.name+' locked');button.onclick=()=>{const celebration=milestoneCelebration(milestone);if(celebration){$('#milestoneCelebration').textContent=celebration.title+' '+celebration.message;const banner=$('#milestoneCelebration');banner.classList.remove('milestone-pop');void banner.offsetWidth;banner.classList.add('milestone-pop')}};item.append(button);container.append(item)}
+ $('#openAchievementGallery').onclick=showAchievementGallery;
  $('#backToProfile').onclick=showProfile;
 }
 function showDailyQuests(){
