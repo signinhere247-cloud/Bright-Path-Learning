@@ -12,7 +12,7 @@ export function learningHubSuggestions(save,subjects,day){
   detail:goal.progress+' of '+goal.target+' topics towards your goal.',destination:'learn',priority:0
  });
  const challenge=dailyLearningChallenge(save,day);
- if(!challenge.completed)suggestions.push({
+ if(!challenge.complete)suggestions.push({
   id:'daily-challenge',title:'Try today’s learning challenge',
   detail:challenge.count+' of '+challenge.goal+' different subjects explored.',destination:'challenges',priority:2
  });
