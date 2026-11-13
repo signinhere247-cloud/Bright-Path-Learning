@@ -20,6 +20,7 @@ import {buildFantasyAcademy} from './fantasyAcademies.js';
 import {buildFantasyExplorer} from './fantasyExplorer.js';
 import {buildFantasyPet} from './fantasyPets.js';
 import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
+import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -208,7 +209,8 @@ function showHome(){
  mode='home';position={x:0,z:3};avatar.position.set(0,0,3);renderFurniture();
  if(decorating){$('#modal').classList.add('hidden');furnitureControls();return}
  furnitureControls();
- modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><button id="exitHome">Back to Adventure World</button>`);
+ modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><h3>Enjoy your home</h3><div id="homeActions">${availableHomeActions(state).map(a=>`<button data-home-action="${a.id}">${a.label}</button>`).join('')||'<p>Place furniture to unlock home activities.</p>'}</div><p id="homeActionStatus" role="status" aria-live="polite"></p><button id="exitHome">Back to Adventure World</button>`);
+ $('#homeActions').onclick=e=>{const id=e.target.closest('[data-home-action]')?.dataset.homeAction;if(!id)return;try{$('#homeActionStatus').textContent=homeActionMessage(state,id)}catch(err){$('#homeActionStatus').textContent=err.message}};
  $('#startDecorating').onclick=()=>{decorating=true;showHome()};
  $('#exitHome').onclick=exitHome;
 }
