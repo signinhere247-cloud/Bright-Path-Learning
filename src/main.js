@@ -33,6 +33,7 @@ import {PROFILE_MENU_GROUPS} from './profileNavigation.js';
 import {lessonStepProgress,lessonAnswerFeedback} from './lessonExperience.js';
 import {learningHint} from './learningHints.js';
 import {practiceTopics,recordPracticeNeed} from './practiceTopics.js';
+import {recordLearningDay,learningStreak} from './learningStreaks.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -150,7 +151,7 @@ function showQuestion(){let c=current;if(c.i>=c.q.length){
   const result=completeLessonAttempt(state,c.s,c.t,c.correct,c.q.length);
   // Commit the new progress only after the browser has persisted it successfully.
   const previous=state;
-  state=recordPracticeNeed(result.save,c.s,c.t,c.missed>0);
+  state=recordLearningDay(recordPracticeNeed(result.save,c.s,c.t,c.missed>0),new Date().toLocaleDateString('en-CA'));
   try{save()}catch(err){state=previous;throw err}
   c.settled=true;
   refresh();
@@ -260,8 +261,8 @@ function showAdventureOverview(){
  $('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
 function showAchievements(){
- const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10));
- modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="backToProfile">Back to profile</button>`);
+ const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10)),streak=learningStreak(state);
+ modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><section class="learning-streak"><h3>🔥 My learning days</h3><p><strong>${streak.learningDays}</strong> days of learning · <strong>${streak.bestRecentRun}</strong> days in my most recent run</p><p>${streak.milestones.length?'Learning milestones: '+streak.milestones.map(n=>n+' days 🌟').join(' · '):'Complete a lesson to begin collecting learning days!'}</p><small>Every day you learn counts. Taking a break never takes away your achievements.</small></section><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><p id="milestoneCelebration" role="status" aria-live="polite"></p><button id="backToProfile">Back to profile</button>`);
  const container=$('#explorerMilestones');
  for(const milestone of milestones.milestones){const item=document.createElement('div');const button=document.createElement('button');button.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;button.disabled=!milestone.earned;button.setAttribute('aria-label',milestone.earned?'Celebrate '+milestone.name:milestone.name+' locked');button.onclick=()=>{const celebration=milestoneCelebration(milestone);if(celebration){$('#milestoneCelebration').textContent=celebration.title+' '+celebration.message;const banner=$('#milestoneCelebration');banner.classList.remove('milestone-pop');void banner.offsetWidth;banner.classList.add('milestone-pop')}};item.append(button);container.append(item)}
  $('#backToProfile').onclick=showProfile;
