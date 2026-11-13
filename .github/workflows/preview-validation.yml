@@ -1,0 +1,58 @@
+# Validation only: runs on the existing public repository main branch; does not deploy or publish.
+name: BrightPath preview validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate lockfile when absent
+        if: ${{ hashFiles('package-lock.json') == '' }}
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Install exact locked dependencies
+        run: npm ci
+      - name: Retain dependency lockfile for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightpath-dependency-lockfile
+          path: package-lock.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Unit tests
+        run: npm test
+      - name: Source audit
+        run: npm run audit
+      - name: Deployment and preview safety
+        run: |
+          npm run check:deploy
+          npm run check:preview
+      - name: Production build
+        run: npm run build
+      - name: Validate generated assets
+        run: npm run check:output
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Production browser smoke tests (desktop and mobile viewport)
+        run: npm run test:browser:production
+        env:
+          BRIGHTPATH_BROWSER_MODE: production
+      - name: Upload browser test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightpath-browser-diagnostics
+          path: test-artifacts/browser/
+          if-no-files-found: warn
+          retention-days: 14
