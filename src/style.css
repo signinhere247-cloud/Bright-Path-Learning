@@ -235,3 +235,7 @@ canvas{touch-action:none}
 #interact{min-height:52px;min-width:88px;bottom:max(65px,calc(env(safe-area-inset-bottom,0px) + 45px))}
 @media(max-width:550px){#joystick{bottom:max(40px,calc(env(safe-area-inset-bottom,0px) + 22px))}#joystick button{width:52px;height:52px}#interact{bottom:max(60px,calc(env(safe-area-inset-bottom,0px) + 42px))}}
 @media(prefers-reduced-motion:reduce){#joystick button{transition:none}}
+
+/* Step 3.59: contextual interaction actions remain readable on small screens. */
+#interact{max-width:min(42vw,210px);white-space:normal;line-height:1.2;text-align:center}
+#tip{overflow-wrap:anywhere}
