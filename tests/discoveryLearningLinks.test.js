@@ -26,6 +26,6 @@ test('journal links require a previously explored discovery and questions requir
  assert.ok(journal.includes('if(entry.visited){const suggestion=villageLearningSuggestion'));
  assert.ok(journal.includes('button.onclick=()=>showLessons(suggestion.subject)'));
  assert.ok(question.includes('if(result.correct){'));
- assert.ok(question.includes('villageLearningSuggestion(state,activity.id,subjects)'));
+ assert.ok(question.includes('villageLearningSuggestion(state,activity.id,subjects,lessonBank)'));
  assert.ok(question.includes("$('#discoveryLearningNext').replaceChildren(detail,button)"));
 });
