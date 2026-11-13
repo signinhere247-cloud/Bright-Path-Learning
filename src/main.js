@@ -27,6 +27,7 @@ import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
 import {explorerMilestones} from './explorerMilestones.js';
 import {milestoneCelebration} from './milestoneCelebrations.js';
 import {adventureOverview} from './adventureOverview.js';
+import {personalisedAdventureGoals} from './adventureGoals.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -240,10 +241,17 @@ function showBackupControls(){
 }
 function showAdventureOverview(){
  const overview=adventureOverview(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
+ modal(`<h2>My Adventure Progress 🌟</h2><p>Every step of your adventure counts!</p><div id="adventureStats" class="cards"></div><h3>Ideas for your next adventure 🎯</h3><div id="adventureGoals"></div><button id="overviewAchievements">View achievements 🏆</button><button id="overviewDiscoveries">Village discoveries 🌿</button><button id="overviewBack">Back to profile</button>`);
  const stats=[['📚 Lessons completed',overview.lessons],['🌿 Village discoveries',overview.discovered+' / '+overview.discoveriesTotal],['✨ Keepsakes collected',overview.keepsakes+' / '+overview.keepsakesTotal],['🏆 Milestones earned',overview.milestones+' / '+overview.milestonesTotal],['🐾 Pet companion',overview.pet||'Not adopted yet'],['🪙 BrightCoins',overview.coins]];
  const container=$('#adventureStats');
  for(const [label,value] of stats){const item=document.createElement('div'),heading=document.createElement('b'),detail=document.createElement('small');heading.textContent=label;detail.textContent=String(value);item.append(heading,detail);container.append(item)}
+ const goals=personalisedAdventureGoals(state,subjects,new Date().toISOString().slice(0,10)),goalContainer=$('#adventureGoals');
+ for(const goal of goals){
+  const item=document.createElement('div'),button=document.createElement('button');
+  button.textContent=goal.emoji+' '+goal.title+' — '+goal.detail;
+  button.onclick=()=>{if(goal.destination==='learn')showSubjects();else if(goal.destination==='discoveries')showDiscoveryMenu();else if(goal.destination==='shop')showShop();else if(goal.destination==='pet')showPetCare();else if(goal.destination==='achievements')showAchievements()};
+  item.append(button);goalContainer.append(item);
+ }
  $('#overviewAchievements').onclick=showAchievements;$('#overviewDiscoveries').onclick=showDiscoveryMenu;$('#overviewBack').onclick=showProfile;
 }
 function showAchievements(){
