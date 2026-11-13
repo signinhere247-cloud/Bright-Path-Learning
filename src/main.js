@@ -50,6 +50,7 @@ import {achievementRecommendations} from './achievementRecommendations.js';
 import {achievementSpotlight} from './achievementSpotlight.js';
 import {achievementCollectionSummary} from './achievementCollectionSummary.js';
 import {learningAdventureHub} from './learningAdventureHub.js';
+import {learningHubSuggestions} from './learningHubSuggestions.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -266,7 +267,7 @@ function showBackupControls(){
 }
 function showLearningAdventureHub(){
  const hub=learningAdventureHub(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Learning Adventure 🏡</h2><p>Your lessons, challenges, goals and achievements all in one place.</p><div id="learningHubSummary" class="learning-hub-summary"></div><div class="learning-hub-actions"><button id="hubLearn">📚 Explore lessons</button><button id="hubChallenges">✨ Daily adventures</button><button id="hubGoals">🎯 My learning goal</button><button id="hubDashboard">📊 Learning dashboard</button><button id="hubAchievements">🏅 Achievement gallery</button><button id="hubJourney">🗺️ Journey map</button></div><button id="hubBack">Back to my progress</button>`);
+ modal(`<h2>My Learning Adventure 🏡</h2><p>Your lessons, challenges, goals and achievements all in one place.</p><div id="learningHubSummary" class="learning-hub-summary"></div><section class="learning-hub-suggestions" aria-labelledby="hubSuggestionsHeading"><h3 id="hubSuggestionsHeading">🌟 Ideas just for you</h3><p>Choose anything that sounds fun — there is no rush.</p><div id="hubSuggestions"></div></section><div class="learning-hub-actions"><button id="hubLearn">📚 Explore lessons</button><button id="hubChallenges">✨ Daily adventures</button><button id="hubGoals">🎯 My learning goal</button><button id="hubDashboard">📊 Learning dashboard</button><button id="hubAchievements">🏅 Achievement gallery</button><button id="hubJourney">🗺️ Journey map</button></div><button id="hubBack">Back to my progress</button>`);
  const rows=[
   ['📚 Learning',hub.completed+' topics completed · '+hub.attempts+' lesson attempts'],
   ['🎯 My goal',hub.goal?(hub.goal.achieved?'Goal achieved! 🌟':hub.goal.progress+' of '+hub.goal.target+' '+hub.goal.subject+' topics'):'Choose a goal whenever you are ready'],
@@ -275,6 +276,15 @@ function showLearningAdventureHub(){
  ];
  const container=$('#learningHubSummary');
  for(const [label,value] of rows){const item=document.createElement('div'),heading=document.createElement('strong'),detail=document.createElement('p');item.className='learning-hub-stat';heading.textContent=label;detail.textContent=value;item.append(heading,detail);container.append(item)}
+ const ideas=learningHubSuggestions(state,subjects,new Date().toISOString().slice(0,10)),ideasRoot=$('#hubSuggestions');
+ for(const idea of ideas){
+  const item=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('p'),action=document.createElement('button');
+  item.className='learning-hub-suggestion';title.textContent=idea.title;detail.textContent=idea.detail;
+  action.type='button';action.textContent=idea.destination==='challenges'?'View challenge →':idea.destination==='goals'?'Choose goal →':'Explore lessons →';
+  action.setAttribute('aria-label',action.textContent+' '+idea.title);
+  action.onclick=()=>{if(idea.destination==='challenges')showDailyQuests();else if(idea.destination==='goals')showLearningGoals();else showSubjects()};
+  item.append(title,detail,action);ideasRoot.append(item);
+ }
  $('#hubLearn').onclick=showSubjects;$('#hubChallenges').onclick=showDailyQuests;$('#hubGoals').onclick=showLearningGoals;$('#hubDashboard').onclick=showLearningDashboard;$('#hubAchievements').onclick=showAchievementGallery;$('#hubJourney').onclick=showLearningJourney;$('#hubBack').onclick=showAdventureOverview;
 }
 function showAdventureOverview(){
