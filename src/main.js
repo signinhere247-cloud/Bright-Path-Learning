@@ -34,6 +34,7 @@ import {lessonStepProgress,lessonAnswerFeedback} from './lessonExperience.js';
 import {learningHint} from './learningHints.js';
 import {practiceTopics,recordPracticeNeed} from './practiceTopics.js';
 import {recordLearningDay,learningStreak} from './learningStreaks.js';
+import {recordDailySubject,dailyLearningChallenge} from './dailyLearningChallenges.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -153,6 +154,7 @@ function showQuestion(){let c=current;if(c.i>=c.q.length){
   // Commit the new progress only after the browser has persisted it successfully.
   const previous=state;
   state=recordLearningDay(recordPracticeNeed(result.save,c.s,c.t,c.missed>0),localLearningDate());
+  if(result.passed)state=recordDailySubject(state,new Date().toISOString().slice(0,10),c.s);
   try{save()}catch(err){state=previous;throw err}
   c.settled=true;
   refresh();
@@ -269,8 +271,9 @@ function showAchievements(){
  $('#backToProfile').onclick=showProfile;
 }
 function showDailyQuests(){
- const day=new Date().toISOString().slice(0,10),quests=questProgress(state,day);
- modal(`<h2>Daily Adventures ✨</h2><p>Complete learning adventures to earn extra BrightCoins. Quests reset each day (UTC).</p><div class="cards">${quests.map(q=>`<div><b>${q.name}</b><small>${q.description} · ${q.count}/${q.goal} · 🪙 ${q.reward}</small><button data-quest="${q.id}" ${q.claimed||q.count<q.goal?'disabled':''}>${q.claimed?'Claimed ✓':q.count<q.goal?'Not ready':'Claim reward'}</button></div>`).join('')}</div><p id="questMessage" role="status"></p><button id="questBack">Back to profile</button>`);
+ const day=new Date().toISOString().slice(0,10),quests=questProgress(state,day),challenge=dailyLearningChallenge(state,day);
+ modal(`<h2>Daily Adventures ✨</h2><p>Complete learning adventures to earn extra BrightCoins. Quests reset each day (UTC).</p><section class="daily-learning-challenge"><h3>🌟 Optional learning challenge</h3><p>${challenge.title}</p><p>${challenge.description}</p><progress value="${challenge.count}" max="${challenge.goal}" aria-label="Daily subject challenge progress"></progress><p>${challenge.count}/${challenge.goal} subjects ${challenge.complete?'· Well done! 🎉':'· No pressure — come back whenever you like.'}</p><button id="challengeSubjects">Choose a subject 📚</button></section><div class="cards">${quests.map(q=>`<div><b>${q.name}</b><small>${q.description} · ${q.count}/${q.goal} · 🪙 ${q.reward}</small><button data-quest="${q.id}" ${q.claimed||q.count<q.goal?'disabled':''}>${q.claimed?'Claimed ✓':q.count<q.goal?'Not ready':'Claim reward'}</button></div>`).join('')}</div><p id="questMessage" role="status"></p><button id="questBack">Back to profile</button>`);
+ $('#challengeSubjects').onclick=showSubjects;
  $('#questBack').onclick=showProfile;
  $('#modalBody').onclick=e=>{const btn=e.target.closest('[data-quest]');if(!btn)return;try{const result=commitRewardChange(state,old=>claimDailyQuest(old,btn.dataset.quest,day),candidate=>{const updated=updateActive(family,candidate,Number(localStorage.getItem('bp-age')||activeProfile().age));writeFamily(localStorage,updated);family=updated});state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();showDailyQuests()}catch(err){$('#questMessage').textContent=err.message}};
 }
