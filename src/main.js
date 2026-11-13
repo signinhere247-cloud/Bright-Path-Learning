@@ -28,6 +28,7 @@ import {destinationRecommendations} from './destinationRecommendations.js';
 import {destinationMilestones} from './destinationMilestones.js';
 import {createDirectionalInput} from './directionalInput.js';
 import {adventureInteractionFeedback} from './adventureInteractionFeedback.js';
+import {discoveryLearningLink} from './discoveryLearningLinks.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -561,7 +562,9 @@ function showVillageJournal(){
   const item=document.createElement('section');
   const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
   const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
-  item.append(heading,description);container.append(item);
+  item.append(heading,description);
+  if(entry.visited){const link=discoveryLearningLink(entry.id,subjects);if(link){const button=document.createElement('button');button.type='button';button.textContent=link.label;button.onclick=()=>showLessons(link.subject);item.append(button)}}
+  container.append(item);
  }
  $('#journalBack').onclick=showDiscoveryMenu;
 }
@@ -575,13 +578,15 @@ function showDiscoveryMenu(){
 }
 function showDiscovery(activity){
  const day=new Date().toISOString().slice(0,10),done=discoveryStatus(state,activity.id,day);
- modal(`<h2>${activity.name} ✨</h2><p>${done?'You already earned today’s reward. You can still practise!':'Answer the question correctly to earn 8 BrightCoins today.'}</p><p class="question">${activity.prompt}</p><div class="choices">${activity.options.map((choice,i)=>`<button data-discovery-choice="${i}">${choice}</button>`).join('')}</div><p id="discoveryFeedback" role="status"></p><button id="discoveryClose">Back to village</button>`);
+ modal(`<h2>${activity.name} ✨</h2><p>${done?'You already earned today’s reward. You can still practise!':'Answer the question correctly to earn 8 BrightCoins today.'}</p><p class="question">${activity.prompt}</p><div class="choices">${activity.options.map((choice,i)=>`<button data-discovery-choice="${i}">${choice}</button>`).join('')}</div><p id="discoveryFeedback" role="status"></p><div id="discoveryLearningNext"></div><button id="discoveryClose">Back to village</button>`);
  $('#discoveryClose').onclick=close;
  $('#modalBody').onclick=e=>{const btn=e.target.closest('[data-discovery-choice]');if(!btn||$('#discoveryFeedback').dataset.answered)return;try{
   const result=commitRewardChange(state,old=>completeDiscovery(old,activity.id,activity.options[Number(btn.dataset.discoveryChoice)],day),candidate=>{const updated=updateActive(family,candidate,Number(localStorage.getItem('bp-age')||activeProfile().age));writeFamily(localStorage,updated);family=updated});
   if(result.earned){state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
   $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Not quite — have another try!'} ${result.correct?result.explanation:''} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
   if(result.correct){
+   const link=discoveryLearningLink(activity.id,subjects);
+   if(link){const button=document.createElement('button');button.type='button';button.textContent=link.label;button.onclick=()=>showLessons(link.subject);$('#discoveryLearningNext').replaceChildren(button)}
    $('#discoveryFeedback').dataset.answered='yes';
    $('#modalBody').querySelectorAll('[data-discovery-choice]').forEach(b=>b.disabled=true);
   }
