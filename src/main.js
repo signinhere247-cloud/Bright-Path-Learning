@@ -42,6 +42,7 @@ import {learningDashboard} from './learningDashboard.js';
 import {chooseLearningGoal,clearLearningGoal,learningGoalProgress} from './learningGoals.js';
 import {recogniseLearningGoal,learningGoalCelebration} from './learningGoalCelebrations.js';
 import {achievementGallery} from './achievementGallery.js';
+import {galleryCelebration} from './galleryCelebrations.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -331,7 +332,7 @@ function showLearningJourney(){
 }
 function showAchievementGallery(){
  const gallery=achievementGallery(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
+ modal(`<h2>My Achievement Gallery 🏅</h2><p>All your learning and adventure keepsakes in one place.</p><p><strong>${gallery.earned} of ${gallery.total}</strong> achievements collected or unlocked</p><p id="galleryCelebration" class="gallery-celebration" role="status" aria-live="polite"></p><div id="achievementGalleryGroups"></div><button id="galleryBack">Back to achievements</button>`);
  const root=$('#achievementGalleryGroups');
  for(const group of gallery.groups){
   const section=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div');
@@ -342,7 +343,13 @@ function showAchievementGallery(){
    symbol.textContent=badge.earned?badge.emoji:'🔒';symbol.setAttribute('aria-hidden','true');
    name.textContent=badge.title;detail.textContent=badge.detail;
    card.setAttribute('aria-label',badge.title+(badge.earned?', earned':', locked'));
-   card.append(symbol,name,detail);grid.append(card);
+   if(badge.earned){
+    const celebrate=document.createElement('button');celebrate.type='button';celebrate.className='gallery-celebrate-button';celebrate.textContent='Celebrate 🎉';
+    celebrate.setAttribute('aria-label','Celebrate '+badge.title);
+    celebrate.onclick=()=>{const message=galleryCelebration(badge);const banner=$('#galleryCelebration');banner.textContent=message.title+' '+message.message;banner.classList.remove('gallery-celebration-pop');void banner.offsetWidth;banner.classList.add('gallery-celebration-pop')};
+    card.append(symbol,name,detail,celebrate);
+   }else card.append(symbol,name,detail);
+   grid.append(card);
   }
   if(!group.items.length){const empty=document.createElement('p');empty.textContent='Your first keepsake will appear here when you complete a goal.';grid.append(empty)}
   section.append(heading,grid);root.append(section);
