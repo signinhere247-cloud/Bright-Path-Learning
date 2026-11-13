@@ -122,7 +122,7 @@ const facts={
 'Online safety':[['Should you share your password?','No',['Yes','No','Only in games']],['What should you do if something online worries you?','Tell a trusted adult',['Keep it secret','Tell a trusted adult','Share it widely']],['Is every online message trustworthy?','No',['Yes','No','Always']]]
 };
 function questions(subject,topic,age){return questionSet(subject,topic,age,facts)}
-app.innerHTML=`<div id="game"></div><div id="hud"><div class="brand">✦ BrightPath <span>3D Adventure</span></div><div class="hud-right"><span id="coinCount"></span><button id="learnBtn">Learn</button><button id="profileBtn">Profile</button><button id="helpBtn">How to play</button></div></div><div id="tip">Walk to a glowing portal and press <b>Enter</b>, or tap it</div><div id="joystick"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div><button id="interact">Interact</button><div id="modal" class="hidden"><div class="dialog"><button class="close" id="close">✕</button><div id="modalBody"></div></div></div>`;
+app.innerHTML=`<div id="game"></div><div id="hud"><div class="brand">✦ BrightPath <span>3D Adventure</span></div><div class="hud-right"><span id="coinCount"></span><button id="learnBtn">Learn</button><button id="profileBtn">Profile</button><button id="helpBtn">How to play</button></div></div><div id="tip">Walk to a glowing portal and press <b>Enter</b>, or tap it</div><div id="joystick" role="group" aria-label="Explorer movement controls"><button type="button" data-dir="up" aria-label="Walk forward">▲</button><div><button type="button" data-dir="left" aria-label="Walk left">◀</button><button type="button" data-dir="down" aria-label="Walk backward">▼</button><button type="button" data-dir="right" aria-label="Walk right">▶</button></div></div><button type="button" id="interact" aria-label="Interact with nearby village location">Interact</button><div id="modal" class="hidden"><div class="dialog"><button class="close" id="close">✕</button><div id="modalBody"></div></div></div>`;
 const refresh=()=>$('#coinCount').textContent=`🪙 ${state.coins} BrightCoins`;refresh();
 const scene=new THREE.Scene();scene.background=new THREE.Color('#b9d9d7');scene.fog=new THREE.FogExp2('#b9d9d7',0.008);
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,250);const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;$('#game').appendChild(renderer.domElement);
@@ -630,25 +630,25 @@ const movementKeys=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','
 const touchMovement=createDirectionalInput();
 const movingKey=key=>keys.has(key)||touchMovement.keys.has(key);
 const typingTarget=element=>element?.closest?.('input,textarea,select,[contenteditable]');
-function clearMovement(){for(const key of movementKeys)keys.delete(key);touchMovement.clear()}
+function clearMovement(){for(const key of movementKeys)keys.delete(key);touchMovement.clear();document.querySelectorAll('[data-dir]').forEach(button=>button.setAttribute('aria-pressed','false'))}
 window.addEventListener('keydown',e=>{
  if(typingTarget(e.target)||!$('#modal').classList.contains('hidden'))return;
  const key=e.key.toLowerCase();
  if(movementKeys.has(key)||key===' ')e.preventDefault();
  if(movementKeys.has(key))keys.add(key);
- if(e.key==='Enter'&&!e.repeat&&e.target===document.body)interact(near);
+ if(e.key==='Enter'&&!e.repeat&&e.target===document.body&&mode==='world')interact(near);
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 window.addEventListener('blur',clearMovement);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearMovement()});
 for(const button of document.querySelectorAll('[data-dir]')){
  const key={up:'arrowup',down:'arrowdown',left:'arrowleft',right:'arrowright'}[button.dataset.dir];
- const release=e=>touchMovement.release(e.pointerId);
- button.setAttribute('aria-label',`${button.dataset.dir} movement`);
+ const release=e=>{touchMovement.release(e.pointerId);button.setAttribute('aria-pressed',String(touchMovement.keys.has(key)))};
+ button.setAttribute('aria-pressed','false');
  button.style.touchAction='none';
  button.addEventListener('pointerdown',e=>{
   if(!$('#modal').classList.contains('hidden'))return;
-  e.preventDefault();touchMovement.press(e.pointerId,key);
+  e.preventDefault();touchMovement.press(e.pointerId,key);button.setAttribute('aria-pressed','true');
   if(button.setPointerCapture)button.setPointerCapture(e.pointerId);
  });
  for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,release);
