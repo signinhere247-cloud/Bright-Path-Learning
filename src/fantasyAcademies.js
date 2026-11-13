@@ -16,6 +16,15 @@ export function buildFantasyAcademy(THREE,scene,building,addLabel){
  const orb=(r,color,px,py,pz)=>shape(new THREE.SphereGeometry(r,12,9),color,px,py,pz);
  const spire=(r,h,color,px,py,pz,n=8)=>shape(new THREE.ConeGeometry(r,h,n),color,px,py,pz);
  const tower=(r,h,color,px,py,pz)=>shape(new THREE.CylinderGeometry(r,r,h,12),color,px,py,pz);
+ // Geography is now housed in a textured storybook cottage GLB, not primitive geometry.
+ // Preserve the exact portal coordinates and labels for lessons.
+ if(name==='Geography'){
+   const portal=tower(1.1,.08,0xffe682,0,.06,4);
+   portal.material.emissive=new THREE.Color(0xb78b1d);
+   portal.material.emissiveIntensity=.5;
+   addLabel(name,x,9.5,z);
+   return group;
+ }
  // Compact footprint leaves existing walkway and glowing portal at local z=+4 accessible.
  box(4.8,3.2,4,c,0,1.6,0);
  box(5.15,.28,4.3,style.trim,0,3.22,0);
