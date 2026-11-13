@@ -9,6 +9,8 @@ import {buildProgressCharts} from './progressCharts.js';
 import {revisionRecommendations} from './revisionRecommendations.js';
 import * as THREE from 'three';
 import {buildFantasyVillage} from './fantasyVillage.js';
+import {loadVillageModels} from './villageModels.js';
+import {villageModelManifest} from './villageModelManifest.js';
 import {buildFantasyAcademy} from './fantasyAcademies.js';
 import {buildFantasyExplorer} from './fantasyExplorer.js';
 import {buildFantasyPet} from './fantasyPets.js';
@@ -88,6 +90,9 @@ for(let i=0;i<30;i++){let a=i*2.4,r=21+i%4*3,x=Math.cos(a)*r,z=Math.sin(a)*r;cyl
 for(let i=0;i<25;i++){let x=Math.sin(i*18)*19,z=Math.cos(i*23)*18;sphere(.22,[0xffe69d,0xf79bca,0xffffff][i%3],x,.25,z)}
 // Layered fantasy scenery is decorative: existing interactive portals retain their positions.
 const fantasyVillage=buildFantasyVillage(THREE,scene);
+// Approved GLB scenery loads alongside the existing interactive village.
+// Missing models never prevent lessons or movement from working.
+void loadVillageModels(scene,villageModelManifest).catch(error=>console.warn('Village scenery load failed',error));
 const buildings=[{name:'Maths',x:-12,z:-9,c:0xf6ac63},{name:'English',x:-4,z:-14,c:0xee8cb5},{name:'Science',x:5,z:-14,c:0x71c7bf},{name:'History',x:13,z:-9,c:0xb29bf2},{name:'Geography',x:-12,z:4,c:0x87b8f1},{name:'Computing',x:13,z:4,c:0x9ad47b},{name:'My Home',x:-7,z:12,c:0xf0ba85},{name:'Shop',x:7,z:12,c:0xe3a1e9}];
 function label(text,x,y,z){let c=document.createElement('canvas');c.width=512;c.height=128;let ctx=c.getContext('2d');ctx.fillStyle='#173a55';ctx.roundRect(0,0,512,128,24);ctx.fill();ctx.fillStyle='white';ctx.font='bold 55px system-ui';ctx.textAlign='center';ctx.fillText(text,256,83);let t=new THREE.CanvasTexture(c),s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true}));s.scale.set(4.4,1.1,1);s.position.set(x,y,z);scene.add(s)}
 for(const building of buildings)buildFantasyAcademy(THREE,scene,building,label);
