@@ -27,7 +27,7 @@ test('journal and discovery feedback display personal suggestions without forced
  const discovery=main.slice(main.indexOf('function showDiscovery(activity)'),main.indexOf('function interact(b)'));
  assert.ok(journal.includes('if(entry.visited){const suggestion=villageLearningSuggestion'));
  assert.ok(discovery.includes('if(result.correct){'));
- assert.ok(discovery.includes('villageLearningSuggestion(state,activity.id,subjects)'));
+ assert.ok(discovery.includes('villageLearningSuggestion(state,activity.id,subjects,lessonBank)'));
  assert.ok(discovery.includes("$('#discoveryLearningNext').replaceChildren(detail,button)"));
  assert.ok(discovery.includes('button.onclick=()=>showLessons(suggestion.subject)'));
 });
