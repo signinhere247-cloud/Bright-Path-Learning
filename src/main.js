@@ -580,9 +580,11 @@ function showDiscovery(activity){
  $('#modalBody').onclick=e=>{const btn=e.target.closest('[data-discovery-choice]');if(!btn||$('#discoveryFeedback').dataset.answered)return;try{
   const result=commitRewardChange(state,old=>completeDiscovery(old,activity.id,activity.options[Number(btn.dataset.discoveryChoice)],day),candidate=>{const updated=updateActive(family,candidate,Number(localStorage.getItem('bp-age')||activeProfile().age));writeFamily(localStorage,updated);family=updated});
   if(result.earned){state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
-  $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Try again tomorrow for a new reward, or visit another discovery.'} ${result.explanation} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
-  $('#discoveryFeedback').dataset.answered='yes';
-  $('#modalBody').querySelectorAll('[data-discovery-choice]').forEach(b=>b.disabled=true);
+  $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Not quite — have another try!'} ${result.correct?result.explanation:''} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
+  if(result.correct){
+   $('#discoveryFeedback').dataset.answered='yes';
+   $('#modalBody').querySelectorAll('[data-discovery-choice]').forEach(b=>b.disabled=true);
+  }
  }catch(err){$('#discoveryFeedback').textContent=err.message}};
 }
 function interact(b){if(!b)return;if(b.id&&DISCOVERIES.some(d=>d.id===b.id)){showDiscovery(b);return}if(b.name==='My Home')showHome();else if(b.name==='Shop')showShop();else showLessons(b.name)}
