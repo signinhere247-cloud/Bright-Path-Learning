@@ -20,6 +20,28 @@ export function buildFantasyVillage(THREE,scene){
  cone(3.8,5.3,0x9b64c5,0,11.6,castleZ+1);
  block(2.7,4,.22,0x6e4e9b,0,2,castleZ+3.1);
  for(const x of [-4,-2,2,4])block(.8,1.5,.16,0xffeab0,x,5.4,castleZ+2.6);
+ // Castle embellishments: stone courses, parapets, windows and arched entry.
+ const castleStone=0xd9c8b4,castleTrim=0x907c8d;
+ for(let level=0;level<4;level++)block(12.25,.12,5.3,level%2?0xcdb8ac:castleStone,0,1.15+level*1.62,castleZ);
+ for(let i=0;i<11;i++)block(.65,.8,.75,castleStone,-5.5+i*1.1,7.35,castleZ+2.2);
+ for(const x of [-6.3,6.3]){
+  for(let j=0;j<7;j++){
+   const a=j*Math.PI*2/7;
+   block(.7,.65,.68,castleStone,x+Math.cos(a)*1.88,10.2,castleZ+Math.sin(a)*1.88);
+  }
+  for(let level=0;level<3;level++){
+   const window=add(new THREE.BoxGeometry(.42,.82,.13),0xffd39b,x,3.4+level*2.1,castleZ+2.15);
+   window.material.emissive=new THREE.Color(0xffa45e);window.material.emissiveIntensity=.32;
+  }
+ }
+ for(const x of [-4.4,-2.6,2.6,4.4]){
+  block(.62,1.1,.12,0x674d72,x,4.6,castleZ+2.72);
+  const window=add(new THREE.BoxGeometry(.43,.82,.14),0xffdf9d,x,4.6,castleZ+2.8);
+  window.material.emissive=new THREE.Color(0xffa75c);window.material.emissiveIntensity=.3;
+ }
+ for(let i=0;i<8;i++)block(.18,6.8,.23,castleTrim,-5.2+i*1.5,3.4,castleZ+2.6);
+ add(new THREE.TorusGeometry(1.4,.23,8,24,Math.PI),castleTrim,0,3.8,castleZ+3.27);
+ for(const x of [-1.4,1.4])block(.25,2.6,.3,castleTrim,x,1.3,castleZ+3.25);
  // An irregular cobbled promenade replaces the oversized rectangular stepping slabs.
  // Instancing keeps the entire path to a single draw call.
  const stoneGeo=new THREE.CylinderGeometry(.24,.26,.065,7);
