@@ -64,16 +64,43 @@ export function buildFantasyVillage(THREE,scene){
   }
  }
  stones.count=used;stones.receiveShadow=true;scene.add(stones);
- // Two water gardens with short bridges, away from the portal entrances.
+ // Curved pond banks, planted borders, lily pads and timber footbridges.
+ const gardenLeaf=mat(0x4c8254),petalMats=[mat(0xf5b7d1),mat(0xffe6a4),mat(0xd6c5f4)];
+ const lilyGeo=new THREE.CircleGeometry(.35,10),petalGeo=new THREE.IcosahedronGeometry(.13,0);
  for(const side of [-1,1]){
   const x=side*23,z=-7;
   const pool=cylinder(5,.1,0x58b8d9,x,-.07,z);pool.scale.z=.72;
-  for(let i=0;i<6;i++){
-   const a=i*Math.PI/3;
-   orb(.65,0xd3f3f4,x+Math.cos(a)*2.8,.25,z+Math.sin(a)*1.7);
+  for(let i=0;i<24;i++){
+   const a=i*Math.PI*2/24,px=x+Math.cos(a)*5.05,pz=z+Math.sin(a)*3.55;
+   const rock=add(new THREE.IcosahedronGeometry(.38+(i%3)*.09,0),i%2?0xaaa998:0xc3baa7,px,.08,pz);
+   rock.scale.set(1.4,.55,1);
+   if(i%2===0){
+    const bush=add(new THREE.IcosahedronGeometry(.44,1),i%4?0x6b985d:0x82a96b,px,.42,pz);
+    bush.scale.set(1.25,.75,1);
+    for(let j=0;j<3;j++){
+     const flower=new THREE.Mesh(petalGeo,petalMats[(i+j)%3]);
+     flower.position.set(px+(j-1)*.22,.78,pz+(j%2)*.17);scene.add(flower);
+    }
+   }
   }
-  block(3,.25,8,0xb88c62,x,.22,z);
-  for(const dx of [-1.3,1.3])for(const dz of [-3,3])cylinder(.12,1.1,0xf9e4ad,x+dx,.8,z+dz);
+  // Bridge planks run across the water with side rails.
+  for(let j=0;j<13;j++){
+   const pz=z-3.65+j*.61;
+   const plank=block(3.15,.18,.53,j%3===0?0x98704e:0xb88c62,x,.23,pz);
+   plank.rotation.y=(j%2?1:-1)*.015;
+  }
+  for(const dx of [-1.35,1.35]){
+   for(const dz of [-3.3,-1.1,1.1,3.3])cylinder(.1,1.05,0x8c6848,x+dx,.8,z+dz);
+   const rail=block(.13,.14,7.2,0xc79b6b,x+dx,1.3,z);
+  }
+  for(let i=0;i<9;i++){
+   const a=i*2.4,px=x+Math.cos(a)*2.9,pz=z+Math.sin(a)*1.95;
+   if(Math.abs(px-x)<1.65)continue;
+   const lily=new THREE.Mesh(lilyGeo,gardenLeaf);
+   lily.rotation.x=-Math.PI/2;lily.rotation.z=a;lily.position.set(px,.025,pz);scene.add(lily);
+   const blossom=new THREE.Mesh(petalGeo,petalMats[i%3]);
+   blossom.position.set(px,.17,pz);scene.add(blossom);
+  }
  }
  // Distant cliffs, stylised waterfalls and mountains create depth without blocking gameplay.
  for(let i=0;i<9;i++){
