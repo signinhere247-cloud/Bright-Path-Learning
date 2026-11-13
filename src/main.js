@@ -13,6 +13,7 @@ import {addCottageLandscape} from './cottageLandscape.js';
 import {addStorybookTrees} from './storybookTrees.js';
 import {buildVillageTerrain} from './villageTerrain.js';
 import {addWoodlandDetails} from './woodlandDetails.js';
+import {addVillageMagic} from './villageMagic.js';
 import {loadVillageModels} from './villageModels.js';
 import {villageModelManifest} from './villageModelManifest.js';
 import {buildFantasyAcademy} from './fantasyAcademies.js';
@@ -95,6 +96,7 @@ addWoodlandDetails(THREE,scene);
 for(let i=0;i<25;i++){let x=Math.sin(i*18)*19,z=Math.cos(i*23)*18;sphere(.22,[0xffe69d,0xf79bca,0xffffff][i%3],x,.25,z)}
 // Layered fantasy scenery is decorative: existing interactive portals retain their positions.
 const fantasyVillage=buildFantasyVillage(THREE,scene);
+const villageMagic=addVillageMagic(THREE,scene);
 addCottageLandscape(THREE,scene);
 // Approved GLB scenery loads alongside the existing interactive village.
 // Missing models never prevent lessons or movement from working.
@@ -351,7 +353,7 @@ renderer.domElement.addEventListener('click',e=>{
  const building=buildings.find(b=>Math.hypot(x-b.x,z-b.z)<4);
  if(discovery)interact(discovery);else if(building)interact(building);
 });
-function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(keys.has('arrowright')||keys.has('d'))-Number(keys.has('arrowleft')||keys.has('a')),dz=Number(keys.has('arrowdown')||keys.has('s'))-Number(keys.has('arrowup')||keys.has('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(keys.has('arrowright')||keys.has('arrowleft')||keys.has('arrowup')||keys.has('arrowdown')||keys.has('w')||keys.has('a')||keys.has('s')||keys.has('d')));
+function frame(now){requestAnimationFrame(frame);fantasyVillage.update(now);villageMagic.update(now);let dt=Math.min(.05,(now-last)/1000);last=now;let moving=$('#modal').classList.contains('hidden')&&!decorating;if(!moving)clearMovement();if(moving){let dx=Number(keys.has('arrowright')||keys.has('d'))-Number(keys.has('arrowleft')||keys.has('a')),dz=Number(keys.has('arrowdown')||keys.has('s'))-Number(keys.has('arrowup')||keys.has('w'));let len=Math.hypot(dx,dz)||1;position.x=THREE.MathUtils.clamp(position.x+dx/len*dt*5,-18,18);position.z=THREE.MathUtils.clamp(position.z+dz/len*dt*5,-18,18);if(dx||dz)avatar.rotation.y=Math.atan2(dx,dz)}avatar.position.set(position.x,0,position.z);explorer.animate(now,moving&&(keys.has('arrowright')||keys.has('arrowleft')||keys.has('arrowup')||keys.has('arrowdown')||keys.has('w')||keys.has('a')||keys.has('s')||keys.has('d')));
  if(companion.visible){
   const goal=companionTarget(position,now),next=companionMotion(companion.position,goal,dt);
   companion.position.x=next.x;companion.position.z=next.z;
