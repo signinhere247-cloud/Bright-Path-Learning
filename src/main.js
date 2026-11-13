@@ -21,6 +21,7 @@ import {buildFantasyExplorer} from './fantasyExplorer.js';
 import {buildFantasyPet} from './fantasyPets.js';
 import {buildFantasyHome,fantasyFurniture} from './fantasyHome.js';
 import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
+import {worldLearningRoutes} from './worldLearningRoutes.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
@@ -241,13 +242,21 @@ function finishFurnitureDrag(e){
 }
 renderer.domElement.addEventListener('pointerup',finishFurnitureDrag);
 renderer.domElement.addEventListener('pointercancel',()=>{dragFurniture=null;renderFurniture()});
+function renderWorldLearningRoutes(container,context){
+ for(const route of worldLearningRoutes(context)){
+  const button=document.createElement('button');button.type='button';button.textContent=route.label;button.dataset.worldLearning=route.id;
+  button.onclick=()=>{if(route.destination==='subjects')showSubjects();else if(route.destination==='hub')showLearningAdventureHub();else if(route.destination==='quests')showDailyQuests();else if(route.destination==='discoveries')showDiscoveryMenu()};
+  container.append(button);
+ }
+}
 function showHome(){
  if(mode!=='home'){worldPosition={...position};scene.remove(avatar);home.scene.add(avatar);if(companionKind){scene.remove(companion);home.scene.add(companion);companion.position.set(1.35,0,4.05)}}
  mode='home';position={x:0,z:3};avatar.position.set(0,0,3);renderFurniture();
  if(decorating){$('#modal').classList.add('hidden');furnitureControls();return}
  furnitureControls();
- modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><h3>Enjoy your home</h3><div id="homeActions">${availableHomeActions(state).map(a=>`<button data-home-action="${a.id}">${a.label}</button>`).join('')||'<p>Place furniture to unlock home activities.</p>'}</div><p id="homeActionStatus" role="status" aria-live="polite"></p><button id="exitHome">Back to Adventure World</button>`);
+ modal(`<h2>My 3D Home</h2><p>Arrange your furniture anywhere on the floor. Drag to move, rotate with a button, and save automatically.</p><button id="startDecorating">Decorate my home</button><h3>Enjoy your home</h3><div id="homeActions">${availableHomeActions(state).map(a=>`<button data-home-action="${a.id}">${a.label}</button>`).join('')||'<p>Place furniture to unlock home activities.</p>'}</div><p id="homeActionStatus" role="status" aria-live="polite"></p><section class="world-learning-shortcuts" aria-labelledby="homeLearningHeading"><h3 id="homeLearningHeading">📚 Learning adventures</h3><div id="homeLearningRoutes" class="world-learning-route-grid"></div></section><button id="exitHome">Back to Adventure World</button>`);
  $('#homeActions').onclick=e=>{const id=e.target.closest('[data-home-action]')?.dataset.homeAction;if(!id)return;try{$('#homeActionStatus').textContent=homeActionMessage(state,id)}catch(err){$('#homeActionStatus').textContent=err.message}};
+ renderWorldLearningRoutes($('#homeLearningRoutes'),'home');
  $('#startDecorating').onclick=()=>{decorating=true;showHome()};
  $('#exitHome').onclick=exitHome;
 }
@@ -551,10 +560,11 @@ function showVillageJournal(){
  $('#journalBack').onclick=showDiscoveryMenu;
 }
 function showDiscoveryMenu(){
- modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><button id="openVillageJournal">My Village Journal 📖</button><button id="openVillageKeepsakes">My Keepsakes ✨</button><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
+ modal(`<h2>Village discoveries 🌿</h2><p>Explore the village to discover nature, weather, numbers and stars. Each correct discovery earns 8 BrightCoins once per day.</p><button id="openVillageJournal">My Village Journal 📖</button><button id="openVillageKeepsakes">My Keepsakes ✨</button><section class="world-learning-shortcuts" aria-labelledby="villageLearningHeading"><h3 id="villageLearningHeading">🧭 Continue your learning adventure</h3><div id="villageLearningRoutes" class="world-learning-route-grid"></div></section><div class="cards">${DISCOVERIES.map(d=>`<button data-open-discovery="${d.id}">${d.name}</button>`).join('')}</div><button id="discoveryMenuBack">Back to profile</button>`);
  $('#discoveryMenuBack').onclick=showProfile;
  $('#openVillageJournal').onclick=showVillageJournal;
  $('#openVillageKeepsakes').onclick=showVillageKeepsakes;
+ renderWorldLearningRoutes($('#villageLearningRoutes'),'village');
  $('#modalBody').onclick=e=>{const id=e.target.closest('[data-open-discovery]')?.dataset.openDiscovery;if(id){const activity=DISCOVERIES.find(d=>d.id===id);if(activity)showDiscovery(activity)}};
 }
 function showDiscovery(activity){
