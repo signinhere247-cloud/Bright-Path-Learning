@@ -52,6 +52,7 @@ import {achievementCollectionSummary} from './achievementCollectionSummary.js';
 import {learningAdventureHub} from './learningAdventureHub.js';
 import {learningHubSuggestions} from './learningHubSuggestions.js';
 import {learningHubHighlights} from './learningHubHighlights.js';
+import {learningHubCelebrations} from './learningHubCelebrations.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -268,7 +269,7 @@ function showBackupControls(){
 }
 function showLearningAdventureHub(){
  const hub=learningAdventureHub(state,subjects,new Date().toISOString().slice(0,10));
- modal(`<h2>My Learning Adventure 🏡</h2><p>Your lessons, challenges, goals and achievements all in one place.</p><div id="learningHubSummary" class="learning-hub-summary"></div><section class="learning-hub-highlights" aria-labelledby="hubHighlightsHeading"><h3 id="hubHighlightsHeading">✨ Your adventure highlights</h3><div id="hubHighlights" aria-live="polite"></div></section><section class="learning-hub-suggestions" aria-labelledby="hubSuggestionsHeading"><h3 id="hubSuggestionsHeading">🌟 Ideas just for you</h3><p>Choose anything that sounds fun — there is no rush.</p><div id="hubSuggestions"></div></section><div class="learning-hub-actions"><button id="hubLearn">📚 Explore lessons</button><button id="hubChallenges">✨ Daily adventures</button><button id="hubGoals">🎯 My learning goal</button><button id="hubDashboard">📊 Learning dashboard</button><button id="hubAchievements">🏅 Achievement gallery</button><button id="hubJourney">🗺️ Journey map</button></div><button id="hubBack">Back to my progress</button>`);
+ modal(`<h2>My Learning Adventure 🏡</h2><p>Your lessons, challenges, goals and achievements all in one place.</p><div id="learningHubSummary" class="learning-hub-summary"></div><section class="learning-hub-highlights" aria-labelledby="hubHighlightsHeading"><h3 id="hubHighlightsHeading">✨ Your adventure highlights</h3><div id="hubHighlights" aria-live="polite"></div></section><section class="learning-hub-celebrations" aria-labelledby="hubCelebrationsHeading"><h3 id="hubCelebrationsHeading">🎉 Milestones to celebrate</h3><p>Revisit the special moments from your learning adventure!</p><div id="hubCelebrations"></div><p id="hubCelebrationMessage" role="status" aria-live="polite"></p></section><section class="learning-hub-suggestions" aria-labelledby="hubSuggestionsHeading"><h3 id="hubSuggestionsHeading">🌟 Ideas just for you</h3><p>Choose anything that sounds fun — there is no rush.</p><div id="hubSuggestions"></div></section><div class="learning-hub-actions"><button id="hubLearn">📚 Explore lessons</button><button id="hubChallenges">✨ Daily adventures</button><button id="hubGoals">🎯 My learning goal</button><button id="hubDashboard">📊 Learning dashboard</button><button id="hubAchievements">🏅 Achievement gallery</button><button id="hubJourney">🗺️ Journey map</button></div><button id="hubBack">Back to my progress</button>`);
  const rows=[
   ['📚 Learning',hub.completed+' topics completed · '+hub.attempts+' lesson attempts'],
   ['🎯 My goal',hub.goal?(hub.goal.achieved?'Goal achieved! 🌟':hub.goal.progress+' of '+hub.goal.target+' '+hub.goal.subject+' topics'):'Choose a goal whenever you are ready'],
@@ -283,6 +284,15 @@ function showLearningAdventureHub(){
   const card=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('p');
   card.className='learning-hub-highlight';title.textContent=highlight.emoji+' '+highlight.title;detail.textContent=highlight.detail;
   card.append(title,detail);highlightsRoot.append(card);
+ }
+ const celebrations=learningHubCelebrations(state,subjects),celebrationRoot=$('#hubCelebrations');
+ if(!celebrations.length){const note=document.createElement('p');note.textContent='Your first celebration is waiting for you. Enjoy learning at your own pace!';celebrationRoot.append(note)}
+ for(const milestone of celebrations){
+  const button=document.createElement('button');button.type='button';button.className='learning-hub-celebrate';
+  button.textContent=milestone.emoji+' '+milestone.title+' 🎊';
+  button.setAttribute('aria-label','Celebrate '+milestone.title);
+  button.onclick=()=>{$('#hubCelebrationMessage').textContent=milestone.emoji+' '+milestone.title+' '+milestone.message};
+  celebrationRoot.append(button);
  }
  const ideas=learningHubSuggestions(state,subjects,new Date().toISOString().slice(0,10)),ideasRoot=$('#hubSuggestions');
  for(const idea of ideas){
