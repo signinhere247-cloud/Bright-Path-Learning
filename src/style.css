@@ -126,3 +126,7 @@ canvas{touch-action:none}
 .gallery-filters button{min-height:44px;border-radius:999px;padding:8px 14px;background:#f1eefb}
 .gallery-filters button[aria-pressed="true"]{background:#6350aa;color:white;font-weight:700}
 #galleryFilterStatus{font-size:.9rem}
+
+.gallery-next-step{font-size:.85rem;line-height:1.45;margin:2px 0;color:#464659}
+.gallery-next-button{min-height:44px;border-radius:12px;padding:8px 12px;background:white}
+.achievement-gallery-card.locked:has(.gallery-next-button){opacity:1}
