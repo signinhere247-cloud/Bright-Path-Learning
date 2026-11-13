@@ -30,6 +30,7 @@ import {adventureOverview} from './adventureOverview.js';
 import {personalisedAdventureGoals} from './adventureGoals.js';
 import {waypointHint} from './adventureWaypoints.js';
 import {PROFILE_MENU_GROUPS} from './profileNavigation.js';
+import {lessonStepProgress,lessonAnswerFeedback} from './lessonExperience.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -160,7 +161,7 @@ function showQuestion(){let c=current;if(c.i>=c.q.length){
   $('#retryLessonSave').onclick=()=>showQuestion();
  }
  return;
- }let q=c.q[c.i],options=[...q.options].sort((a,b)=>a.localeCompare(b));modal(`<div class="progress">Question ${c.i+1} of ${c.q.length} · ${c.correct} correct</div><h2>${c.t}</h2><p class="progress">Learning level: ${learningBand(activeProfile().age)}</p><p class="question">${q.prompt}</p><div class="choices">${buttons(options)}</div><div id="feedback" role="status"></div>`);$('#modalBody').onclick=e=>{let btn=e.target.closest('[data-choice]');if(!btn||$('#feedback').textContent)return;let choice=options[Number(btn.dataset.choice)],ok=choice===q.answer;c.correct+=Number(ok);$('#feedback').innerHTML=`<strong>${ok?'Correct! Great work.':'Not quite.'}</strong> The answer is <b>${q.answer}</b>. ${q.explanation?`<span class="answer-explanation">${q.explanation}</span>`:''} <button id="next">${c.i+1===c.q.length?'See results':'Next question →'}</button>`;$('#next').onclick=()=>{c.i++;showQuestion()}}}
+ }let q=c.q[c.i],options=[...q.options].sort((a,b)=>a.localeCompare(b)),step=lessonStepProgress(c.i,c.q.length);modal(`<div class="progress">${step.label} · ${c.correct} correct</div><progress class="lesson-progress-bar" value="${step.current}" max="${step.total}" aria-label="Lesson progress"></progress><h2>${c.t}</h2><p class="progress">Learning level: ${learningBand(activeProfile().age)}</p><p class="question">${q.prompt}</p><div class="choices">${buttons(options)}</div><div id="feedback" role="status"></div>`);$('#modalBody').onclick=e=>{let btn=e.target.closest('[data-choice]');if(!btn||$('#feedback').textContent)return;let choice=options[Number(btn.dataset.choice)],ok=choice===q.answer,feedback=lessonAnswerFeedback(ok,c.i+1===c.q.length);c.correct+=Number(ok);$('#modalBody').querySelectorAll('[data-choice]').forEach(button=>button.disabled=true);$('#feedback').innerHTML=`<strong>${feedback.heading}</strong> The answer is <b>${q.answer}</b>. ${q.explanation?`<span class="answer-explanation">${q.explanation}</span>`:''} <button id="next">${feedback.nextLabel}</button>`;$('#next').onclick=()=>{c.i++;showQuestion()}}}
 function itemModel(id,x,z,rotation=0){const group=fantasyFurniture(THREE,id,shop.find(i=>i.id===id)?.color);group.position.set(x,0,z);group.rotation.y=rotation;group.userData.furnitureId=id;home.scene.add(group);return group}
 function clearHome(){for(const o of homeObjects){home.scene.remove(o);o.traverse(x=>{x.geometry?.dispose();if(Array.isArray(x.material))x.material.forEach(m=>m.dispose());else x.material?.dispose()})}homeObjects=[]}
 // Edit mode keeps controls visible while the 3D room remains unobstructed.
