@@ -583,7 +583,7 @@ function showVillageJournal(){
   const heading=document.createElement('h3');heading.textContent=(entry.visited?'✨ ':'🔒 ')+entry.name;
   const description=document.createElement('p');description.textContent=entry.visited?entry.explanation+' Last completed: '+entry.lastVisit+(entry.completedToday?' · Completed today!':''):'Explore this location and answer its question to unlock your journal note.';
   item.append(heading,description);
-  if(entry.visited){const suggestion=villageLearningSuggestion(state,entry.id,subjects);if(suggestion){const detail=document.createElement('p');detail.textContent=suggestion.detail;const button=document.createElement('button');button.type='button';button.textContent=suggestion.title;button.onclick=()=>showLessons(suggestion.subject);item.append(detail,button)}}
+  if(entry.visited){const suggestion=villageLearningSuggestion(state,entry.id,subjects,lessonBank);if(suggestion){const detail=document.createElement('p');detail.textContent=suggestion.detail;const button=document.createElement('button');button.type='button';button.textContent=suggestion.title;button.onclick=()=>showLessons(suggestion.subject);item.append(detail,button)}}
   container.append(item);
  }
  $('#journalBack').onclick=showDiscoveryMenu;
@@ -605,7 +605,7 @@ function showDiscovery(activity){
   if(result.earned){state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
   $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Not quite — have another try!'} ${result.correct?result.explanation:''} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
   if(result.correct){
-   const suggestion=villageLearningSuggestion(state,activity.id,subjects);
+   const suggestion=villageLearningSuggestion(state,activity.id,subjects,lessonBank);
    if(suggestion){const detail=document.createElement('p');detail.textContent=suggestion.detail;const button=document.createElement('button');button.type='button';button.textContent=suggestion.title;button.onclick=()=>showLessons(suggestion.subject);$('#discoveryLearningNext').replaceChildren(detail,button)}
    $('#discoveryFeedback').dataset.answered='yes';
    $('#modalBody').querySelectorAll('[data-discovery-choice]').forEach(b=>b.disabled=true);
