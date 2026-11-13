@@ -210,3 +210,8 @@ canvas{touch-action:none}
 .world-learning-route-grid button{min-height:48px;white-space:normal}
 .world-learning-route-grid button:focus-visible{outline:3px solid #7050a8;outline-offset:3px}
 @media(max-width:480px){.world-learning-route-grid{grid-template-columns:1fr}}
+
+.adventure-destination-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:10px 0 18px}
+.adventure-destination-grid button{min-height:48px;white-space:normal;text-align:left;padding:12px;border-radius:14px}
+.adventure-destination-grid button:focus-visible{outline:3px solid #7050a8;outline-offset:3px}
+@media(max-width:480px){.adventure-destination-grid{grid-template-columns:1fr}}
