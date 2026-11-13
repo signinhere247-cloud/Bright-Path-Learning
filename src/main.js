@@ -24,6 +24,7 @@ import {availableHomeActions,homeActionMessage} from './homeInteractions.js';
 import {nearestVillageDestination,villageDirections} from './villageNavigation.js';
 import {villageJournal,journalSummary} from './villageJournal.js';
 import {villageKeepsakes,keepsakeProgress} from './villageKeepsakes.js';
+import {explorerMilestones} from './explorerMilestones.js';
 import './style.css';
 import {makeBackup,parseBackup} from './backup.js';
 import {importExplorerBackup,inspectImportRecovery,restoreImportRecovery,clearImportRecovery} from './familyBackupRestore.js';
@@ -236,8 +237,10 @@ function showBackupControls(){
   $('#importBackup').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2_000_000)throw Error('Backup is too large.');const backup=parseBackup(await file.text());const count=Object.keys(backup.save.completed).length;modal(`<h2>Review backup</h2><p>Explorer: <b id="importName"></b></p><p>${count} completed lessons · ${backup.save.coins} BrightCoins · Learning age ${backup.age}</p><p><strong>Warning:</strong> Restoring replaces the current guest explorer's progress on this device. Download your current backup first if you want to keep it.</p><label>Type RESTORE to confirm <input id="restoreConfirm" autocomplete="off"></label><button id="confirmImport">Restore this backup</button><button id="cancelImport">Cancel</button><div id="importError" role="alert"></div>`);$('#importName').textContent=backup.save.profile;$('#cancelImport').onclick=showBackupControls;$('#confirmImport').onclick=()=>{if($('#restoreConfirm').value!=='RESTORE'){$('#importError').textContent='Type RESTORE exactly to continue.';return}try{autoCloud.stop();family=importExplorerBackup(localStorage,family,backup);location.reload()}catch(err){$('#importError').textContent=err.message}}}catch(err){$('#backupMessage').textContent=err.message}};
 }
 function showAchievements(){
- const summary=progressSummary(state,subjects);
- modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Achievements</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><button id="backToProfile">Back to profile</button>`);
+ const summary=progressSummary(state,subjects),milestones=explorerMilestones(state,new Date().toISOString().slice(0,10));
+ modal(`<h2>My Learning Journey 🏆</h2><p><strong>${summary.total}</strong> lessons completed · <strong>${state.coins}</strong> BrightCoins</p><h3>Subject progress</h3><div class="cards">${subjects.map(s=>`<div><b>${s}</b><small>${summary.counts[s]} completed</small></div>`).join('')}</div><h3>Learning badges</h3><p>${summary.badges.length?summary.badges.join(' · '):'Complete your first lesson to earn a badge!'}</p><h3>Explorer milestones (${milestones.earned}/${milestones.total})</h3><div id="explorerMilestones"></div><button id="backToProfile">Back to profile</button>`);
+ const container=$('#explorerMilestones');
+ for(const milestone of milestones.milestones){const item=document.createElement('p');item.textContent=(milestone.earned?milestone.emoji+' ':'🔒 ')+milestone.name+' · '+milestone.progress+'/'+milestone.goal;container.append(item)}
  $('#backToProfile').onclick=showProfile;
 }
 function showDailyQuests(){
