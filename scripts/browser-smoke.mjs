@@ -13,6 +13,7 @@ const url=`http://127.0.0.1:${port}`;
 const production=process.env.BRIGHTPATH_BROWSER_MODE==='production';
 const artifactDir=resolve(process.env.BRIGHTPATH_TEST_ARTIFACTS||'test-artifacts/browser');
 const results=[];
+const selectedDevice=process.env.BRIGHTPATH_BROWSER_DEVICE||'both';
 const server=spawn('npm',['run',production?'preview':'dev','--','--host','127.0.0.1','--port',String(port),'--strictPort'],{stdio:'pipe'});
 let browser;
 let serverOutput='';
@@ -306,13 +307,13 @@ async function scenario(name,viewport){
 try{
  await ready();
  browser=await chromium.launch({headless:true});
- await scenario('desktop',{width:1280,height:800});
- await scenario('mobile',{width:390,height:844});
+ if(selectedDevice!=='mobile')await scenario('desktop',{width:1280,height:800});
+ if(selectedDevice!=='desktop')await scenario('mobile',{width:390,height:844});
 } catch(e){console.error('FAIL browser smoke:',e.message);if(serverOutput)console.error('Server output (last 6000 chars):',serverOutput);process.exitCode=1;}
 finally{
  await browser?.close();
  server.kill('SIGTERM');
  await mkdir(artifactDir,{recursive:true});
- await writeFile(join(artifactDir,'results.json'),JSON.stringify({mode:production?'production':'development',results,passed:results.length===2&&results.every(result=>result.status==='passed')},null,2)+'\n');
+ await writeFile(join(artifactDir,'results.json'),JSON.stringify({mode:production?'production':'development',results,passed:results.length===(selectedDevice==='both'?2:1)&&results.every(result=>result.status==='passed')},null,2)+'\n');
  if(serverOutput)await writeFile(join(artifactDir,'server.log'),serverOutput);
 }
