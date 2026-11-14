@@ -26,6 +26,10 @@ async function ready(){
  }
  throw new Error(`${production?'Production preview':'Development'} server did not become ready`);
 }
+async function closeModal(page){
+ await page.locator('#close').click({noWaitAfter:true,timeout:10000});
+ await page.locator('#modal').waitFor({state:'hidden',timeout:10000});
+}
 async function coinBalance(page){
  const value=Number((await page.locator('#coinCount').innerText()).match(/\d+/)?.[0]);
  if(!Number.isFinite(value))throw new Error('BrightCoins balance missing');
@@ -122,12 +126,12 @@ async function scenario(name,viewport){
   // First pass awards 25 coins; repeating the same topic awards only 5.
   checkpoint('begin lesson rewards');
   const startingCoins=await coinBalance(page);
-  await page.locator('#close').click();
+  await closeModal(page);
   await completeCountingLesson(page);
   checkpoint('first lesson completed');
   const firstReward=await coinBalance(page);
   if(firstReward!==startingCoins+25)throw new Error(`First lesson reward mismatch: ${startingCoins} -> ${firstReward}`);
-  await page.locator('#close').click();
+  await closeModal(page);
   await completeCountingLesson(page);
   checkpoint('repeat lesson completed');
   const repeatReward=await coinBalance(page);
@@ -138,7 +142,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click();
   await page.locator('#achievements').click();
   await page.getByText('1 lessons completed',{exact:false}).waitFor();
-  await page.locator('#close').click();
+  await closeModal(page);
   checkpoint('lesson rewards and reload');
   // Purchase a pet and furniture through the same controls families use.
   await page.locator('#profileBtn').click();
@@ -150,13 +154,13 @@ async function scenario(name,viewport){
   const purchaseBalance=repeatReward-115;
   if(await coinBalance(page)!==purchaseBalance)throw new Error('Furniture purchase did not deduct exactly 35 BrightCoins');
   if(!(await page.locator('[data-buy="lamp"]').isDisabled()))throw new Error('Purchased furniture can be bought again');
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#petCare').click();
   await page.getByText(/Your cat is/).waitFor();
   await page.locator('[data-pet-action="feed"]').click();
   await page.getByText(/Your cat is/).waitFor();
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#homeShortcut').click();
   await page.locator('[data-place="lamp"]').click();
@@ -168,7 +172,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click();
   await page.locator('#petCare').click();
   await page.getByText(/Your cat is/).waitFor();
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#homeShortcut').click();
   await page.locator('[data-remove="lamp"]').waitFor();
@@ -202,7 +206,7 @@ async function scenario(name,viewport){
    if(await coinBalance(page)!==discoveryCoins)throw new Error(`${id} quest reward mismatch`);
    if(!(await page.locator(`[data-quest="${id}"]`).isDisabled()))throw new Error(`${id} quest can be claimed twice`);
   }
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   if(await coinBalance(page)!==discoveryCoins)throw new Error('Discovery and quest rewards did not persist');
@@ -212,7 +216,7 @@ async function scenario(name,viewport){
    const button=page.locator(`[data-quest="${id}"]`);
    if(!(await button.isDisabled()))throw new Error(`${id} quest claim not persisted`);
   }
-  await page.locator('#close').click();
+  await closeModal(page);
   checkpoint('daily discoveries and quests');
   // A sibling must not inherit the first explorer's coins or achievements.
   await openFamily(page);
@@ -225,7 +229,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click();
   await page.locator('#achievements').click();
   await page.getByText('0 lessons completed',{exact:false}).waitFor();
-  await page.locator('#close').click();
+  await closeModal(page);
   await openFamily(page);
   await page.getByRole('button',{name:/Switch to Browser Test Child/}).click();
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
@@ -233,7 +237,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click();
   await page.locator('#achievements').click();
   await page.getByText('1 lessons completed',{exact:false}).waitFor();
-  await page.locator('#close').click();
+  await closeModal(page);
   checkpoint('sibling isolation');
   // Parent report must show each explorer's own attempts, achievements and charts.
   await page.locator('#profileBtn').click();
@@ -255,7 +259,7 @@ async function scenario(name,viewport){
   await page.locator('#revisionStudio').click();
   await page.getByText(/No topics need extra practice/).waitFor();
   await page.locator('#revisionBack').click();
-  await page.locator('#close').click();
+  await closeModal(page);
   // Recheck the report after a reload, not just from in-memory state.
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
@@ -264,19 +268,19 @@ async function scenario(name,viewport){
  await unlockParentMenu(page);
   await page.locator('.report-child').filter({has:page.getByRole('heading',{name:/Browser Test Child/})}).getByText(/Recorded attempts:\s*2/).waitFor();
   await page.locator('#reportBack').click();
-  await page.locator('#close').click();
+  await closeModal(page);
   checkpoint('parent reports and reload');
   // A genuine low score must trigger revision suggestions without awarding coins.
   const beforePractice=await coinBalance(page);
   await completeWeakCountingLesson(page);
   if(await coinBalance(page)!==beforePractice)throw new Error('A failed lesson awarded BrightCoins');
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#revisionStudio').click();
   await page.getByRole('button',{name:/Maths · Counting/}).waitFor();
   await page.getByText(/Practise next · Recent average 0%/).waitFor();
   await page.locator('#revisionBack').click();
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   await page.locator('#profileBtn').click();
@@ -294,25 +298,25 @@ async function scenario(name,viewport){
   }
   await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
   if(await coinBalance(page)!==beforePractice+5)throw new Error('Revision repeat lesson reward mismatch');
-  await page.locator('#close').click();
+  await closeModal(page);
   // The most recent three attempts govern suggestions; three strong attempts
   // after the weak one should clear it from the revision list.
   for(let i=0;i<2;i++){
    await completeCountingLesson(page);
-   await page.locator('#close').click();
+   await closeModal(page);
   }
   await page.locator('#profileBtn').click();
   await page.locator('#revisionStudio').click();
   await page.getByText(/No topics need extra practice/).waitFor();
   await page.locator('#revisionBack').click();
-  await page.locator('#close').click();
+  await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   await page.locator('#profileBtn').click();
   await page.locator('#revisionStudio').click();
   await page.getByText(/No topics need extra practice/).waitFor();
   await page.locator('#revisionBack').click();
-  await page.locator('#close').click();
+  await closeModal(page);
   checkpoint('weak-score revision and recovery');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
   if(overflow)throw new Error('Unexpected horizontal page overflow');
