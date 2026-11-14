@@ -69,9 +69,13 @@ async function openFamily(page){
 async function scenario(name,viewport){
  const context=await browser.newContext({viewport,deviceScaleFactor:1});
  const page=await context.newPage();
+ // Fail stalled interactions promptly and identify the last completed checkpoint.
+ page.setDefaultTimeout(10000);
+ page.setDefaultNavigationTimeout(25000);
  const errors=[];
  let stage='initial page load';
  const checkpoint=name=>{stage=name;console.log(`CHECK ${name} (${viewport.width}x${viewport.height})`);};
+ console.log(`START ${name} browser scenario (${viewport.width}x${viewport.height})`);
  page.on('pageerror',e=>errors.push(e.message));
  try {
   await page.goto(url,{waitUntil:'networkidle',timeout:30000});
