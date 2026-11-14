@@ -45,7 +45,7 @@ async function completeCountingLesson(page){
   const match=prompt.match(/What number comes after (\d+)\?/);
   if(!match)throw new Error(`Unexpected counting prompt: ${prompt}`);
   await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click();
-  await page.locator('#next').click({force:true});
+  await page.locator('#next').click({force:true,noWaitAfter:true});
   if((i+1)%5===0)console.log(`Counting lesson completed ${i+1}/20 questions`);
  }
  await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
@@ -65,7 +65,7 @@ async function completeWeakCountingLesson(page){
   const wrongIndex=labels.findIndex(label=>label.trim()!==correct);
   if(wrongIndex<0)throw new Error('No incorrect counting answer was offered');
   await options.nth(wrongIndex).click();
-  await page.locator('#next').click();
+  await page.locator('#next').click({noWaitAfter:true});
  }
  await page.getByRole('heading',{name:/Good practice/}).waitFor();
 }
@@ -74,7 +74,7 @@ async function unlockParentMenu(page){
  const pin=page.locator('#parentPinEntry');
  if(await pin.count()){
   await pin.fill(browserParentPin);
-  await page.locator('#parentPinContinue').click();
+  await page.locator('#parentPinContinue').click({noWaitAfter:true});
   await pin.waitFor({state:'detached'});
  }
 }
