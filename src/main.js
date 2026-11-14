@@ -524,6 +524,35 @@ function showParentReport(){
  $('#reportBack').onclick=showProfile;
 }
 function escapeReport(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+let passwordRecoveryPending=false;
+function showPasswordRecovery(){
+ passwordRecoveryPending=true;
+ modal(`<h2>Choose a new parent password</h2><p>Your recovery link has been verified. Set a new password for your BrightPath parent account.</p><label>New password <input id="recoveryNewPassword" type="password" autocomplete="new-password" minlength="8" maxlength="128"></label><label>Confirm new password <input id="recoveryConfirmPassword" type="password" autocomplete="new-password" minlength="8" maxlength="128"></label><button id="recoverySavePassword" type="button">Save new password</button><p id="recoveryPasswordStatus" role="alert" aria-live="polite"></p>`);
+ $('#recoverySavePassword').onclick=async()=>{
+  const password=$('#recoveryNewPassword').value;
+  const confirmation=$('#recoveryConfirmPassword').value;
+  const status=$('#recoveryPasswordStatus');
+  if(password.length<8||password.length>128){status.textContent='Choose a password between 8 and 128 characters.';return}
+  if(password!==confirmation){status.textContent='Passwords do not match.';return}
+  const button=$('#recoverySavePassword');button.disabled=true;status.textContent='Saving your password…';
+  try{await updateParentPassword(password);passwordRecoveryPending=false;await signOutParent();modal('<h2>Password updated</h2><p>Your new parent password has been saved. Please sign in using your email address and new password.</p><button id="recoveryGoToSignIn">Go to parent sign in</button>');$('#recoveryGoToSignIn').onclick=showCloudControls}
+  catch(error){status.textContent=error.message;button.disabled=false}
+ };
+}
+if(cloudConfigured()){
+ // Recovery links authenticate the user; the password form must take priority over normal signed-in UI.
+ const recoveryLink=/[?#&]type=recovery(?:&|$)/.test(location.href);
+ if(recoveryLink)passwordRecoveryPending=true;
+ cloudClient().then(client=>{
+  client.auth.onAuthStateChange((event)=>{
+   if(event==='PASSWORD_RECOVERY'){showPasswordRecovery()}
+  });
+  if(recoveryLink){
+   // Supabase may have processed the URL before the listener was attached.
+   client.auth.getSession().then(({data})=>{if(data.session&&passwordRecoveryPending)showPasswordRecovery()}).catch(()=>{});
+  }
+ }).catch(()=>{});
+}
 function showCloudControls(){
  modal(`<h2>Parent sign in</h2><p>Welcome back to BrightPath Learning.</p>${cloudConfigured()?'<div id="parentAuth"><label>Email address <input id="parentEmail" type="email" autocomplete="email"></label><label>Password <input id="parentPassword" type="password" autocomplete="current-password"></label><button id="parentLogin">Sign in</button><p><button id="parentRegister" type="button">Create an account</button> <button id="parentReset" type="button">Forgot password?</button></p><div id="parentPasswordSetup" hidden><p>After opening your password reset email, enter a new password above.</p><button id="parentSetPassword">Save new password</button></div></div><div id="parentCloudTools" hidden><h3>Family account</h3><button id="cloudPreview">View saved profiles</button><button id="cloudUpload">Back up current explorer</button><button id="cloudSyncNow">Save latest progress</button><label><input type="checkbox" id="autoCloudToggle" ${autoSyncEnabled(localStorage)?"checked":""}> Automatically sync linked progress</label><button id="cloudRestore">Restore saved progress</button><button id="optionalPinSettings">Optional device PIN settings</button><button id="cloudSignOut">Sign out</button></div>':'<p>Online parent accounts are not configured. Local profiles still work.</p>'}<button id="cloudRecovery">Recover earlier local progress</button><button id="cloudBack">Back to profile</button><p id="cloudStatus" role="status" aria-live="polite" style="position:sticky;bottom:0;background:#fff7e9;padding:12px;border-radius:12px;overflow-wrap:anywhere"></p>`);
  $('#cloudBack').onclick=showProfile;
@@ -533,12 +562,12 @@ function showCloudControls(){
  if(!cloudConfigured())return;
  const status=$('#cloudStatus');
  const showSignedIn=()=>{$('#parentAuth').hidden=true;$('#parentCloudTools').hidden=false;};
- parentAccount().then(user=>{if(user)showSignedIn()}).catch(()=>{});
+ parentAccount().then(user=>{if(user&&!passwordRecoveryPending)showSignedIn()}).catch(()=>{});
  const authEmail=()=>$('#parentEmail').value.trim();const authPassword=()=>$('#parentPassword').value;
  const runAuth=async(action,label)=>{status.textContent=label;try{const result=await action();status.textContent=typeof result==='string'?result:'Success.';$('#parentPassword').value='';}catch(e){status.textContent=e.message}};
  $('#parentLogin').onclick=()=>runAuth(async()=>{await signInParent(authEmail(),authPassword());showSignedIn();return 'Signed in successfully. Your family account is ready.'},'Signing in…');
  $('#parentRegister').onclick=()=>{const button=$('#parentRegister');if(button.dataset.mode!=='register'){button.dataset.mode='register';button.textContent='Finish creating account';status.textContent='Enter your email and choose a password (at least 8 characters), then tap Finish creating account.';return}runAuth(async()=>{const result=await registerParent(authEmail(),authPassword());if(result.signedIn)showSignedIn();return result.needsConfirmation?'Check your email to confirm your account, then sign in.':'Account created and signed in.'},'Creating account…')};
- $('#parentReset').onclick=()=>runAuth(async()=>{await resetParentPassword(authEmail());$('#parentPasswordSetup').hidden=false;return 'If an account exists, a password-reset email will arrive. Open its link, then set your new password here.'},'Requesting password reset…');
+ $('#parentReset').onclick=()=>runAuth(async()=>{await resetParentPassword(authEmail());return 'If an account exists, a password-reset email will arrive. Open its link to choose a new password.'},'Requesting password reset…');
  $('#parentSetPassword').onclick=()=>runAuth(async()=>{await updateParentPassword(authPassword());return 'Password updated. You can now sign in.'},'Updating password…');
  $('#cloudPreview').onclick=async()=>{status.textContent='Checking your account…';try{const user=await parentAccount();if(!user){status.textContent='Not signed in. Enter your email and password above.';return}const profiles=await previewParentCloudProfiles();status.textContent=`Signed in. ${profiles.length} cloud explorer profile(s) found. No data was changed.`}catch(e){status.textContent=e.message}};
  $('#cloudUpload').onclick=async()=>{status.textContent='Uploading…';try{save();await uploadCloudExplorer(activeProfile());linkCloudProfile(localStorage,activeProfile().id,0);autoCloud.resume();status.textContent='Cloud backup created and linked on this device (revision 0). Local progress remains saved.'}catch(e){status.textContent=e.message}};
