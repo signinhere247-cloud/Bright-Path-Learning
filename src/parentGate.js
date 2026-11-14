@@ -22,3 +22,10 @@ export async function verifyParentPin(store,pin){
  let diff=0;for(let i=0;i<actual.length;i++)diff|=actual.charCodeAt(i)^record.hash.charCodeAt(i);
  return diff===0;
 }
+
+/** Remove the optional device PIN only after proving knowledge of the current PIN. */
+export async function removeParentPin(store,pin){
+ if(!hasParentPin(store))return true;
+ if(!await verifyParentPin(store,pin))throw Error('Incorrect PIN. The device PIN was not removed.');
+ store.removeItem(KEY);return true;
+}
