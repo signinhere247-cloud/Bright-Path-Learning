@@ -54,7 +54,7 @@ async function answerCountingQuestion(page,correct=true){
 }
 async function completeCountingLesson(page){
  console.log('Counting lesson started');
- await page.locator('#learnBtn').click();
+ await page.locator('#learnBtn').click({noWaitAfter:true});
  await page.locator('[data-subject="Maths"]').click();
  await page.locator('[data-topic="Counting"]').click();
  for(let i=0;i<20;i++){
@@ -65,7 +65,7 @@ async function completeCountingLesson(page){
 }
 // Deliberately answer a counting lesson incorrectly to exercise genuine low-score history.
 async function completeWeakCountingLesson(page){
- await page.locator('#learnBtn').click();
+ await page.locator('#learnBtn').click({noWaitAfter:true});
  await page.locator('[data-subject="Maths"]').click();
  await page.locator('[data-topic="Counting"]').click();
  for(let i=0;i<20;i++){
