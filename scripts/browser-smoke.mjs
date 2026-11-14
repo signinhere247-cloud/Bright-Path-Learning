@@ -170,7 +170,7 @@ async function scenario(name,viewport){
   await page.locator('#startDecorating').click({noWaitAfter:true});
   await page.locator('#decoratorItem').selectOption('lamp');
   await page.locator('#decoratorAdd').click({noWaitAfter:true});
-  await page.locator('#decoratorItem option[value="lamp"]').waitFor();
+  await page.locator('#decoratorItem option[value="lamp"]').waitFor({state:'attached'});
   await page.locator('#decoratorDone').click({noWaitAfter:true});
   await page.locator('#exitHome').click({noWaitAfter:true});
   await page.reload({waitUntil:'networkidle',timeout:30000});
@@ -183,7 +183,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click({noWaitAfter:true});
   await page.locator('#homeShortcut').click({noWaitAfter:true});
   await page.locator('#startDecorating').click({noWaitAfter:true});
-  await page.locator('#decoratorItem option[value="lamp"]').waitFor();
+  await page.locator('#decoratorItem option[value="lamp"]').waitFor({state:'attached'});
   await page.locator('#decoratorDone').click({noWaitAfter:true});
   await page.locator('#exitHome').click({noWaitAfter:true});
   checkpoint('pet, furniture and purchase persistence');
