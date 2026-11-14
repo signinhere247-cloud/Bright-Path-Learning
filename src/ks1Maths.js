@@ -1,4 +1,4 @@
-// Key Stage 1 maths: age-adjusted Year 1–2 starter practice.
+// Key Stage 1 maths: introductory Year 1–2 practice.
 const topics={
  'Counting and sequences':'Count forwards and backwards and identify number patterns.',
  'Place value':'Understand tens and ones in two-digit numbers.',
