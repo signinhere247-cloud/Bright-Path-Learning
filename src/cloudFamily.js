@@ -14,10 +14,30 @@ export async function cloudClient(){
 export async function parentAccount(){
  const client=await cloudClient();const {data,error}=await client.auth.getUser();if(error)throw Error('Unable to verify the parent session. Please sign in again.');return data.user;
 }
-export async function requestParentLink(email){
- if(!validParentEmail(email))throw Error('Enter a valid parent email address.');
- const client=await cloudClient();const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname,shouldCreateUser:true}});
- if(error)throw Error('Unable to send the sign-in link. Please try again.');
+export function validParentPassword(value){return typeof value==='string' && value.length>=8 && value.length<=128;}
+export async function signInParent(email,password){
+ if(!validParentEmail(email))throw Error('Enter a valid email address.');
+ if(!password)throw Error('Enter your password.');
+ const client=await cloudClient();const {data,error}=await client.auth.signInWithPassword({email:email.trim(),password});
+ if(error){if(/invalid login credentials/i.test(error.message))throw Error('Email or password is incorrect. Please try again.');if(/email not confirmed/i.test(error.message))throw Error('Please confirm your email address before signing in.');throw Error('Sign-in failed: '+error.message);}
+ return data.user;
+}
+export async function registerParent(email,password){
+ if(!validParentEmail(email))throw Error('Enter a valid email address.');
+ if(!validParentPassword(password))throw Error('Use a password between 8 and 128 characters.');
+ const client=await cloudClient();const {data,error}=await client.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:location.origin+location.pathname}});
+ if(error)throw Error('Account could not be created: '+error.message);
+ return {signedIn:Boolean(data.session),needsConfirmation:!data.session};
+}
+export async function resetParentPassword(email){
+ if(!validParentEmail(email))throw Error('Enter your email address to reset your password.');
+ const client=await cloudClient();const {error}=await client.auth.resetPasswordForEmail(email.trim(),{redirectTo:location.origin+location.pathname});
+ if(error)throw Error('Password reset could not be requested: '+error.message);
+}
+export async function updateParentPassword(password){
+ if(!validParentPassword(password))throw Error('Use a password between 8 and 128 characters.');
+ const client=await cloudClient();const {error}=await client.auth.updateUser({password});
+ if(error)throw Error('Password could not be updated: '+error.message);
 }
 export async function signOutParent(){const client=await cloudClient();const {error}=await client.auth.signOut();if(error)throw Error('Sign-out failed. Please try again.');}
 /** Read-only preflight. No local progress is sent to the cloud. */
