@@ -298,13 +298,7 @@ async function scenario(name,viewport){
   // Practising from the recommendation itself must launch the correct topic.
   await page.getByRole('button',{name:/Maths · Counting/}).click({noWaitAfter:true});
   await page.locator('.question').waitFor();
-  for(let i=0;i<20;i++){
-   const prompt=await page.locator('.question').innerText();
-   const match=prompt.match(/What number comes after (\d+)\?/);
-   if(!match)throw new Error(`Revision launched the wrong topic: ${prompt}`);
-   await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click({noWaitAfter:true});
-   await page.locator('#next').click({noWaitAfter:true});
-  }
+  for(let i=0;i<20;i++)await answerCountingQuestion(page,true);
   await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
   if(await coinBalance(page)!==beforePractice+5)throw new Error('Revision repeat lesson reward mismatch');
   await closeModal(page);

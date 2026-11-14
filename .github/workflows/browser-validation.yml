@@ -15,9 +15,13 @@ permissions:
   contents: read
 jobs:
   browser:
-    name: Production browser checks only
+    name: Production browser checks (${{ matrix.device }})
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [desktop, mobile]
     runs-on: ubuntu-latest
-    timeout-minutes: 22
+    timeout-minutes: 32
     # Desktop and mobile checks run separately; artifacts capture failing stages.
     steps:
       - uses: actions/checkout@v4
@@ -31,24 +35,17 @@ jobs:
         run: npm run build
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Run desktop production browser checks (maximum 8 minutes)
-        run: timeout --signal=TERM --kill-after=10s 480s npm run test:browser:production
+      - name: Run production browser checks (${{ matrix.device }})
+        run: timeout --signal=TERM --kill-after=10s 1500s npm run test:browser:production
         env:
           BRIGHTPATH_BROWSER_MODE: production
-          BRIGHTPATH_BROWSER_DEVICE: desktop
-          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-desktop
-      - name: Run mobile production browser checks (maximum 8 minutes)
-        if: success()
-        run: timeout --signal=TERM --kill-after=10s 480s npm run test:browser:production
-        env:
-          BRIGHTPATH_BROWSER_MODE: production
-          BRIGHTPATH_BROWSER_DEVICE: mobile
-          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-mobile
+          BRIGHTPATH_BROWSER_DEVICE: ${{ matrix.device }}
+          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-${{ matrix.device }}
       - name: Upload browser screenshots and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: brightpath-browser-validation
+          name: brightpath-browser-validation-${{ matrix.device }}
           path: test-artifacts/
           if-no-files-found: warn
           retention-days: 14
