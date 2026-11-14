@@ -32,6 +32,7 @@ async function coinBalance(page){
  return value;
 }
 async function completeCountingLesson(page){
+ console.log('Counting lesson started');
  await page.locator('#learnBtn').click();
  await page.locator('[data-subject="Maths"]').click();
  await page.locator('[data-topic="Counting"]').click();
@@ -118,13 +119,16 @@ async function scenario(name,viewport){
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile reload persistence');
   // First pass awards 25 coins; repeating the same topic awards only 5.
+  checkpoint('begin lesson rewards');
   const startingCoins=await coinBalance(page);
   await page.locator('#close').click();
   await completeCountingLesson(page);
+  checkpoint('first lesson completed');
   const firstReward=await coinBalance(page);
   if(firstReward!==startingCoins+25)throw new Error(`First lesson reward mismatch: ${startingCoins} -> ${firstReward}`);
   await page.locator('#close').click();
   await completeCountingLesson(page);
+  checkpoint('repeat lesson completed');
   const repeatReward=await coinBalance(page);
   if(repeatReward!==firstReward+5)throw new Error(`Repeat lesson reward mismatch: ${firstReward} -> ${repeatReward}`);
   await page.reload({waitUntil:'networkidle',timeout:30000});
