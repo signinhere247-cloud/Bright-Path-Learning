@@ -55,8 +55,8 @@ async function answerCountingQuestion(page,correct=true){
 async function completeCountingLesson(page){
  console.log('Counting lesson started');
  await page.locator('#learnBtn').click({noWaitAfter:true});
- await page.locator('[data-subject="Maths"]').click();
- await page.locator('[data-topic="Counting"]').click();
+ await page.locator('[data-subject="Maths"]').click({noWaitAfter:true});
+ await page.locator('[data-topic="Counting"]').click({noWaitAfter:true});
  for(let i=0;i<20;i++){
   await answerCountingQuestion(page,true);
   if((i+1)%5===0)console.log(`Counting lesson completed ${i+1}/20 questions`);
@@ -66,8 +66,8 @@ async function completeCountingLesson(page){
 // Deliberately answer a counting lesson incorrectly to exercise genuine low-score history.
 async function completeWeakCountingLesson(page){
  await page.locator('#learnBtn').click({noWaitAfter:true});
- await page.locator('[data-subject="Maths"]').click();
- await page.locator('[data-topic="Counting"]').click();
+ await page.locator('[data-subject="Maths"]').click({noWaitAfter:true});
+ await page.locator('[data-topic="Counting"]').click({noWaitAfter:true});
  for(let i=0;i<20;i++){
   await answerCountingQuestion(page,false);
  }
@@ -83,8 +83,8 @@ async function unlockParentMenu(page){
  }
 }
 async function openFamily(page){
- await page.locator('#profileBtn').click();
- await page.getByRole('button',{name:'Family explorers'}).click();
+ await page.locator('#profileBtn').click({noWaitAfter:true});
+ await page.getByRole('button',{name:'Family explorers'}).click({noWaitAfter:true});
  await unlockParentMenu(page);
 }
 async function scenario(name,viewport){
@@ -101,29 +101,29 @@ async function scenario(name,viewport){
  try {
   await page.goto(url,{waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
-  await page.locator('#profileBtn').click();
-  await page.getByRole('button',{name:'Family explorers'}).click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.getByRole('button',{name:'Family explorers'}).click({noWaitAfter:true});
  await unlockParentMenu(page);
   await page.locator('#newExplorerName').fill('Browser Test Child');
   await page.locator('#newExplorerAge').selectOption('8');
-  await page.locator('#addExplorer').click();
-  await page.locator('#profileBtn').click();
-  await page.getByRole('button',{name:'Family explorers'}).click();
+  await page.locator('#addExplorer').click({noWaitAfter:true});
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.getByRole('button',{name:'Family explorers'}).click({noWaitAfter:true});
  await unlockParentMenu(page);
   // Creating a child automatically makes that child the active explorer.
   await page.getByText('Browser Test Child (current)').waitFor();
   // Exercise an actual switch to the original explorer, then back again.
-  await page.getByRole('button',{name:/Switch to Explorer$/}).click();
+  await page.getByRole('button',{name:/Switch to Explorer$/}).click({noWaitAfter:true});
   await openFamily(page);
-  await page.getByRole('button',{name:/Switch to Browser Test Child/}).click();
+  await page.getByRole('button',{name:/Switch to Browser Test Child/}).click({noWaitAfter:true});
   await openFamily(page);
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile creation and switching');
   // Confirm the active explorer survives a genuine page reload.
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
-  await page.locator('#profileBtn').click();
-  await page.getByRole('button',{name:'Family explorers'}).click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.getByRole('button',{name:'Family explorers'}).click({noWaitAfter:true});
  await unlockParentMenu(page);
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile reload persistence');
@@ -143,74 +143,74 @@ async function scenario(name,viewport){
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   if(await coinBalance(page)!==repeatReward)throw new Error('Repeat lesson coins were not persisted after reload');
-  await page.locator('#profileBtn').click();
-  await page.locator('#achievements').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#achievements').click({noWaitAfter:true});
   await page.getByText('1 lessons completed',{exact:false}).waitFor();
   await closeModal(page);
   checkpoint('lesson rewards and reload');
   // Purchase a pet and furniture through the same controls families use.
-  await page.locator('#profileBtn').click();
-  await page.locator('#shopShortcut').click();
-  await page.locator('[data-buy="cat"]').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#shopShortcut').click({noWaitAfter:true});
+  await page.locator('[data-buy="cat"]').click({noWaitAfter:true});
   if(await coinBalance(page)!==repeatReward-80)throw new Error('Pet adoption did not deduct exactly 80 BrightCoins');
   if(!(await page.locator('[data-buy="dog"]').isDisabled()))throw new Error('A second pet can still be adopted');
-  await page.locator('[data-buy="lamp"]').click();
+  await page.locator('[data-buy="lamp"]').click({noWaitAfter:true});
   const purchaseBalance=repeatReward-115;
   if(await coinBalance(page)!==purchaseBalance)throw new Error('Furniture purchase did not deduct exactly 35 BrightCoins');
   if(!(await page.locator('[data-buy="lamp"]').isDisabled()))throw new Error('Purchased furniture can be bought again');
   await closeModal(page);
-  await page.locator('#profileBtn').click();
-  await page.locator('#petCare').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#petCare').click({noWaitAfter:true});
   await page.getByText(/Your cat is/).waitFor();
-  await page.locator('[data-pet-action="feed"]').click();
+  await page.locator('[data-pet-action="feed"]').click({noWaitAfter:true});
   await page.getByText(/Your cat is/).waitFor();
   await closeModal(page);
-  await page.locator('#profileBtn').click();
-  await page.locator('#homeShortcut').click();
-  await page.locator('#startDecorating').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#homeShortcut').click({noWaitAfter:true});
+  await page.locator('#startDecorating').click({noWaitAfter:true});
   await page.locator('#decoratorItem').selectOption('lamp');
-  await page.locator('#decoratorAdd').click();
+  await page.locator('#decoratorAdd').click({noWaitAfter:true});
   await page.locator('#decoratorItem option[value="lamp"]').waitFor();
-  await page.locator('#decoratorDone').click();
-  await page.locator('#exitHome').click();
+  await page.locator('#decoratorDone').click({noWaitAfter:true});
+  await page.locator('#exitHome').click({noWaitAfter:true});
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   if(await coinBalance(page)!==purchaseBalance)throw new Error('Purchase balance was not saved after reload');
-  await page.locator('#profileBtn').click();
-  await page.locator('#petCare').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#petCare').click({noWaitAfter:true});
   await page.getByText(/Your cat is/).waitFor();
   await closeModal(page);
-  await page.locator('#profileBtn').click();
-  await page.locator('#homeShortcut').click();
-  await page.locator('#startDecorating').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#homeShortcut').click({noWaitAfter:true});
+  await page.locator('#startDecorating').click({noWaitAfter:true});
   await page.locator('#decoratorItem option[value="lamp"]').waitFor();
-  await page.locator('#decoratorDone').click();
-  await page.locator('#exitHome').click();
+  await page.locator('#decoratorDone').click({noWaitAfter:true});
+  await page.locator('#exitHome').click({noWaitAfter:true});
   checkpoint('pet, furniture and purchase persistence');
   // All three discoveries award once per UTC day; quests are claimed once too.
   const discoveries=[['pond','Frogs'],['garden','Roots'],['observatory','The Sun']];
   let discoveryCoins=await coinBalance(page);
   for(const [id,answer] of discoveries){
-   await page.locator('#profileBtn').click();
-   await page.locator('#discoveryShortcut').click();
-   await page.locator(`[data-open-discovery="${id}"]`).click();
-   await page.locator('[data-discovery-choice]').filter({hasText:answer}).click();
+   await page.locator('#profileBtn').click({noWaitAfter:true});
+   await page.locator('#discoveryShortcut').click({noWaitAfter:true});
+   await page.locator(`[data-open-discovery="${id}"]`).click({noWaitAfter:true});
+   await page.locator('[data-discovery-choice]').filter({hasText:answer}).click({noWaitAfter:true});
    if(await coinBalance(page)!==discoveryCoins+8)throw new Error(`${id} discovery reward mismatch`);
    discoveryCoins+=8;
-   await page.locator('#discoveryClose').click();
-   await page.locator('#profileBtn').click();
-   await page.locator('#discoveryShortcut').click();
-   await page.locator(`[data-open-discovery="${id}"]`).click();
-   await page.locator('[data-discovery-choice]').filter({hasText:answer}).click();
+   await page.locator('#discoveryClose').click({noWaitAfter:true});
+   await page.locator('#profileBtn').click({noWaitAfter:true});
+   await page.locator('#discoveryShortcut').click({noWaitAfter:true});
+   await page.locator(`[data-open-discovery="${id}"]`).click({noWaitAfter:true});
+   await page.locator('[data-discovery-choice]').filter({hasText:answer}).click({noWaitAfter:true});
    if(await coinBalance(page)!==discoveryCoins)throw new Error(`${id} discovery rewarded twice in one day`);
-   await page.locator('#discoveryClose').click();
+   await page.locator('#discoveryClose').click({noWaitAfter:true});
   }
-  await page.locator('#profileBtn').click();
-  await page.locator('#dailyQuests').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#dailyQuests').click({noWaitAfter:true});
   for(const [id,reward] of [['first-discovery',12],['three-discoveries',20],['one-lesson',15]]){
    const button=page.locator(`[data-quest="${id}"]`);
    if(await button.isDisabled())throw new Error(`${id} quest not ready after activities`);
-   await button.click();
+   await button.click({noWaitAfter:true});
    discoveryCoins+=reward;
    if(await coinBalance(page)!==discoveryCoins)throw new Error(`${id} quest reward mismatch`);
    if(!(await page.locator(`[data-quest="${id}"]`).isDisabled()))throw new Error(`${id} quest can be claimed twice`);
@@ -219,8 +219,8 @@ async function scenario(name,viewport){
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   if(await coinBalance(page)!==discoveryCoins)throw new Error('Discovery and quest rewards did not persist');
-  await page.locator('#profileBtn').click();
-  await page.locator('#dailyQuests').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#dailyQuests').click({noWaitAfter:true});
   for(const [id] of [['first-discovery'],['three-discoveries'],['one-lesson']]){
    const button=page.locator(`[data-quest="${id}"]`);
    if(!(await button.isDisabled()))throw new Error(`${id} quest claim not persisted`);
@@ -231,26 +231,26 @@ async function scenario(name,viewport){
   await openFamily(page);
   await page.locator('#newExplorerName').fill('Sibling Test Child');
   await page.locator('#newExplorerAge').selectOption('8');
-  await page.locator('#addExplorer').click();
+  await page.locator('#addExplorer').click({noWaitAfter:true});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   const siblingCoins=await coinBalance(page);
   if(siblingCoins!==100)throw new Error(`New sibling inherited coins: ${siblingCoins}`);
-  await page.locator('#profileBtn').click();
-  await page.locator('#achievements').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#achievements').click({noWaitAfter:true});
   await page.getByText('0 lessons completed',{exact:false}).waitFor();
   await closeModal(page);
   await openFamily(page);
-  await page.getByRole('button',{name:/Switch to Browser Test Child/}).click();
+  await page.getByRole('button',{name:/Switch to Browser Test Child/}).click({noWaitAfter:true});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   if(await coinBalance(page)!==discoveryCoins)throw new Error('Original explorer coins changed after switching siblings');
-  await page.locator('#profileBtn').click();
-  await page.locator('#achievements').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#achievements').click({noWaitAfter:true});
   await page.getByText('1 lessons completed',{exact:false}).waitFor();
   await closeModal(page);
   checkpoint('sibling isolation');
   // Parent report must show each explorer's own attempts, achievements and charts.
-  await page.locator('#profileBtn').click();
-  await page.locator('#parentReport').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#parentReport').click({noWaitAfter:true});
  await unlockParentMenu(page);
   const report=page.locator('.report-child');
   if(await report.count()!==3)throw new Error('Parent report did not include all three family explorers');
@@ -264,19 +264,19 @@ async function scenario(name,viewport){
   await sibling.getByText(/Recorded attempts:\s*0/).waitFor();
   await sibling.getByText(/Completed topics:\s*0/).waitFor();
   await sibling.getByText('No scored attempts recorded yet.').waitFor();
-  await page.locator('#reportBack').click();
-  await page.locator('#revisionStudio').click();
+  await page.locator('#reportBack').click({noWaitAfter:true});
+  await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByText(/No topics need extra practice/).waitFor();
-  await page.locator('#revisionBack').click();
+  await page.locator('#revisionBack').click({noWaitAfter:true});
   await closeModal(page);
   // Recheck the report after a reload, not just from in-memory state.
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
-  await page.locator('#profileBtn').click();
-  await page.locator('#parentReport').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#parentReport').click({noWaitAfter:true});
  await unlockParentMenu(page);
   await page.locator('.report-child').filter({has:page.getByRole('heading',{name:/Browser Test Child/})}).getByText(/Recorded attempts:\s*2/).waitFor();
-  await page.locator('#reportBack').click();
+  await page.locator('#reportBack').click({noWaitAfter:true});
   await closeModal(page);
   checkpoint('parent reports and reload');
   // A genuine low score must trigger revision suggestions without awarding coins.
@@ -284,26 +284,26 @@ async function scenario(name,viewport){
   await completeWeakCountingLesson(page);
   if(await coinBalance(page)!==beforePractice)throw new Error('A failed lesson awarded BrightCoins');
   await closeModal(page);
-  await page.locator('#profileBtn').click();
-  await page.locator('#revisionStudio').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByRole('button',{name:/Maths · Counting/}).waitFor();
   await page.getByText(/Practise next · Recent average 0%/).waitFor();
-  await page.locator('#revisionBack').click();
+  await page.locator('#revisionBack').click({noWaitAfter:true});
   await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
-  await page.locator('#profileBtn').click();
-  await page.locator('#revisionStudio').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByRole('button',{name:/Maths · Counting/}).waitFor();
   // Practising from the recommendation itself must launch the correct topic.
-  await page.getByRole('button',{name:/Maths · Counting/}).click();
+  await page.getByRole('button',{name:/Maths · Counting/}).click({noWaitAfter:true});
   await page.locator('.question').waitFor();
   for(let i=0;i<20;i++){
    const prompt=await page.locator('.question').innerText();
    const match=prompt.match(/What number comes after (\d+)\?/);
    if(!match)throw new Error(`Revision launched the wrong topic: ${prompt}`);
-   await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click();
-   await page.locator('#next').click();
+   await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click({noWaitAfter:true});
+   await page.locator('#next').click({noWaitAfter:true});
   }
   await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
   if(await coinBalance(page)!==beforePractice+5)throw new Error('Revision repeat lesson reward mismatch');
@@ -314,17 +314,17 @@ async function scenario(name,viewport){
    await completeCountingLesson(page);
    await closeModal(page);
   }
-  await page.locator('#profileBtn').click();
-  await page.locator('#revisionStudio').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByText(/No topics need extra practice/).waitFor();
-  await page.locator('#revisionBack').click();
+  await page.locator('#revisionBack').click({noWaitAfter:true});
   await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
-  await page.locator('#profileBtn').click();
-  await page.locator('#revisionStudio').click();
+  await page.locator('#profileBtn').click({noWaitAfter:true});
+  await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByText(/No topics need extra practice/).waitFor();
-  await page.locator('#revisionBack').click();
+  await page.locator('#revisionBack').click({noWaitAfter:true});
   await closeModal(page);
   checkpoint('weak-score revision and recovery');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
