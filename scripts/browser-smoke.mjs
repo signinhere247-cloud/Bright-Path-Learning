@@ -167,8 +167,11 @@ async function scenario(name,viewport){
   await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#homeShortcut').click();
-  await page.locator('[data-place="lamp"]').click();
-  await page.locator('[data-remove="lamp"]').waitFor();
+  await page.locator('#startDecorating').click();
+  await page.locator('#decoratorItem').selectOption('lamp');
+  await page.locator('#decoratorAdd').click();
+  await page.locator('#decoratorItem option[value="lamp"]').waitFor();
+  await page.locator('#decoratorDone').click();
   await page.locator('#exitHome').click();
   await page.reload({waitUntil:'networkidle',timeout:30000});
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
@@ -179,7 +182,9 @@ async function scenario(name,viewport){
   await closeModal(page);
   await page.locator('#profileBtn').click();
   await page.locator('#homeShortcut').click();
-  await page.locator('[data-remove="lamp"]').waitFor();
+  await page.locator('#startDecorating').click();
+  await page.locator('#decoratorItem option[value="lamp"]').waitFor();
+  await page.locator('#decoratorDone').click();
   await page.locator('#exitHome').click();
   checkpoint('pet, furniture and purchase persistence');
   // All three discoveries award once per UTC day; quests are claimed once too.
