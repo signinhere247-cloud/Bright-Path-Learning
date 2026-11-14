@@ -17,7 +17,7 @@ jobs:
   browser:
     name: Production browser checks only
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,16 +30,24 @@ jobs:
         run: npm run build
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Run desktop and mobile production browser checks
-        run: npm run test:browser:production
+      - name: Run desktop production browser checks (maximum 5 minutes)
+        run: timeout --signal=TERM --kill-after=10s 300s npm run test:browser:production
         env:
           BRIGHTPATH_BROWSER_MODE: production
-          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser
+          BRIGHTPATH_BROWSER_DEVICE: desktop
+          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-desktop
+      - name: Run mobile production browser checks (maximum 5 minutes)
+        if: success()
+        run: timeout --signal=TERM --kill-after=10s 300s npm run test:browser:production
+        env:
+          BRIGHTPATH_BROWSER_MODE: production
+          BRIGHTPATH_BROWSER_DEVICE: mobile
+          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-mobile
       - name: Upload browser screenshots and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: brightpath-browser-validation
-          path: test-artifacts/browser/
+          path: test-artifacts/
           if-no-files-found: warn
           retention-days: 14
