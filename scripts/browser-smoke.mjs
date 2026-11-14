@@ -100,10 +100,13 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click();
   await page.getByRole('button',{name:'Family explorers'}).click();
  await unlockParentMenu(page);
+  // Creating a child automatically makes that child the active explorer.
+  await page.getByText('Browser Test Child (current)').waitFor();
+  // Exercise an actual switch to the original explorer, then back again.
+  await page.getByRole('button',{name:/Switch to Explorer$/}).click();
+  await openFamily(page);
   await page.getByRole('button',{name:/Switch to Browser Test Child/}).click();
-  await page.locator('#profileBtn').click();
-  await page.getByRole('button',{name:'Family explorers'}).click();
- await unlockParentMenu(page);
+  await openFamily(page);
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile creation and switching');
   // Confirm the active explorer survives a genuine page reload.
