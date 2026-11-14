@@ -1,5 +1,5 @@
 import {hasParentPin,setParentPin,verifyParentPin,removeParentPin} from './parentGate.js';
-import {cloudConfigured,parentAccount,signInParent,registerParent,resetParentPassword,updateParentPassword,signOutParent,previewParentCloudProfiles,uploadCloudExplorer,listCloudExplorers,downloadCloudExplorer,syncCloudExplorer} from './cloudFamily.js';
+import {cloudConfigured,cloudClient,parentAccount,signInParent,registerParent,resetParentPassword,updateParentPassword,signOutParent,previewParentCloudProfiles,uploadCloudExplorer,listCloudExplorers,downloadCloudExplorer,syncCloudExplorer} from './cloudFamily.js';
 import {prepareCloudRestore} from './cloudSaves.js';
 import {applyCloudRestore,inspectCloudRecovery,restoreCloudRecovery,clearCloudRecovery} from './cloudRecovery.js';
 import {readSyncLinks,linkCloudProfile} from './cloudSync.js';
