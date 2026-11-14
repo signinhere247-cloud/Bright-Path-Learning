@@ -18,6 +18,7 @@ jobs:
     name: Production browser checks only
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Desktop and mobile checks run separately; artifacts capture failing stages.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
