@@ -38,7 +38,7 @@ async function coinBalance(page){
 async function answerCountingQuestion(page,correct=true){
  const result=await page.evaluate(chooseCorrect=>{
   const prompt=document.querySelector('.question')?.textContent||'';
-  const match=prompt.match(/What number comes after (\\d+)\\?/);
+  const match=prompt.match(/What number comes after (\d+)\?/);
   if(!match)return {error:'Unexpected counting prompt: '+prompt};
   const expected=String(Number(match[1])+1);
   const options=[...document.querySelectorAll('.choices button')];
