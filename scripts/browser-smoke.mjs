@@ -35,17 +35,30 @@ async function coinBalance(page){
  if(!Number.isFinite(value))throw new Error('BrightCoins balance missing');
  return value;
 }
+async function answerCountingQuestion(page,correct=true){
+ const result=await page.evaluate(chooseCorrect=>{
+  const prompt=document.querySelector('.question')?.textContent||'';
+  const match=prompt.match(/What number comes after (\\d+)\\?/);
+  if(!match)return {error:'Unexpected counting prompt: '+prompt};
+  const expected=String(Number(match[1])+1);
+  const options=[...document.querySelectorAll('.choices button')];
+  const selected=options.find(button=>((button.textContent||'').trim()===expected)===chooseCorrect);
+  if(!selected)return {error:'No matching answer option for: '+prompt};
+  selected.click();
+  const next=document.querySelector('#next');
+  if(!next)return {error:'Answer did not reveal Next button: '+prompt};
+  next.click();
+  return {ok:true};
+ },correct);
+ if(result.error)throw new Error(result.error);
+}
 async function completeCountingLesson(page){
  console.log('Counting lesson started');
  await page.locator('#learnBtn').click();
  await page.locator('[data-subject="Maths"]').click();
  await page.locator('[data-topic="Counting"]').click();
  for(let i=0;i<20;i++){
-  const prompt=await page.locator('.question').innerText();
-  const match=prompt.match(/What number comes after (\d+)\?/);
-  if(!match)throw new Error(`Unexpected counting prompt: ${prompt}`);
-  await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click();
-  await page.locator('#next').click({force:true,noWaitAfter:true});
+  await answerCountingQuestion(page,true);
   if((i+1)%5===0)console.log(`Counting lesson completed ${i+1}/20 questions`);
  }
  await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
@@ -56,16 +69,7 @@ async function completeWeakCountingLesson(page){
  await page.locator('[data-subject="Maths"]').click();
  await page.locator('[data-topic="Counting"]').click();
  for(let i=0;i<20;i++){
-  const prompt=await page.locator('.question').innerText();
-  const match=prompt.match(/What number comes after (\d+)\?/);
-  if(!match)throw new Error(`Unexpected counting prompt: ${prompt}`);
-  const correct=String(Number(match[1])+1);
-  const options=page.locator('.choices button');
-  const labels=await options.allInnerTexts();
-  const wrongIndex=labels.findIndex(label=>label.trim()!==correct);
-  if(wrongIndex<0)throw new Error('No incorrect counting answer was offered');
-  await options.nth(wrongIndex).click();
-  await page.locator('#next').click({noWaitAfter:true});
+  await answerCountingQuestion(page,false);
  }
  await page.getByRole('heading',{name:/Good practice/}).waitFor();
 }
