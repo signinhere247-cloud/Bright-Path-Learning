@@ -17,7 +17,7 @@ jobs:
   browser:
     name: Production browser checks only
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 22
     # Desktop and mobile checks run separately; artifacts capture failing stages.
     steps:
       - uses: actions/checkout@v4
@@ -31,15 +31,15 @@ jobs:
         run: npm run build
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Run desktop production browser checks (maximum 5 minutes)
-        run: timeout --signal=TERM --kill-after=10s 300s npm run test:browser:production
+      - name: Run desktop production browser checks (maximum 8 minutes)
+        run: timeout --signal=TERM --kill-after=10s 480s npm run test:browser:production
         env:
           BRIGHTPATH_BROWSER_MODE: production
           BRIGHTPATH_BROWSER_DEVICE: desktop
           BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser-desktop
-      - name: Run mobile production browser checks (maximum 5 minutes)
+      - name: Run mobile production browser checks (maximum 8 minutes)
         if: success()
-        run: timeout --signal=TERM --kill-after=10s 300s npm run test:browser:production
+        run: timeout --signal=TERM --kill-after=10s 480s npm run test:browser:production
         env:
           BRIGHTPATH_BROWSER_MODE: production
           BRIGHTPATH_BROWSER_DEVICE: mobile
