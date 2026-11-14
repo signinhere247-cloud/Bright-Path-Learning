@@ -63,9 +63,19 @@ async function completeWeakCountingLesson(page){
  }
  await page.getByRole('heading',{name:/Good practice/}).waitFor();
 }
+const browserParentPin='846291';
+async function unlockParentMenu(page){
+ const pin=page.locator('#parentPinEntry');
+ if(await pin.count()){
+  await pin.fill(browserParentPin);
+  await page.locator('#parentPinContinue').click();
+  await pin.waitFor({state:'detached'});
+ }
+}
 async function openFamily(page){
  await page.locator('#profileBtn').click();
  await page.getByRole('button',{name:'Family explorers'}).click();
+ await unlockParentMenu(page);
 }
 async function scenario(name,viewport){
  const context=await browser.newContext({viewport,deviceScaleFactor:1});
@@ -83,14 +93,17 @@ async function scenario(name,viewport){
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   await page.locator('#profileBtn').click();
   await page.getByRole('button',{name:'Family explorers'}).click();
+ await unlockParentMenu(page);
   await page.locator('#newExplorerName').fill('Browser Test Child');
   await page.locator('#newExplorerAge').selectOption('8');
   await page.locator('#addExplorer').click();
   await page.locator('#profileBtn').click();
   await page.getByRole('button',{name:'Family explorers'}).click();
+ await unlockParentMenu(page);
   await page.getByRole('button',{name:/Switch to Browser Test Child/}).click();
   await page.locator('#profileBtn').click();
   await page.getByRole('button',{name:'Family explorers'}).click();
+ await unlockParentMenu(page);
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile creation and switching');
   // Confirm the active explorer survives a genuine page reload.
@@ -98,6 +111,7 @@ async function scenario(name,viewport){
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   await page.locator('#profileBtn').click();
   await page.getByRole('button',{name:'Family explorers'}).click();
+ await unlockParentMenu(page);
   await page.getByText('Browser Test Child (current)').waitFor();
   checkpoint('profile reload persistence');
   // First pass awards 25 coins; repeating the same topic awards only 5.
@@ -216,6 +230,7 @@ async function scenario(name,viewport){
   // Parent report must show each explorer's own attempts, achievements and charts.
   await page.locator('#profileBtn').click();
   await page.locator('#parentReport').click();
+ await unlockParentMenu(page);
   const report=page.locator('.report-child');
   if(await report.count()!==3)throw new Error('Parent report did not include all three family explorers');
   const firstChild=report.filter({has:page.getByRole('heading',{name:/Browser Test Child/})});
@@ -238,6 +253,7 @@ async function scenario(name,viewport){
   await page.locator('#game canvas').waitFor({state:'visible',timeout:15000});
   await page.locator('#profileBtn').click();
   await page.locator('#parentReport').click();
+ await unlockParentMenu(page);
   await page.locator('.report-child').filter({has:page.getByRole('heading',{name:/Browser Test Child/})}).getByText(/Recorded attempts:\s*2/).waitFor();
   await page.locator('#reportBack').click();
   await page.locator('#close').click();
@@ -316,4 +332,7 @@ finally{
  await mkdir(artifactDir,{recursive:true});
  await writeFile(join(artifactDir,'results.json'),JSON.stringify({mode:production?'production':'development',results,passed:results.length===(selectedDevice==='both'?2:1)&&results.every(result=>result.status==='passed')},null,2)+'\n');
  if(serverOutput)await writeFile(join(artifactDir,'server.log'),serverOutput);
+ // Vite runs through npm and can leave a descendant process keeping Node alive.
+ // All browser contexts, diagnostics and results are complete at this point.
+ process.exit(process.exitCode||0);
 }
