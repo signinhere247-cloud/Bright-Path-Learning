@@ -41,7 +41,8 @@ async function completeCountingLesson(page){
   const match=prompt.match(/What number comes after (\d+)\?/);
   if(!match)throw new Error(`Unexpected counting prompt: ${prompt}`);
   await page.locator('.choices button').filter({hasText:new RegExp(`^${Number(match[1])+1}$`)}).click();
-  await page.locator('#next').click();
+  await page.locator('#next').click({force:true});
+  if((i+1)%5===0)console.log(`Counting lesson completed ${i+1}/20 questions`);
  }
  await page.getByRole('heading',{name:/Lesson complete/}).waitFor();
 }
@@ -79,7 +80,7 @@ async function openFamily(page){
  await unlockParentMenu(page);
 }
 async function scenario(name,viewport){
- const context=await browser.newContext({viewport,deviceScaleFactor:1});
+ const context=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:'reduce'});
  const page=await context.newPage();
  // Fail stalled interactions promptly and identify the last completed checkpoint.
  page.setDefaultTimeout(10000);
