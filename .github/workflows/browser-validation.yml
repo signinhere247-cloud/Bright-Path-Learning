@@ -1,0 +1,45 @@
+name: Standalone browser validation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/browser-smoke.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/browser-validation.yml'
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  browser:
+    name: Production browser checks only
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build production site for browser testing
+        run: npm run build
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run desktop and mobile production browser checks
+        run: npm run test:browser:production
+        env:
+          BRIGHTPATH_BROWSER_MODE: production
+          BRIGHTPATH_TEST_ARTIFACTS: test-artifacts/browser
+      - name: Upload browser screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightpath-browser-validation
+          path: test-artifacts/browser/
+          if-no-files-found: warn
+          retention-days: 14
