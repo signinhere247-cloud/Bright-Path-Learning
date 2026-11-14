@@ -287,7 +287,7 @@ async function scenario(name,viewport){
   await page.locator('#profileBtn').click({noWaitAfter:true});
   await page.locator('#revisionStudio').click({noWaitAfter:true});
   await page.getByRole('button',{name:/Maths · Counting/}).waitFor();
-  await page.getByText(/Practise next · Recent average 0%/).waitFor();
+  await page.getByText(/Practise next · Recent average 67%/).waitFor();
   await page.locator('#revisionBack').click({noWaitAfter:true});
   await closeModal(page);
   await page.reload({waitUntil:'networkidle',timeout:30000});
