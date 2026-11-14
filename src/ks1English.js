@@ -5,7 +5,7 @@ export const ks1EnglishTopics=Object.keys(bank).map(topic=>[topic,intros[topic]]
 export function ks1EnglishLesson(topic,age){
  if(!Number.isInteger(age)||age<5||age>7)throw Error('KS1 English lessons are designed for ages 5–7.');
  const items=bank[topic];if(!items)throw Error('Unknown KS1 English topic.');
- const questions=items.map(([prompt,answer,a,b])=>({prompt,answer,options:[answer,a,b],explanation:'The correct answer is '+answer+'. Discuss why with a grown-up.'}));
+ const questions=items.map(([prompt,answer,a,b],i)=>({prompt:prompt==='Which spelling is correct?'?'Which is the correct spelling of word '+(i+1)+'?':prompt,answer,options:[answer,a,b],explanation:'The correct answer is '+answer+'. Discuss why with a grown-up.'}));
  if(questions.length!==10||new Set(questions.map(q=>q.prompt)).size!==10||questions.some(q=>new Set(q.options).size!==3||!q.options.includes(q.answer)))throw Error('KS1 English content validation failed.');
  return {intro:intros[topic],questions};
 }
