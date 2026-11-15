@@ -16,7 +16,8 @@
     "check:preview": "node scripts/preview-safety.mjs",
     "check:package": "node scripts/package-readiness.mjs",
     "check:output": "node scripts/production-output.mjs",
-    "test:browser:production": "node scripts/browser-smoke.mjs"
+    "test:browser:production": "node scripts/browser-smoke.mjs",
+    "audit:curriculum": "node scripts/curriculum-audit.mjs"
   },
   "dependencies": {
     "three": "^0.170.0",
