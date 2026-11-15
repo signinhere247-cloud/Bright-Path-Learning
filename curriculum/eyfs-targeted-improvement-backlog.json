@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "description": "Editorial improvement candidates; not educator-verified curriculum deficiencies.",
+  "items": [
+    {
+      "goalId": "EYFS-01-1",
+      "focus": "Follow multi-step spoken directions and respond to questions in context",
+      "priority": "high",
+      "proposal": "Add adult-led listen-and-do story play with optional gesture/AAC responses"
+    },
+    {
+      "goalId": "EYFS-02-1",
+      "focus": "Use regulation strategies in a familiar real-life transition",
+      "priority": "high",
+      "proposal": "Add child-led calm-choice routine with adult observation rather than scored emotions"
+    },
+    {
+      "goalId": "EYFS-03-1",
+      "focus": "Move with control across different safe surfaces and negotiate obstacles",
+      "priority": "medium",
+      "proposal": "Add adaptable movement route with seated alternatives and supervision"
+    },
+    {
+      "goalId": "EYFS-04-2",
+      "focus": "Practise blending and reading age-appropriate words with systematic phonics",
+      "priority": "high",
+      "proposal": "Add explicit phonics sequence and review alignment to a chosen SSP programme"
+    },
+    {
+      "goalId": "EYFS-04-3",
+      "focus": "Compose meaningful spoken sentences and attempt written communication",
+      "priority": "high",
+      "proposal": "Add shared-message writing activity with emergent marks, letter formation and adaptations"
+    },
+    {
+      "goalId": "EYFS-05-1",
+      "focus": "Subitise small sets and understand number composition",
+      "priority": "high",
+      "proposal": "Add rapid-notice dot patterns and make-five practical composition play"
+    },
+    {
+      "goalId": "EYFS-05-2",
+      "focus": "Compare quantities and explore number patterns beyond shapes",
+      "priority": "medium",
+      "proposal": "Add real-object compare and odd/even exploratory patterns"
+    },
+    {
+      "goalId": "EYFS-06-1",
+      "focus": "Use stories and sources to describe similarities and differences between past and present",
+      "priority": "medium",
+      "proposal": "Expand Then and Now with multiple community examples and adult-guided conversation"
+    },
+    {
+      "goalId": "EYFS-07-2",
+      "focus": "Develop and share stories, songs and musical ideas in a group or independently",
+      "priority": "medium",
+      "proposal": "Add child-led repeat-and-change performance with nonverbal options"
+    }
+  ]
+}
