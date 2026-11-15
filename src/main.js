@@ -629,8 +629,11 @@ function showDiscovery(activity){
  modal(`<h2>${activity.name} ✨</h2><p>${done?'You already earned today’s reward. You can still practise!':'Answer the question correctly to earn 8 BrightCoins today.'}</p><p class="question">${activity.prompt}</p><div class="choices">${activity.options.map((choice,i)=>`<button data-discovery-choice="${i}">${choice}</button>`).join('')}</div><p id="discoveryFeedback" role="status"></p><div id="discoveryLearningNext"></div><button id="discoveryClose">Back to village</button>`);
  $('#discoveryClose').onclick=close;
  $('#modalBody').onclick=e=>{const btn=e.target.closest('[data-discovery-choice]');if(!btn||$('#discoveryFeedback').dataset.answered)return;try{
-  const result=commitRewardChange(state,old=>completeDiscovery(old,activity.id,activity.options[Number(btn.dataset.discoveryChoice)],day),candidate=>{const updated=updateActive(family,candidate,Number(localStorage.getItem('bp-age')||activeProfile().age));writeFamily(localStorage,updated);family=updated});
-  if(result.earned){state=result.save;if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
+  // Always calculate from the active explorer's persisted family save, not a potentially stale view state.
+  const activeSave=family.profiles.find(p=>p.id===family.activeId)?.save||state;
+  const result=commitRewardChange(activeSave,old=>completeDiscovery(old,activity.id,activity.options[Number(btn.dataset.discoveryChoice)],day),candidate=>{const updated=updateActive(family,candidate,Number(localStorage.getItem('bp-age')||activeProfile().age));writeFamily(localStorage,updated);family=updated});
+  state=result.save;
+  if(result.earned){if(autoSyncEnabled(localStorage))autoCloud.changed(family.activeId);refresh();}
   $('#discoveryFeedback').textContent=`${result.correct?'Correct!':'Not quite — have another try!'} ${result.correct?result.explanation:''} ${result.earned?`+${result.earned} BrightCoins!`:''}`;
   if(result.correct){
    const suggestion=villageLearningSuggestion(state,activity.id,subjects,lessonBank);
