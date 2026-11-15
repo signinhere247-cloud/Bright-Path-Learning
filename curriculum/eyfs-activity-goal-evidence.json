@@ -6,7 +6,8 @@
       "goalId": "EYFS-01-1",
       "candidateActivityIds": [
         "ACT-EYFS-P1-01",
-        "ACT-EYFS-P1-03"
+        "ACT-EYFS-P1-03",
+        "ACT-EYFS-P1-05"
       ],
       "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
@@ -26,7 +27,8 @@
       "goalId": "EYFS-02-1",
       "candidateActivityIds": [
         "ACT-EYFS-P2-01",
-        "ACT-EYFS-P2-02"
+        "ACT-EYFS-P2-02",
+        "ACT-EYFS-P2-05"
       ],
       "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
@@ -83,7 +85,8 @@
     {
       "goalId": "EYFS-04-2",
       "candidateActivityIds": [
-        "ACT-EYFS-P4-03"
+        "ACT-EYFS-P4-03",
+        "ACT-EYFS-P4-05"
       ],
       "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
@@ -92,7 +95,8 @@
     {
       "goalId": "EYFS-04-3",
       "candidateActivityIds": [
-        "ACT-EYFS-P4-04"
+        "ACT-EYFS-P4-04",
+        "ACT-EYFS-P4-06"
       ],
       "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
@@ -102,7 +106,8 @@
       "goalId": "EYFS-05-1",
       "candidateActivityIds": [
         "ACT-EYFS-P5-01",
-        "ACT-EYFS-P5-02"
+        "ACT-EYFS-P5-02",
+        "ACT-EYFS-P5-05"
       ],
       "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
