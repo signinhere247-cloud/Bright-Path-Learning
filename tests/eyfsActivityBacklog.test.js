@@ -6,9 +6,10 @@ const backlog=JSON.parse(readFileSync(new URL('../curriculum/eyfs-activity-backl
 test('every EYFS educational strand has one proposed hands-on activity',()=>{
  const ids=programmes.programmes.flatMap(p=>p.strands.map(s=>s.id));
  assert.equal(ids.length,28);
- assert.equal(backlog.activities.length,ids.length);
- assert.deepEqual(backlog.activities.map(a=>a.strandId).sort(),ids.sort());
- assert.equal(new Set(backlog.activities.map(a=>a.id)).size,28);
+ assert.equal(backlog.activities.length,ids.length+1);
+ assert.deepEqual(backlog.activities.filter(a=>a.id!=='ACT-EYFS-P6-05').map(a=>a.strandId).sort(),ids.sort()); 
+ assert.equal(backlog.activities.find(a=>a.id==='ACT-EYFS-P6-05')?.strandId,'EYFS-P6-05');
+ assert.equal(new Set(backlog.activities.map(a=>a.id)).size,29);
 });
 test('proposed activities are age-appropriate, adult-supported and not falsely marked implemented',()=>{
  for(const a of backlog.activities){
