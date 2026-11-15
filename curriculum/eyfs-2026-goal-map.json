@@ -1,0 +1,236 @@
+{
+  "framework": "England EYFS statutory framework for group and school-based providers, effective 1 September 2026",
+  "source": "https://www.gov.uk/government/publications/early-years-foundation-stage-framework--2",
+  "note": "Early learning goals are end-of-EYFS assessment reference points, NOT a complete curriculum or a checklist for children aged 3–4. All module matches are candidate links requiring review.",
+  "areas": [
+    {
+      "name": "Communication and language",
+      "type": "prime",
+      "goals": [
+        {
+          "id": "EYFS-01-1",
+          "name": "Listening, Attention and Understanding",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-01-2",
+          "name": "Speaking",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Personal, social and emotional development",
+      "type": "prime",
+      "goals": [
+        {
+          "id": "EYFS-02-1",
+          "name": "Self-Regulation",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-02-2",
+          "name": "Managing Self",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-02-3",
+          "name": "Building Relationships",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Physical development",
+      "type": "prime",
+      "goals": [
+        {
+          "id": "EYFS-03-1",
+          "name": "Gross Motor Skills",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-03-2",
+          "name": "Fine Motor Skills",
+          "candidateModule": "earlyDevelopment",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Literacy",
+      "type": "specific",
+      "goals": [
+        {
+          "id": "EYFS-04-1",
+          "name": "Comprehension",
+          "candidateModule": "earlyLiteracy",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-04-2",
+          "name": "Word Reading",
+          "candidateModule": "earlyLiteracy",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-04-3",
+          "name": "Writing",
+          "candidateModule": "earlyLiteracy",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mathematics",
+      "type": "specific",
+      "goals": [
+        {
+          "id": "EYFS-05-1",
+          "name": "Number",
+          "candidateModule": "earlyMaths",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-05-2",
+          "name": "Numerical Patterns",
+          "candidateModule": "earlyMaths",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Understanding the world",
+      "type": "specific",
+      "goals": [
+        {
+          "id": "EYFS-06-1",
+          "name": "Past and Present",
+          "candidateModule": "earlyWorld",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-06-2",
+          "name": "People, Culture and Communities",
+          "candidateModule": "earlyWorld",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-06-3",
+          "name": "The Natural World",
+          "candidateModule": "earlyWorld",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Expressive arts and design",
+      "type": "specific",
+      "goals": [
+        {
+          "id": "EYFS-07-1",
+          "name": "Creating with Materials",
+          "candidateModule": "earlyWorld",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        },
+        {
+          "id": "EYFS-07-2",
+          "name": "Being Imaginative and Expressive",
+          "candidateModule": "earlyWorld",
+          "reviewStatus": "unverified",
+          "verifiedLessonIds": [],
+          "evidenceTypesNeeded": [
+            "adult-supported play/activity",
+            "observation or authentic work sample"
+          ]
+        }
+      ]
+    }
+  ]
+}
