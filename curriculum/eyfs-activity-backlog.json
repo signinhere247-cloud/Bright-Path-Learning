@@ -376,10 +376,10 @@
       "mode": "adult-supported exploration",
       "evidence": "Adult may observe the child's comparisons; no automatic assessment.",
       "delivery": "adult-supported offline",
-      "status": "implemented-unreviewed",
+      "status": "proposed",
       "implementedLessonIds": [],
       "ageBand": "3–5",
-      "accessibility": "Use visual, tactile, gesture, AAC or narrated comparisons; no family-history disclosure required."
+      "accessibility": "Offer spoken, visual, gesture-based and adapted-motor participation; do not require screen interaction or personal family history."
     }
   ]
 }
