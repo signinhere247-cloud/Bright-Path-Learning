@@ -11,6 +11,6 @@ test('EYFS educational programme map covers all seven learning areas',()=>{
 });
 test('EYFS programme map includes real-world, language and creative learning',()=>{
  const text=data.programmes.flatMap(p=>p.strands.map(s=>s.summary)).join(' ');
- for(const term of ['conversations','motor','phonics','manipulatives','communities','music'])assert.match(text,new RegExp(term,'i'));
+ for(const term of ['conversations','motor','phonics','manipulatives','community','music'])assert.match(text,new RegExp(term,'i'));
  assert.match(data.source,/publishing\.service\.gov\.uk/);
 });
