@@ -380,6 +380,71 @@
       "implementedLessonIds": [],
       "ageBand": "3–5",
       "accessibility": "Offer spoken, visual, gesture-based and adapted-motor participation; do not require screen interaction or personal family history."
+    },
+    {
+      "id": "ACT-EYFS-P1-05",
+      "strandId": "EYFS-P1-05",
+      "title": "Listen and do story",
+      "instructions": "Offer an optional adult-supported practical activity focused on listen and do story, with flexible child-led participation.",
+      "mode": "adult-supported exploration",
+      "evidence": "Adult may observe participation without automatic attainment scoring.",
+      "delivery": "adult-supported offline",
+      "status": "proposed",
+      "implementedLessonIds": [],
+      "ageBand": "3–5",
+      "accessibility": "Offer visual, gesture-based, AAC and adapted-motor participation; do not require screen interaction."
+    },
+    {
+      "id": "ACT-EYFS-P2-05",
+      "strandId": "EYFS-P2-05",
+      "title": "My calm choices",
+      "instructions": "Offer an optional adult-supported practical activity focused on my calm choices, with flexible child-led participation.",
+      "mode": "adult-supported exploration",
+      "evidence": "Adult may observe participation without automatic attainment scoring.",
+      "delivery": "adult-supported offline",
+      "status": "proposed",
+      "implementedLessonIds": [],
+      "ageBand": "3–5",
+      "accessibility": "Offer visual, gesture-based, AAC and adapted-motor participation; do not require screen interaction."
+    },
+    {
+      "id": "ACT-EYFS-P4-05",
+      "strandId": "EYFS-P4-05",
+      "title": "Sound blend play",
+      "instructions": "Offer an optional adult-supported practical activity focused on sound blend play, with flexible child-led participation.",
+      "mode": "adult-supported exploration",
+      "evidence": "Adult may observe participation without automatic attainment scoring.",
+      "delivery": "adult-supported offline",
+      "status": "proposed",
+      "implementedLessonIds": [],
+      "ageBand": "3–5",
+      "accessibility": "Offer visual, gesture-based, AAC and adapted-motor participation; do not require screen interaction."
+    },
+    {
+      "id": "ACT-EYFS-P4-06",
+      "strandId": "EYFS-P4-06",
+      "title": "Write a real message",
+      "instructions": "Offer an optional adult-supported practical activity focused on write a real message, with flexible child-led participation.",
+      "mode": "adult-supported exploration",
+      "evidence": "Adult may observe participation without automatic attainment scoring.",
+      "delivery": "adult-supported offline",
+      "status": "proposed",
+      "implementedLessonIds": [],
+      "ageBand": "3–5",
+      "accessibility": "Offer visual, gesture-based, AAC and adapted-motor participation; do not require screen interaction."
+    },
+    {
+      "id": "ACT-EYFS-P5-05",
+      "strandId": "EYFS-P5-05",
+      "title": "See it and make it",
+      "instructions": "Offer an optional adult-supported practical activity focused on see it and make it, with flexible child-led participation.",
+      "mode": "adult-supported exploration",
+      "evidence": "Adult may observe participation without automatic attainment scoring.",
+      "delivery": "adult-supported offline",
+      "status": "proposed",
+      "implementedLessonIds": [],
+      "ageBand": "3–5",
+      "accessibility": "Offer visual, gesture-based, AAC and adapted-motor participation; do not require screen interaction."
     }
   ]
 }
