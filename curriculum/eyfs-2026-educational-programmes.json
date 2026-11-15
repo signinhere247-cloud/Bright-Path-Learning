@@ -1,0 +1,386 @@
+{
+  "source": "https://assets.publishing.service.gov.uk/media/6a5f8e4fb00f3323bf1a23a1/EYFS_group_and_school_based_from_September_2026.pdf",
+  "effective": "2026-09-01",
+  "section": "Section 1, Educational Programmes, pages 10–12",
+  "scope": "Editorial paraphrases of high-level educational programmes, not verbatim statutory text or a complete lesson checklist",
+  "programmes": [
+    {
+      "area": "Communication and language",
+      "candidateModule": "earlyDevelopment",
+      "strands": [
+        {
+          "id": "EYFS-P1-01",
+          "summary": "Responsive back-and-forth conversations",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P1-02",
+          "summary": "Vocabulary building through stories and non-fiction",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P1-03",
+          "summary": "Rhymes, poems and shared reading",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P1-04",
+          "summary": "Storytelling, role play and elaborated explanations",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Personal, social and emotional development",
+      "candidateModule": "earlyDevelopment",
+      "strands": [
+        {
+          "id": "EYFS-P2-01",
+          "summary": "Feelings, emotional regulation and supportive relationships",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P2-02",
+          "summary": "Self-confidence, perseverance and simple goals",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P2-03",
+          "summary": "Healthy choices and independent personal care",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P2-04",
+          "summary": "Friendships, cooperation and peaceful conflict resolution",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Physical development",
+      "candidateModule": "earlyDevelopment",
+      "strands": [
+        {
+          "id": "EYFS-P3-01",
+          "summary": "Indoor and outdoor movement, balance and coordination",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P3-02",
+          "summary": "Core strength, spatial awareness and agility",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P3-03",
+          "summary": "Fine motor play, puzzles and manipulative materials",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P3-04",
+          "summary": "Tools, mark-making and hand-eye coordination",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Literacy",
+      "candidateModule": "earlyLiteracy",
+      "strands": [
+        {
+          "id": "EYFS-P4-01",
+          "summary": "Love of books, shared stories and language comprehension",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P4-02",
+          "summary": "Rhymes, oral language and understanding narratives",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P4-03",
+          "summary": "Systematic phonics, decoding and familiar word recognition",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P4-04",
+          "summary": "Writing composition, spelling and handwriting",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Mathematics",
+      "candidateModule": "earlyMaths",
+      "strands": [
+        {
+          "id": "EYFS-P5-01",
+          "summary": "Counting, quantity and number relationships to ten",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P5-02",
+          "summary": "Practical manipulatives and representations",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P5-03",
+          "summary": "Shape, space, measures and spatial reasoning",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P5-04",
+          "summary": "Patterns, mathematical talk, curiosity and confidence",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Understanding the world",
+      "candidateModule": "earlyWorld",
+      "strands": [
+        {
+          "id": "EYFS-P6-01",
+          "summary": "Local places, people and community experiences",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P6-02",
+          "summary": "Natural environments and hands-on observation",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P6-03",
+          "summary": "Diverse cultures, societies, technologies and ecology",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P6-04",
+          "summary": "Stories, non-fiction and rich world vocabulary",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    },
+    {
+      "area": "Expressive arts and design",
+      "candidateModule": "earlyWorld",
+      "strands": [
+        {
+          "id": "EYFS-P7-01",
+          "summary": "Explore media, materials, techniques and tools",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P7-02",
+          "summary": "Creative play, imagination and self-expression",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P7-03",
+          "summary": "Music, movement, storytelling and performance",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        },
+        {
+          "id": "EYFS-P7-04",
+          "summary": "Repeated opportunities to observe, respond to and appreciate arts",
+          "verifiedLessonIds": [],
+          "reviewStatus": "unverified",
+          "deliveryModes": [
+            "adult-guided play",
+            "conversation",
+            "hands-on activity"
+          ],
+          "evidenceStatus": "not assessed"
+        }
+      ]
+    }
+  ]
+}
