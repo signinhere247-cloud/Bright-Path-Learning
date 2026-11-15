@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "description": "Editorial candidate links between implemented activity guides and statutory ELG reference points; none independently reviewed or mastery verified.",
+  "goalLinks": [
+    {
+      "goalId": "EYFS-01-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P1-01",
+        "ACT-EYFS-P1-03"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-01-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P1-01",
+        "ACT-EYFS-P1-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-02-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P2-01",
+        "ACT-EYFS-P2-02"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-02-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P2-03"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-02-3",
+      "candidateActivityIds": [
+        "ACT-EYFS-P2-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-03-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P3-01",
+        "ACT-EYFS-P3-02"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-03-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P3-03",
+        "ACT-EYFS-P3-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-04-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P4-01",
+        "ACT-EYFS-P4-02"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-04-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P4-03"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-04-3",
+      "candidateActivityIds": [
+        "ACT-EYFS-P4-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-05-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P5-01",
+        "ACT-EYFS-P5-02"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-05-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P5-03",
+        "ACT-EYFS-P5-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-06-1",
+      "candidateActivityIds": [],
+      "alignmentStatus": "gap-no-candidate",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-06-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P6-01",
+        "ACT-EYFS-P6-03"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-06-3",
+      "candidateActivityIds": [
+        "ACT-EYFS-P6-02",
+        "ACT-EYFS-P6-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-07-1",
+      "candidateActivityIds": [
+        "ACT-EYFS-P7-01"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    },
+    {
+      "goalId": "EYFS-07-2",
+      "candidateActivityIds": [
+        "ACT-EYFS-P7-02",
+        "ACT-EYFS-P7-03",
+        "ACT-EYFS-P7-04"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
+      "verifiedEvidenceIds": [],
+      "educatorReviewRequired": true
+    }
+  ]
+}
