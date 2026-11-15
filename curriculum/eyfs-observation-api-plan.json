@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "status": "design-only",
+  "basePath": "/api/children/:childId/eyfs-observations",
+  "identity": "Server-verified session only; never accept household or author identity from request body",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/",
+      "purpose": "List observations for the authorised child",
+      "auth": "verified-parent-and-child-ownership"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "purpose": "Create observation for the authorised child",
+      "auth": "verified-parent-and-child-ownership"
+    },
+    {
+      "method": "GET",
+      "path": "/:observationId",
+      "purpose": "Read one authorised child observation",
+      "auth": "verified-parent-and-child-ownership-and-record"
+    },
+    {
+      "method": "PATCH",
+      "path": "/:observationId",
+      "purpose": "Update one authorised child observation",
+      "auth": "verified-parent-and-child-ownership-and-record"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:observationId",
+      "purpose": "Delete one authorised child observation",
+      "auth": "verified-parent-and-child-ownership-and-record"
+    },
+    {
+      "method": "GET",
+      "path": "/export",
+      "purpose": "Export authorised child's observations",
+      "auth": "verified-parent-and-child-ownership"
+    }
+  ],
+  "tables": [
+    {
+      "name": "eyfs_observations",
+      "columns": [
+        "id",
+        "household_id",
+        "child_id",
+        "activity_id",
+        "status",
+        "note",
+        "author_user_id",
+        "created_at",
+        "updated_at",
+        "review_required"
+      ],
+      "rules": [
+        "foreign key child_id to child profiles",
+        "household_id must match child's current household",
+        "all operations filtered by authenticated parent ownership",
+        "row-level security enabled and tested",
+        "no ELG mastery flag inferred from observations"
+      ]
+    }
+  ],
+  "apiRequirements": [
+    "CSRF protection where cookie authentication is used",
+    "Rate limits and bounded payloads",
+    "Server-side validation of activity IDs and notes",
+    "No cross-tenant identifiers in error details",
+    "Transactional access checks on write and delete",
+    "Export and deletion rights with retention policy",
+    "No public sharing or media attachments"
+  ],
+  "implementationGates": [
+    "Confirm existing authentication provider and child-profile schema",
+    "Implement server-side ownership resolver",
+    "Implement and test database row-level security",
+    "Review UK GDPR lawful basis and retention notice",
+    "Run authenticated cross-household integration tests",
+    "Verify production secrets and migration rollback plan"
+  ]
+}
