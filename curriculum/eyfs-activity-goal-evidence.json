@@ -120,8 +120,10 @@
     },
     {
       "goalId": "EYFS-06-1",
-      "candidateActivityIds": [],
-      "alignmentStatus": "gap-no-candidate",
+      "candidateActivityIds": [
+        "ACT-EYFS-P6-05"
+      ],
+      "alignmentStatus": "candidate-unreviewed",
       "verifiedEvidenceIds": [],
       "educatorReviewRequired": true
     },
