@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "feature": "EYFS parent observation journal",
+  "status": "design-only-not-deployed",
+  "entryPoint": "Authenticated parent dashboard > selected child > EYFS activity > Add observation",
+  "requirements": [
+    {
+      "id": "OBS-01",
+      "category": "access",
+      "requirement": "Only authenticated parent or guardian with verified access to the selected child profile can create or read observations",
+      "test": "Reject unauthenticated, cross-account and cross-child requests"
+    },
+    {
+      "id": "OBS-02",
+      "category": "privacy",
+      "requirement": "Display the selected child's profile name before entry and require explicit confirmation",
+      "test": "Switching profiles cannot carry over an unsaved observation"
+    },
+    {
+      "id": "OBS-03",
+      "category": "data",
+      "requirement": "Store child-scoped observation ID, activity ID, status, short note, created and updated timestamps, author ID and review state",
+      "test": "Validate every field server-side and reject unknown activities"
+    },
+    {
+      "id": "OBS-04",
+      "category": "safeguarding",
+      "requirement": "No photos, recordings, public sharing, automatic mastery or child-facing collection",
+      "test": "Reject media and mastery flags at API boundary"
+    },
+    {
+      "id": "OBS-05",
+      "category": "retention",
+      "requirement": "Provide parent review, edit, delete and export with documented retention and erasure behaviour",
+      "test": "Deletion removes record from child views and authorised exports"
+    },
+    {
+      "id": "OBS-06",
+      "category": "security",
+      "requirement": "Enforce server-side row-level child and household isolation; encrypt in transit and at rest",
+      "test": "Cross-household access attempts return no records"
+    },
+    {
+      "id": "OBS-07",
+      "category": "usability",
+      "requirement": "Accessible labels, keyboard controls, short notes, no compulsory scoring, optional skip and calm neutral feedback",
+      "test": "Keyboard and screen-reader review on phone and desktop"
+    },
+    {
+      "id": "OBS-08",
+      "category": "consent",
+      "requirement": "Present clear parent notice on purpose, lawful basis, retention and rights before first save",
+      "test": "No save is possible until approved privacy design is implemented"
+    }
+  ],
+  "uiStates": [
+    "not-signed-in",
+    "child-not-selected",
+    "ready-to-note",
+    "validation-error",
+    "saving",
+    "saved",
+    "editing",
+    "deleting",
+    "permission-denied"
+  ],
+  "launchGates": [
+    "UK GDPR/privacy review and lawful-basis decision",
+    "Authentication and ownership checks implemented and tested",
+    "Child-scoped database rules and deletion/export tested",
+    "Accessibility and safeguarding review",
+    "End-to-end browser tests on mobile and desktop"
+  ]
+}
