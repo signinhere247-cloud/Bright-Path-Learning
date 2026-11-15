@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "stage": "EYFS steps 16–40",
+  "status": "handoff-review-not-educator-certification",
+  "implemented": {
+    "activityGuideCount": 34,
+    "learningAreas": 7,
+    "goalCandidateMappings": 17,
+    "observationHelper": "nonpersistent",
+    "observationDatabase": "design-only",
+    "stagingRlsProbe": "read-only harness; not executed"
+  },
+  "unverified": [
+    "No independent educator approval of statutory EYFS goal coverage",
+    "No observational evidence or automatic attainment claims",
+    "No real authenticated staging database RLS acceptance run",
+    "No production observation storage, export or deletion workflow",
+    "No documented approved privacy retention and safeguarding release"
+  ],
+  "releaseDecision": "EYFS activity guides may remain available; observation persistence must stay disabled",
+  "nextStage": "KS1 curriculum implementation steps 41–70"
+}
