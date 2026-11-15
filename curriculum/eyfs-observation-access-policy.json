@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "status": "policy-design-only",
+  "scope": "EYFS observation CRUD",
+  "principles": [
+    "Deny by default",
+    "Never trust household or child ownership claims from browser input",
+    "Resolve parent identity from a verified server session",
+    "Resolve child membership from database ownership records on every request",
+    "Enforce database row-level security as defence in depth",
+    "Use indistinguishable not-found responses for unauthorised record IDs",
+    "Audit denied operations without logging observation notes"
+  ],
+  "operations": [
+    "create",
+    "list",
+    "read",
+    "update",
+    "delete",
+    "export"
+  ],
+  "adversarialCases": [
+    {
+      "id": "AUTH-01",
+      "scenario": "No session",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-02",
+      "scenario": "Expired or invalid session",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-03",
+      "scenario": "Authenticated parent requests another household",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-04",
+      "scenario": "Parent requests sibling record by guessing observation ID",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-05",
+      "scenario": "Child ID tampered between form display and submission",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-06",
+      "scenario": "Observation ID belongs to different child",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-07",
+      "scenario": "Role or household spoofed in request body",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-08",
+      "scenario": "Former guardian loses access",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-09",
+      "scenario": "Export request includes unowned child",
+      "expected": "deny"
+    },
+    {
+      "id": "AUTH-10",
+      "scenario": "Race between access revocation and write",
+      "expected": "deny"
+    }
+  ],
+  "releaseRequirements": [
+    "Implement verified server-side session and child membership lookup",
+    "Implement and test database row-level security policies",
+    "Use authenticated integration tests for all six operations",
+    "Test revocation and concurrent access changes",
+    "Complete UK GDPR and safeguarding reviews"
+  ]
+}
