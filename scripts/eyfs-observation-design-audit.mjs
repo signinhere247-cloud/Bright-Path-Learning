@@ -1,0 +1,10 @@
+import spec from '../curriculum/eyfs-parent-observation-design.json' with {type:'json'};
+const ids=new Set(spec.requirements.map(x=>x.id));
+const errors=[];
+if(spec.status!=='design-only-not-deployed')errors.push('Design must not imply deployed functionality');
+if(ids.size!==spec.requirements.length||ids.size!==8)errors.push('Missing or duplicate requirements');
+for(const r of spec.requirements)if(!r.category||!r.requirement||!r.test)errors.push('Incomplete requirement '+r.id);
+for(const state of ['child-not-selected','permission-denied','deleting'])if(!spec.uiStates.includes(state))errors.push('Missing state '+state);
+if(spec.launchGates.length<4)errors.push('Insufficient launch gates');
+const result={designOnly:true,requirements:spec.requirements.length,launchGates:spec.launchGates.length,errors};
+console.log(JSON.stringify(result,null,2));if(errors.length)process.exitCode=1;
