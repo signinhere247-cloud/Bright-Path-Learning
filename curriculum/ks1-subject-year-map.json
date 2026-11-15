@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "stage": "Key Stage 1",
+  "years": [
+    "Year 1",
+    "Year 2"
+  ],
+  "ageRange": "approximately 5–7",
+  "status": "editorial mapping; not independently curriculum verified",
+  "sourceModules": [
+    "src/ks1English.js",
+    "src/ks1Maths.js",
+    "src/ks1Foundation.js"
+  ],
+  "subjects": [
+    {
+      "id": "KS1-S01",
+      "name": "English",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S02",
+      "name": "Mathematics",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S03",
+      "name": "Science",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S04",
+      "name": "History",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S05",
+      "name": "Geography",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S06",
+      "name": "Art and design",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S07",
+      "name": "Computing",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S08",
+      "name": "Design and technology",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S09",
+      "name": "Music",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S10",
+      "name": "Physical education",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "KS1-S11",
+      "name": "Religious education (locally agreed syllabus)",
+      "year1Status": "unverified",
+      "year2Status": "unverified",
+      "objectiveAuditRequired": true
+    }
+  ],
+  "notes": [
+    "National Curriculum applies to maintained schools in England; RE has separate locally agreed requirements",
+    "Existing modules are introductory mixed-year question banks, not proof of Year 1 or Year 2 statutory coverage",
+    "PSHE, relationships/health education, languages and other enrichment need separate applicability review",
+    "Next steps inventory real questions and map precise year-specific objectives"
+  ]
+}
