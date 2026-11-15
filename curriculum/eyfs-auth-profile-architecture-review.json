@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "status": "source-inspection-only",
+  "findings": [
+    {
+      "id": "ARCH-01",
+      "component": "src/cloudFamily.js",
+      "finding": "Optional Supabase email-link parent sign-in uses auth.getUser() and public publishable key",
+      "implication": "Reuse existing parent authentication; server/database must independently verify identity"
+    },
+    {
+      "id": "ARCH-02",
+      "component": "src/familyProfiles.js",
+      "finding": "Up to eight child explorer profiles stored locally, selected by activeId; profile IDs are strings of 8–80 permitted characters",
+      "implication": "Observation UI must resolve the selected child and never infer ownership solely from localStorage"
+    },
+    {
+      "id": "ARCH-03",
+      "component": "supabase/migrations/202611130005_secure_sync_rpc.sql",
+      "finding": "Family snapshot revision RPC checks auth.uid() and profile key under parent_id, with direct UPDATE revoked",
+      "implication": "Existing snapshot protections do not automatically authorise new observation tables"
+    },
+    {
+      "id": "ARCH-04",
+      "component": "docs/reviews/CLOUD-ACCOUNT-STATUS.md",
+      "finding": "Live Supabase auth and cross-parent RLS tests documented as unverified",
+      "implication": "Production observation storage blocked pending staging and live verification"
+    },
+    {
+      "id": "ARCH-05",
+      "component": "src/cloudFamily.js",
+      "finding": "family_snapshots keyed by parent_id and profile_key; cloud list is capped at eight",
+      "implication": "Prefer foreign-key linkage to parent-owned snapshot profile identity; investigate deletion and profile-key lifecycle before schema migration"
+    }
+  ],
+  "decisions": [
+    "No separate parent login",
+    "Do not store observation notes in generic progress snapshots without privacy review",
+    "Use verified auth.uid() and parent-owned profile identity in database policies",
+    "Prototype and test on staging before any production migration"
+  ],
+  "openQuestions": [
+    "Does production Supabase have migrations 003–005 applied and verified?",
+    "How are explorer IDs generated and retained when profiles are removed?",
+    "Should observations be retained when a child profile is deleted?",
+    "Which lawful basis, retention and parent export/erasure controls will apply?"
+  ]
+}
