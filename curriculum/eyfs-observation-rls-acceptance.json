@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "status": "staging-tests-not-run",
+  "preconditions": [
+    "Apply reviewed schema and hardening to isolated Supabase staging project",
+    "Create two independent test parent sessions and two child profiles for parent A plus one for parent B",
+    "Never use production child information or service-role credentials in browser tests",
+    "Verify migration order and rollback"
+  ],
+  "cases": [
+    {
+      "id": "RLS-01",
+      "actor": "anonymous",
+      "operation": "list",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-02",
+      "actor": "parent-A",
+      "operation": "create",
+      "target": "A-child-1",
+      "expected": "allow"
+    },
+    {
+      "id": "RLS-03",
+      "actor": "parent-B",
+      "operation": "read",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-04",
+      "actor": "parent-B",
+      "operation": "update",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-05",
+      "actor": "parent-B",
+      "operation": "delete",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-06",
+      "actor": "parent-A",
+      "operation": "list",
+      "target": "A-child-2",
+      "expected": "only-own-child"
+    },
+    {
+      "id": "RLS-07",
+      "actor": "parent-A",
+      "operation": "update-ownership",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-08",
+      "actor": "parent-A",
+      "operation": "update-activity-id",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-09",
+      "actor": "parent-A",
+      "operation": "update-note",
+      "target": "A-child-1",
+      "expected": "allow"
+    },
+    {
+      "id": "RLS-10",
+      "actor": "parent-A",
+      "operation": "create-with-parent-B-id",
+      "target": "B-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-11",
+      "actor": "revoked-parent-A",
+      "operation": "read",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-12",
+      "actor": "parent-A",
+      "operation": "export",
+      "target": "B-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-13",
+      "actor": "parent-A",
+      "operation": "create-invalid-note",
+      "target": "A-child-1",
+      "expected": "deny"
+    },
+    {
+      "id": "RLS-14",
+      "actor": "parent-A",
+      "operation": "read-after-child-delete",
+      "target": "A-child-1",
+      "expected": "not-found"
+    },
+    {
+      "id": "RLS-15",
+      "actor": "parent-A",
+      "operation": "update-review-required",
+      "target": "A-child-1",
+      "expected": "deny"
+    }
+  ],
+  "acceptance": [
+    "All deny cases confirmed by real database requests with distinct authenticated sessions",
+    "Allowed operations work only for authorised parent and correct child",
+    "No note contents appear in security logs or error messages",
+    "Automated evidence records test run and staging environment",
+    "Privacy, retention and safeguarding approvals recorded before production"
+  ]
+}
