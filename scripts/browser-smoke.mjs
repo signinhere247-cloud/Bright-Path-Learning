@@ -56,7 +56,7 @@ async function completeCountingLesson(page){
  console.log('Counting lesson started');
  await page.locator('#learnBtn').click({noWaitAfter:true});
  await page.locator('[data-subject="Maths"]').click({noWaitAfter:true});
- await page.locator('[data-topic="Counting"]').click({noWaitAfter:true});
+ await page.locator('.cards [data-topic="Counting"]').click({noWaitAfter:true});
  for(let i=0;i<20;i++){
   await answerCountingQuestion(page,true);
   if((i+1)%5===0)console.log(`Counting lesson completed ${i+1}/20 questions`);
@@ -67,7 +67,7 @@ async function completeCountingLesson(page){
 async function completeWeakCountingLesson(page){
  await page.locator('#learnBtn').click({noWaitAfter:true});
  await page.locator('[data-subject="Maths"]').click({noWaitAfter:true});
- await page.locator('[data-topic="Counting"]').click({noWaitAfter:true});
+ await page.locator('.cards [data-topic="Counting"]').click({noWaitAfter:true});
  for(let i=0;i<20;i++){
   await answerCountingQuestion(page,false);
  }
