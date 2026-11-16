@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "stage": "KS1 Years 1–2",
+  "status": "editorial-prioritisation-not-curriculum-certification",
+  "sources": [
+    "scripts/ks1-english-audit.mjs",
+    "scripts/ks1-maths-audit.mjs",
+    "scripts/ks1-foundation-audit.mjs"
+  ],
+  "tasks": [
+    {
+      "id": "KS1-B01",
+      "priority": "P0",
+      "subject": "English",
+      "year": "Year 1",
+      "need": "Systematic phonics progression and decoding",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B02",
+      "priority": "P0",
+      "subject": "English",
+      "year": "Year 2",
+      "need": "Reading fluency and text comprehension",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B03",
+      "priority": "P0",
+      "subject": "English",
+      "year": "Years 1–2",
+      "need": "Independent writing and handwriting",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B04",
+      "priority": "P0",
+      "subject": "Mathematics",
+      "year": "Year 1",
+      "need": "Number bonds, place value and concrete counting",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B05",
+      "priority": "P0",
+      "subject": "Mathematics",
+      "year": "Year 2",
+      "need": "Mental strategies and reasoning with number",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B06",
+      "priority": "P0",
+      "subject": "Mathematics",
+      "year": "Years 1–2",
+      "need": "Practical measurement and money/time",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B07",
+      "priority": "P1",
+      "subject": "Mathematics",
+      "year": "Year 2",
+      "need": "Statistics with tallies, pictograms and tables",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B08",
+      "priority": "P1",
+      "subject": "Science",
+      "year": "Years 1–2",
+      "need": "Working scientifically with observation and investigations",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B09",
+      "priority": "P1",
+      "subject": "English",
+      "year": "Years 1–2",
+      "need": "Spoken language and collaborative discussion",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B10",
+      "priority": "P1",
+      "subject": "Geography",
+      "year": "Years 1–2",
+      "need": "Fieldwork and map skills",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B11",
+      "priority": "P1",
+      "subject": "Computing",
+      "year": "Years 1–2",
+      "need": "Programming, debugging and online safety",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B12",
+      "priority": "P1",
+      "subject": "History",
+      "year": "Years 1–2",
+      "need": "Chronology, sources and local history",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B13",
+      "priority": "P2",
+      "subject": "Art and design",
+      "year": "Years 1–2",
+      "need": "Drawing, painting and making",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B14",
+      "priority": "P2",
+      "subject": "Design and technology",
+      "year": "Years 1–2",
+      "need": "Design, make and evaluate",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B15",
+      "priority": "P2",
+      "subject": "Music",
+      "year": "Years 1–2",
+      "need": "Singing, listening and composition",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B16",
+      "priority": "P2",
+      "subject": "Physical education",
+      "year": "Years 1–2",
+      "need": "Movement, games and dance",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    },
+    {
+      "id": "KS1-B17",
+      "priority": "P2",
+      "subject": "Religious education (locally agreed syllabus)",
+      "year": "Years 1–2",
+      "need": "Locally agreed syllabus applicability review",
+      "status": "planned-unverified",
+      "acceptance": "Objective-mapped lesson and varied assessment with educator review; practical evidence where appropriate"
+    }
+  ],
+  "releaseGate": "No statutory objective coverage may be marked verified without independent review"
+}
