@@ -8,4 +8,6 @@ Tests check lesson and question counts, year separation, option uniqueness, answ
 
 **Review gate:** draft supplementary content requires educator checking for mathematical accuracy, suitable diagrams and representations, accessibility, progression and precise statutory objective mapping. These lessons are not yet connected to learner navigation and completion does not record mastery or assessment evidence.
 
+The Year 4 retrieval test uses the Year 4 symmetry lesson (LKS2-GE-Y4-02) to verify year-specific content.
+
 Next: Step 81 — Lower KS2 statistics and data handling.
