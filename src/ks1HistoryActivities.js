@@ -1,0 +1,13 @@
+// Adult-supported KS1 history enquiry guides. No personal history is collected.
+export const ks1HistoryActivities=[
+ {id:'KS1-HIST-01',year:1,title:'Then and now at home',focus:'changes within living memory',materials:['illustrations of old and modern household objects','paper'],steps:['Compare pictures of older and newer household objects.','Describe what looks different and what stays similar.','Sort examples into then and now with adult support.','Explain how one change might affect everyday life.'],adultPrompt:'What evidence in the pictures helps you decide which is older?',safety:'Use supplied illustrations; do not request family photographs or personal histories.'},
+ {id:'KS1-HIST-02',year:1,title:'Order the story',focus:'chronological language',materials:['four fictional event cards','timeline strip'],steps:['Read four fictional events with an adult.','Arrange the events from earliest to latest.','Describe the order using before, after, first and last.','Swap two cards and explain why the order no longer fits.'],adultPrompt:'What clues help you know what happened first?',safety:'Use fictional examples without child or family personal information.'},
+ {id:'KS1-HIST-03',year:2,title:'A significant life in context',focus:'historically significant individuals',materials:['age-appropriate biography of Mary Seacole','timeline paper'],steps:['Read a sourced, age-appropriate biography of Mary Seacole.','Identify when she lived and why she is remembered.','Place key events on a simple timeline.','Distinguish a supported fact from a question requiring more evidence.'],adultPrompt:'Which part of the source helps you explain why this person is remembered?',safety:'Use reviewed age-appropriate sources and avoid unsupported historical claims.'},
+ {id:'KS1-HIST-04',year:2,title:'What can an object tell us?',focus:'historical sources and enquiry',materials:['picture of a historical object','picture of a modern equivalent'],steps:['Observe a photograph or drawing of an older object.','List details you can see without guessing.','Compare it with a modern equivalent.','Ask one question the pictures cannot answer on their own.'],adultPrompt:'What do we know from looking, and what would we still need to find out?',safety:'Use safe reproductions rather than handling fragile or unknown artefacts.'}
+];
+export function ks1HistoryActivity(id,year){
+ if(!Number.isInteger(year)||![1,2].includes(year))throw Error('Year must be 1 or 2.');
+ const a=ks1HistoryActivities.find(x=>x.id===id&&x.year===year);
+ if(!a)throw Error('Unknown history activity for year.');
+ return {...a,materials:[...a.materials],steps:[...a.steps],masteryVerified:false,reviewRequired:true};
+}
