@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "stage": "Lower Key Stage 2",
+  "years": [
+    "Year 3",
+    "Year 4"
+  ],
+  "ageRange": "approximately 7–9",
+  "status": "editorial map; not independently curriculum verified",
+  "sourceModules": [
+    "src/ks2Science.js",
+    "src/ks2Foundation.js"
+  ],
+  "sourceGaps": [
+    "No dedicated src/ks2English.js or src/ks2Maths.js found in current src listing; investigate other sources and build explicit Year 3/4 coverage"
+  ],
+  "subjects": [
+    {
+      "id": "LKS2-S01",
+      "name": "English",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S02",
+      "name": "Mathematics",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S03",
+      "name": "Science",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S04",
+      "name": "History",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S05",
+      "name": "Geography",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S06",
+      "name": "Art and design",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S07",
+      "name": "Computing",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S08",
+      "name": "Design and technology",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S09",
+      "name": "Music",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S10",
+      "name": "Physical education",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S11",
+      "name": "Foreign languages",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    },
+    {
+      "id": "LKS2-S12",
+      "name": "Religious education (locally agreed syllabus)",
+      "year3Status": "unverified",
+      "year4Status": "unverified",
+      "objectiveAuditRequired": true
+    }
+  ],
+  "notes": [
+    "England national curriculum Year 3/4 statutory requirements require objective-by-objective review; some programmes specify lower KS2 rather than distinct year requirements",
+    "Foreign languages become a KS2 national curriculum subject",
+    "RE depends on local syllabus or school arrangements; do not certify a universal national RE syllabus",
+    "PSHE, relationships and health education, and enrichment need separate scope and requirements review",
+    "Source module presence does not demonstrate curriculum coverage or live interface integration"
+  ]
+}
