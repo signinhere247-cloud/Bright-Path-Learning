@@ -1,0 +1,113 @@
+{
+  "step": 74,
+  "stage": "Lower Key Stage 2 Mathematics",
+  "years": {
+    "3": {
+      "numberAndPlaceValue": [
+        "Count from 0 in multiples of 4, 8, 50 and 100",
+        "Recognise place value in three-digit numbers; compare and order numbers to 1,000",
+        "Find 10 or 100 more or less; read and write Roman numerals to 12"
+      ],
+      "additionSubtraction": [
+        "Add and subtract numbers mentally, including three-digit and ones/tens/hundreds",
+        "Add and subtract three-digit numbers using formal written methods where appropriate",
+        "Estimate and use inverse operations to check"
+      ],
+      "multiplicationDivision": [
+        "Recall and use 3, 4 and 8 multiplication tables and related division facts",
+        "Write and calculate multiplication and division statements, including two-digit by one-digit multiplication",
+        "Solve problems involving scaling and correspondence"
+      ],
+      "fractions": [
+        "Count in tenths; understand tenths as fractions and decimals",
+        "Recognise, find and write unit and non-unit fractions of amounts",
+        "Compare and order fractions with the same denominator; add and subtract fractions with the same denominator"
+      ],
+      "measurement": [
+        "Measure, compare, add and subtract length, mass, volume/capacity",
+        "Measure perimeter of simple 2D shapes",
+        "Tell and write time to nearest minute; use 12/24-hour clocks and Roman numerals",
+        "Recognise pounds and pence and solve money problems"
+      ],
+      "geometry": [
+        "Draw 2D shapes and make 3D models",
+        "Recognise angles as a property of shape and identify right angles",
+        "Identify horizontal, vertical, perpendicular and parallel lines"
+      ],
+      "statistics": [
+        "Interpret and present data using bar charts, pictograms and tables",
+        "Solve one-step and two-step questions about data"
+      ],
+      "reasoning": [
+        "Solve problems using number facts and appropriate operations",
+        "Explain and check methods using inverse operations and estimation"
+      ]
+    },
+    "4": {
+      "numberAndPlaceValue": [
+        "Count in multiples of 6, 7, 9, 25 and 1,000",
+        "Recognise place value in four-digit numbers; order and compare to 10,000",
+        "Round to nearest 10, 100 or 1,000; read Roman numerals to 100"
+      ],
+      "additionSubtraction": [
+        "Add and subtract numbers with up to four digits using formal written methods",
+        "Estimate and use inverse operations to check answers",
+        "Solve two-step addition and subtraction problems"
+      ],
+      "multiplicationDivision": [
+        "Recall multiplication and division facts for all tables up to 12 × 12",
+        "Use place value, known facts and written methods for two-digit and three-digit numbers multiplied by one digit",
+        "Divide up to three-digit numbers by one digit, including remainders in context"
+      ],
+      "fractions": [
+        "Recognise and show families of equivalent fractions",
+        "Count in hundredths; recognise hundredths as fractions and decimals",
+        "Add and subtract fractions with the same denominator; solve fractions of quantities"
+      ],
+      "measurement": [
+        "Convert between common units of length, mass, volume and time",
+        "Measure and calculate perimeter of rectilinear shapes",
+        "Find area by counting squares",
+        "Read, write and convert time between analogue and digital 12/24-hour clocks"
+      ],
+      "geometry": [
+        "Compare and classify shapes, including quadrilaterals and triangles",
+        "Identify acute and obtuse angles and compare angles",
+        "Identify lines of symmetry in 2D shapes; complete symmetric figures",
+        "Describe positions on a 2D grid and plot specified points"
+      ],
+      "statistics": [
+        "Interpret and present discrete and continuous data using appropriate graphical methods, including line graphs",
+        "Solve comparison, sum and difference problems using information in charts and graphs"
+      ],
+      "reasoning": [
+        "Solve multi-step problems and explain efficient methods",
+        "Use mathematical reasoning to investigate patterns and justify conclusions"
+      ]
+    }
+  },
+  "progressionNotes": [
+    "Year 3 builds secure three-digit number understanding; Year 4 extends this to four-digit numbers and rounding to 1,000.",
+    "Year 3 prioritises 3, 4 and 8 times tables; Year 4 consolidates all multiplication tables to 12 × 12.",
+    "Fractions progress from tenths in Year 3 to hundredths and equivalent fractions in Year 4.",
+    "Measurement develops from perimeter of simple shapes in Year 3 to perimeter and area in Year 4.",
+    "Statistics develops from pictograms, bar charts and tables to line graphs and broader data interpretation."
+  ],
+  "status": "draft progression map requiring educator and statutory-source verification",
+  "verification": {
+    "officialObjectiveTraceability": false,
+    "educatorApproved": false,
+    "assessmentMapped": false,
+    "liveLearnerIntegration": false
+  },
+  "implementationOrder": [
+    "numberAndPlaceValue",
+    "additionSubtraction",
+    "multiplicationDivision",
+    "fractions",
+    "measurement",
+    "geometry",
+    "statistics",
+    "reasoning"
+  ]
+}
