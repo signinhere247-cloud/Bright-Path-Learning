@@ -1,0 +1,13 @@
+// Adult-supported KS1 computing tasks. Offline by default; no child data stored.
+export const ks1ComputingActivities=[
+ {id:'KS1-COMP-01',year:1,title:'Robot instructions',focus:'algorithms and sequencing',materials:['paper grid','direction cards','toy figure'],steps:['Choose a start and finish on a paper grid.','Write a sequence of forward and turn instructions.','Ask an adult to follow the instructions exactly.','Change unclear instructions until the figure reaches the goal.'],adultPrompt:'What makes your instructions clear enough for someone else to follow?',safety:'Use a fictional grid; do not share home or school routes.'},
+ {id:'KS1-COMP-02',year:1,title:'Find the bug',focus:'debugging simple programs',materials:['paper grid','prepared instruction cards'],steps:['Read a short sequence of movement instructions.','Follow the instructions and notice where the figure ends.','Find the instruction that causes the wrong result.','Replace it and test the corrected sequence.'],adultPrompt:'How did testing help you find the mistake?',safety:'Keep tasks offline and use fictional routes.'},
+ {id:'KS1-COMP-03',year:2,title:'Create a digital poster plan',focus:'digital content creation and purpose',materials:['paper storyboard','coloured pencils','optional supervised drawing app'],steps:['Choose a fictional event to advertise.','Plan a heading, picture and short message.','Create the poster on paper or with a supervised app.','Review whether the message is clear for its audience.'],adultPrompt:'Which parts of your design help people understand the message?',safety:'Do not use real names, photographs, contact details or public sharing.'},
+ {id:'KS1-COMP-04',year:2,title:'Safe or ask an adult?',focus:'online safety and privacy',materials:['fictional scenario cards','sorting sheet'],steps:['Read fictional situations about links, messages and personal information.','Sort each into safe, unsafe or ask a trusted adult.','Explain why passwords and addresses should stay private.','Practise telling a trusted adult about something worrying online.'],adultPrompt:'What should you do if a message makes you uncomfortable or asks for private information?',safety:'Use fictional scenarios only; never request children’s passwords or disclosures.'}
+];
+export function ks1ComputingActivity(id,year){
+ if(!Number.isInteger(year)||![1,2].includes(year))throw Error('Year must be 1 or 2.');
+ const a=ks1ComputingActivities.find(x=>x.id===id&&x.year===year);
+ if(!a)throw Error('Unknown computing activity for year.');
+ return {...a,materials:[...a.materials],steps:[...a.steps],masteryVerified:false,reviewRequired:true};
+}
