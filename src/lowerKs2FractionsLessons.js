@@ -42,7 +42,7 @@ export const lowerKs2FractionsLessons=[
  q('Which fraction means thirty-six hundredths?',['36/10','36/100','100/36'],'36/100','Hundredths have 100 as the denominator.'),
  q('What is 0.08 as a fraction?',['8/10','8/100','80/100'],'8/100','Eight hundredths is 8/100.'),
  q('What is 1/100 more than 34/100?',['33/100','35/100','44/100'],'35/100','Add one hundredth to the numerator.'),
- q('Which is equal to 0.5?',['5/100','50/100','5/10 only'],'50/100','Five tenths is equivalent to fifty hundredths.')
+ q('Which is equal to 0.5?',['5/100','50/100','5/1000'],'50/100','Five tenths is equivalent to fifty hundredths.')
  ]},
  {id:'LKS2-FR-Y4-03',year:4,title:'Add and subtract fractions',focus:'Add and subtract fractions with the same denominator',explanation:'When fractions have the same denominator, add or subtract the numerators and keep the denominator. Check that your answer makes sense and notice when the result is one whole or more.',workedExamples:[{question:'Calculate 3/8 + 2/8.',answer:'5/8'},{question:'Calculate 7/10 − 4/10.',answer:'3/10'}],questions:[
  q('What is 2/9 + 4/9?',['6/9','6/18','8/9'],'6/9','Add the numerators and keep ninths.'),
