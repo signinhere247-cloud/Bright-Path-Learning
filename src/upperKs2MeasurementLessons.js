@@ -7,7 +7,7 @@ export const upperKs2MeasurementLessons=[
  q('Convert 750 cm into metres.',['7.5 m','75 m','0.75 m'],'7.5 m','Divide centimetres by 100: 750 ÷ 100 = 7.5 metres.'),
  q('How many millimetres are in 6 cm?',['6 mm','60 mm','600 mm'],'60 mm','Each centimetre contains 10 millimetres.'),
  q('Convert 2.4 km into metres.',['24 m','240 m','2,400 m'],'2,400 m','Multiply kilometres by 1,000 to get metres.'),
- q('Which is the longest length?',['950 mm','95 cm','0.9 m'],'950 mm','950 mm is 95 cm, while 0.9 m is 90 cm; 950 mm and 95 cm are equal, so neither is uniquely longest.')
+ q('Which length is longer than 0.9 m?',['950 mm','85 cm','0.8 m'],'950 mm','0.9 m is 900 mm. 950 mm is longer than 900 mm, while 85 cm and 0.8 m are shorter.')
  ]},
  {id:'UKS2-MEA-Y5-02',year:5,title:'Convert mass and capacity',focus:'Convert between metric units of mass and capacity',explanation:'For mass, 1 kilogram is 1,000 grams. For capacity, 1 litre is 1,000 millilitres. Multiply when changing to a smaller unit and divide when changing to a larger unit. Always include the correct unit in your answer.',workedExamples:[{question:'Convert 3.2 kg into grams.',answer:'3,200 g'},{question:'Convert 450 ml into litres.',answer:'0.45 l'}],questions:[
  q('How many grams are in 5 kg?',['500 g','5,000 g','50,000 g'],'5,000 g','One kilogram is 1,000 grams.'),
