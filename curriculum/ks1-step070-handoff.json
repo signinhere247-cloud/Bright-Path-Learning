@@ -1,0 +1,79 @@
+{
+  "step": 70,
+  "phase": "KS1",
+  "years": [
+    1,
+    2
+  ],
+  "status": "implementation-handoff-not-curriculum-certification",
+  "sources": {
+    "english": "src/ks1English.js",
+    "maths": "src/ks1Maths.js",
+    "foundation": "src/ks1Foundation.js"
+  },
+  "supplementary": {
+    "literacy": {
+      "modules": [
+        "ks1PhonicsSequences.js",
+        "ks1ReadingPassages.js",
+        "ks1WritingActivities.js",
+        "ks1SpellingHandwriting.js"
+      ],
+      "expectedActivities": 16,
+      "qa": "scripts/ks1-literacy-qa.mjs"
+    },
+    "maths": {
+      "modules": [
+        "ks1PlaceValueActivities.js",
+        "ks1AdditionSubtractionActivities.js",
+        "ks1MultiplicationDivisionActivities.js",
+        "ks1FractionsActivities.js",
+        "ks1MeasurementActivities.js",
+        "ks1GeometryActivities.js",
+        "ks1StatisticsActivities.js",
+        "ks1MathsReasoningActivities.js"
+      ],
+      "expectedActivities": 32,
+      "qa": "scripts/ks1-maths-expansion-qa.mjs"
+    },
+    "foundation": {
+      "modules": [
+        "ks1ScienceActivities.js",
+        "ks1HistoryActivities.js",
+        "ks1GeographyActivities.js",
+        "ks1ArtDesignActivities.js",
+        "ks1DesignTechnologyActivities.js",
+        "ks1ComputingActivities.js",
+        "ks1MusicActivities.js",
+        "ks1PhysicalEducationActivities.js",
+        "ks1ReligiousEducationActivities.js"
+      ],
+      "expectedActivities": 36,
+      "qa": "scripts/ks1-foundation-expansion-qa.mjs"
+    }
+  },
+  "totalExpectedSupplementaryActivities": 84,
+  "verification": {
+    "structuralQaAvailable": true,
+    "educatorVerified": false,
+    "statutoryObjectiveCoverageVerified": false,
+    "liveInterfaceIntegrated": false,
+    "practicalAttainmentVerified": false,
+    "localReSyllabusVerified": false
+  },
+  "outstanding": [
+    "Educator subject-content review and corrections",
+    "Statutory Year 1/Year 2 objective-by-objective traceability and gaps",
+    "Integration of supplementary guides into learner navigation",
+    "Accessible supervised practical assessment and evidence review",
+    "Safeguarding, copyright and local RE syllabus signoff"
+  ],
+  "nextPhase": {
+    "startStep": 71,
+    "keyStage": "Lower KS2",
+    "years": [
+      3,
+      4
+    ]
+  }
+}
