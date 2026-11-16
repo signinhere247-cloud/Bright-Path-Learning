@@ -4,7 +4,7 @@ const q=(prompt,options,answer,explanation)=>({prompt,options,answer,explanation
 export const lowerKs2AdditionSubtractionLessons=[
  {id:'LKS2-AS-Y3-01',year:3,title:'Mental addition and subtraction',focus:'Add and subtract mentally using place value and known facts',explanation:'Partition numbers into hundreds, tens and ones. Add or subtract one part at a time, checking whether you need to exchange across a place-value boundary.',workedExamples:[{question:'Calculate 236 + 40.',answer:'276'},{question:'Calculate 582 − 200.',answer:'382'}],questions:[
  q('What is 347 + 30?',['367','377','647'],'377','Add 3 tens to the tens digit: 347 + 30 = 377.'),
- q('What is 625 − 40?',['585','615','585'],'585','Subtract 4 tens: 625 − 40 = 585.'),
+ q('What is 625 − 40?',['585','595','615'],'585','Subtract 4 tens: 625 − 40 = 585.'),
  q('What is 198 + 5?',['193','203','213'],'203','198 + 2 = 200, then add 3 more.'),
  q('What is 460 − 70?',['390','430','530'],'390','Subtract 7 tens from 46 tens to get 39 tens.'),
  q('What is 325 + 100?',['335','425','525'],'425','Adding 100 increases the hundreds by one.')
