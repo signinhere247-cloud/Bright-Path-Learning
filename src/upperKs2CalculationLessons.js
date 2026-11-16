@@ -25,7 +25,7 @@ export const upperKs2CalculationLessons=[
  ]},
  {id:'UKS2-CAL-Y5-04',year:5,title:'Explore factors, multiples and prime numbers',focus:'Identify multiples, factors, common factors and prime numbers',explanation:'A multiple is the result of multiplying a number by a whole number. A factor divides exactly into another number. A prime number has exactly two factors: 1 and itself. The number 1 is not prime.',workedExamples:[{question:'List the factors of 12.',answer:'1, 2, 3, 4, 6 and 12'},{question:'Is 17 a prime number?',answer:'Yes'}],questions:[
  q('Which number is a factor of 24?',['5','6','7'],'6','24 ÷ 6 = 4, so 6 is a factor of 24.'),
- q('Which is a multiple of 9?',['26','36',' forty'],'36','9 × 4 = 36.'),
+ q('Which is a multiple of 9?',['26','36','40'],'36','9 × 4 = 36.'),
  q('Which number is prime?',['21','27','29'],'29','29 has exactly two factors: 1 and 29.'),
  q('What is the lowest common multiple of 4 and 6?',['8','12','24'],'12','12 is the smallest positive number in both times tables.'),
  q('Which list contains all the factors of 10?',['1, 2, 5, 10','1, 2, 10','2, 5, 10'],'1, 2, 5, 10','These are the whole numbers that divide exactly into 10.')
