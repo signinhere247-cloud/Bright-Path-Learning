@@ -2,7 +2,7 @@
 // Draft content: educator review and statutory objective mapping remain required.
 const q=(prompt,options,answer,explanation)=>({prompt,options,answer,explanation});
 export const lowerKs2MultiplicationDivisionLessons=[
- {id:'LKS2-MD-Y3-01',year:3,title:'Recall the 3, 4 and 8 times tables',focus:'Recall and use multiplication and division facts for the 3, 4 and 8 tables',explanation:'Multiplication is equal groups. Division shares or groups equally. Use known facts and notice that the 4 times table is double the 2 times table and the 8 times table is double the 4 times table.',workedExamples:[{question:'What is 7 × 4?',answer:'28'},{question:'What is 32 ÷ 8?',answer:'4'}],questions:[
+ {id:'LKS2-MD-Y3-01',year:3,title:'Recall the 3, 4 and 8 times tables',focus:'Recall and use multiplication and division facts for the 3, 4 and 8 tables',explanation:'Multiplication is equal groups. Division shares or groups equally. For Year 3, practise the 3, 4 and 8 times tables. Notice that the 4 times table is double the 2 times table and the 8 times table is double the 4 times table.',workedExamples:[{question:'What is 7 × 4?',answer:'28'},{question:'What is 32 ÷ 8?',answer:'4'}],questions:[
  q('What is 8 × 6?',['42','48','56'],'48','Eight groups of six make 48.'),
  q('What is 3 × 9?',['18','27','36'],'27','Three groups of nine make 27.'),
  q('What is 32 ÷ 4?',['6','8','9'],'8','32 shared into groups of 4 makes 8 groups.'),
