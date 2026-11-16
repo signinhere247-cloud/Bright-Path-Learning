@@ -25,7 +25,7 @@ export const upperKs2FractionsDecimalsPercentagesLessons=[
  ]},
  {id:'UKS2-FDP-Y5-04',year:5,title:'Recognise decimals and fractions',focus:'Read and write decimal numbers as fractions and recognise thousandths',explanation:'The first digit after the decimal point shows tenths, the second shows hundredths and the third shows thousandths. For example, 0.37 means 37 hundredths, or 37/100. Use place-value columns to understand the value of each digit.',workedExamples:[{question:'Write 0.6 as a fraction in tenths.',answer:'6/10'},{question:'Write 0.125 as a fraction in thousandths.',answer:'125/1000'}],questions:[
  q('What fraction is equal to 0.4?',['4/10','4/100','40/10'],'4/10','0.4 means four tenths.'),
- q('What is the value of the 7 in 2. seventy?',['7 tenths','7 hundredths','7 ones'],'7 tenths','In 2.7, the 7 is in the tenths column.'),
+ q('What is the value of the 7 in 2.7?',['7 tenths','7 hundredths','7 ones'],'7 tenths','In 2.7, the 7 is in the tenths column.'),
  q('Write 0.35 as a fraction.',['35/10','35/100','35/1000'],'35/100','There are 35 hundredths in 0.35.'),
  q('Which decimal is equal to 9/100?',['0.9','0.09','0.009'],'0.09','Nine hundredths is written as 0.09.'),
  q('How many thousandths are in 0.008?',['8','80','800'],'8','0.008 is eight thousandths.')
