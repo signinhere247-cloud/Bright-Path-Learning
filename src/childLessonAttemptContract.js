@@ -36,6 +36,6 @@ export function lessonAttemptSummary(attempt,{childProfileId}={}){
 }
 function validateAttempt(a){
  if(!a||a.schemaVersion!==1||!validId(a.childProfileId)||!validId(a.lessonId)||!validId(a.attemptId)||!Number.isInteger(a.totalQuestions)||a.totalQuestions<1||a.totalQuestions>MAX_QUESTIONS||!validDate(a.startedAt)||!(a.completedAt===null||validDate(a.completedAt))||!a.answers||typeof a.answers!=='object'||Array.isArray(a.answers))throw new Error('Invalid attempt.');
- for(const [key,value] of Object.entries(a.answers)){const n=Number(key);if(!/^(0|[1-9]\\d*)$/.test(key)||!Number.isInteger(n)||n>=a.totalQuestions||typeof value!=='boolean')throw new Error('Invalid attempt answers.');}
+ for(const [key,value] of Object.entries(a.answers)){const n=Number(key);if(!/^(0|[1-9][0-9]*)$/.test(key)||!Number.isInteger(n)||n>=a.totalQuestions||typeof value!=='boolean')throw new Error('Invalid attempt answers.');}
  if(a.completedAt!==null&&(Date.parse(a.completedAt)<Date.parse(a.startedAt)||Object.keys(a.answers).length!==a.totalQuestions))throw new Error('Invalid completed attempt.');
 }
