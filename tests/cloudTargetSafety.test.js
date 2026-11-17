@@ -6,3 +6,7 @@ test('production rejects testing project',()=>assert.throws(()=>assertSafeCloudT
 test('testing host accepts testing project',()=>assert.equal(assertSafeCloudTarget({url:testUrl,hostname:'brightpath-cloud-auth-testing.onrender.com'}),TESTING_PROJECT_REF));
 test('production accepts a distinct syntactically valid project',()=>assert.equal(assertSafeCloudTarget({url:'https://abcdefghijklmnopqrst.supabase.co',hostname:'bright-path-learning.onrender.com'}),'abcdefghijklmnopqrst'));
 test('rejects malformed and insecure URLs',()=>{for(const url of ['http://'+TESTING_PROJECT_REF+'.supabase.co','https://evil.example','https://'+TESTING_PROJECT_REF+'.supabase.co.evil.example','https://'+TESTING_PROJECT_REF+'.supabase.co/?token=secret','not a url'])assert.throws(()=>assertSafeCloudTarget({url,hostname:'bright-path-learning.onrender.com'}));});
+
+test('custom domain cannot point to the testing project',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'learn.brightpath.example'}),/cannot use the testing database/));
+test('unrecognised preview host cannot point to the testing project',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'unknown-preview.onrender.com'}),/cannot use the testing database/));
+test('local development may use testing project',()=>assert.equal(assertSafeCloudTarget({url:testUrl,hostname:'localhost'}),TESTING_PROJECT_REF));
