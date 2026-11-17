@@ -5,6 +5,7 @@
 - `public.family_snapshots` has parent-scoped SELECT, INSERT, UPDATE RLS policies.
 - `public.update_family_snapshot` currently runs SECURITY DEFINER and is EXECUTE-granted only to authenticated, service_role and postgres.
 - Authenticated role has SELECT and INSERT but **not UPDATE** on `family_snapshots`. The current RPC is needed for updates; simply switching it to SECURITY INVOKER would break sync.
+- **Completed on testing 17 Nov 2026:** revoked authenticated TRUNCATE, DELETE, REFERENCES and TRIGGER. Read-only privilege verification confirmed SELECT=true, INSERT=true, UPDATE=false, TRUNCATE=false, DELETE=false, RPC EXECUTE=true. No saved rows were changed.
 - Supabase security advisor warns about the privileged RPC and disabled leaked-password protection.
 
 ## Required preflight before any write or privilege change
