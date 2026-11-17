@@ -1,0 +1,20 @@
+name: BrightPath read-only deployed backend audit (candidate)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/check-deployed-backends.py'
+      - '.github/workflows/deployed-backend-audit-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit-test deployed asset scanner
+        run: python3 -m unittest discover -s tests -p 'test_deployed_backend_audit.py'
+      - name: Inspect public deployed JS assets (no authentication or writes)
+        run: python3 scripts/check-deployed-backends.py
