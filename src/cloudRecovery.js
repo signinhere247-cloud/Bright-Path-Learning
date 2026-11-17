@@ -47,6 +47,9 @@ export function clearCloudRecovery(storage){
  */
 export function applyCloudRestore(storage,currentFamily,nextFamily,targetId){
  if(!currentFamily?.profiles?.some(p=>p.id===targetId)||!nextFamily?.profiles?.some(p=>p.id===targetId))throw Error('Restore target is missing.');
+ // A restore may change only the selected child's data, not add/remove/reorder siblings.
+ if(currentFamily.profiles.length!==nextFamily.profiles.length||currentFamily.profiles.some((p,i)=>nextFamily.profiles[i]?.id!==p.id))throw Error('Cloud restore changed the family profile list. Nothing was restored.');
+ if(currentFamily.profiles.some((p,i)=>p.id!==targetId&&JSON.stringify(p)!==JSON.stringify(nextFamily.profiles[i])))throw Error('Cloud restore attempted to change another explorer. Nothing was restored.');
  const oldLinks=storage.getItem(SYNC_KEY);
  const links=readSyncLinks(storage);
  delete links[targetId];

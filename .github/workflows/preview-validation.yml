@@ -38,6 +38,10 @@ jobs:
         run: |
           npm run check:deploy
           npm run check:preview
+      - name: Cloud release safety gate
+        run: node scripts/cloud-release-readiness.mjs
+      - name: Production cloud migration preflight
+        run: node scripts/production-cloud-preflight.mjs
       - name: Production build
         run: npm run build
       - name: Validate generated assets

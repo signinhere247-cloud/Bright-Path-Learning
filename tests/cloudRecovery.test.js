@@ -38,3 +38,21 @@ test('legacy cloud recovery without saved links restores safely unlinked',()=>{
  s.removeItem('brightpath-cloud-restore-sync-links-v1');linkCloudProfile(s,'explorer_1',9);
  restoreCloudRecovery(s);assert.deepEqual(readSyncLinks(s),{});
 });
+
+test('cloud restore rejects a changed sibling before writing recovery data',()=>{
+ const s=storage(),f=readFamily(s);writeFamily(s,f);
+ const sibling=structuredClone(f.profiles[0]);sibling.id='explorer_2';
+ const family={...f,profiles:[f.profiles[0],sibling]};writeFamily(s,family);
+ const next=structuredClone(family);next.profiles[1].save.coins=999;
+ assert.throws(()=>applyCloudRestore(s,family,next,family.profiles[0].id),/another explorer/);
+ assert.equal(inspectCloudRecovery(s),null);
+ assert.equal(readFamily(s).profiles[1].save.coins,family.profiles[1].save.coins);
+});
+test('cloud restore rejects removal or replacement of a sibling',()=>{
+ const s=storage(),f=readFamily(s),sibling=structuredClone(f.profiles[0]);sibling.id='explorer_2';
+ const family={...f,profiles:[f.profiles[0],sibling]};writeFamily(s,family);
+ for(const profiles of [[family.profiles[0]], [family.profiles[0],{...sibling,id:'explorer_3'}]]){
+  assert.throws(()=>applyCloudRestore(s,family,{...family,profiles},family.profiles[0].id),/profile list/);
+  assert.equal(inspectCloudRecovery(s),null);
+ }
+});

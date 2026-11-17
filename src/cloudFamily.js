@@ -1,4 +1,5 @@
 /** Optional parent sign-in. Never store service-role credentials in browser code. */
+import { assertSafeCloudTarget } from './cloudTargetSafety.js';
 let cached;
 export function cloudConfigured(env=import.meta.env){
  return Boolean(env?.VITE_SUPABASE_URL && env?.VITE_SUPABASE_PUBLISHABLE_KEY);
@@ -8,6 +9,7 @@ export function validParentEmail(value){
 }
 export async function cloudClient(){
  if(!cloudConfigured())throw Error('Cloud accounts are not configured for this website. Your local profiles are safe.');
+ assertSafeCloudTarget({url:import.meta.env.VITE_SUPABASE_URL,hostname:location.hostname,allowExistingProduction:import.meta.env.VITE_ALLOW_EXISTING_BRIGHTPATH_PRODUCTION==='true'});
  if(!cached){cached=import('@supabase/supabase-js').then(({createClient})=>createClient(import.meta.env.VITE_SUPABASE_URL,import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}));}
  return cached;
 }
@@ -56,10 +58,10 @@ export async function downloadCloudExplorer(profileKey){
 export async function syncCloudExplorer(profile,revision){
  const user=await parentAccount();if(!user)throw Error('Sign in as a parent first.');
  const client=await cloudClient();
- const {data:remote,error:readError}=await client.from('family_snapshots').select('profile_key,revision').eq('parent_id',user.id).eq('profile_key',profile.id).maybeSingle();
+ const {data:remote,error:readError}=await client.from('family_snapshots').select('profile_key,revision,parent_id').eq('parent_id',user.id).eq('profile_key',profile.id).maybeSingle();
  if(readError)throw Error('Could not verify cloud version. Local progress is unchanged.');
  const {planCloudSync}=await import('./cloudSync.js');
- const payload=planCloudSync(profile,remote,revision);
+ const payload=planCloudSync(profile,remote,revision,user.id);
  const {data,error}=await client.rpc('update_family_snapshot',{
   p_profile_key:payload.profile_key,p_expected_revision:payload.expected_revision,
   p_display_name:payload.display_name,p_learning_age:payload.learning_age,p_save_data:payload.save_data
