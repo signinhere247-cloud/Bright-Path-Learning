@@ -1,6 +1,9 @@
 import importlib.util
 import pathlib
 import unittest
+from io import StringIO
+from contextlib import redirect_stdout
+from unittest.mock import patch
 
 module_path = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "check-deployed-backends.py"
 spec = importlib.util.spec_from_file_location("backend_audit", module_path)
