@@ -9,3 +9,8 @@ test('rejects missing cloud backup',()=>assert.throws(()=>planCloudSync(profile,
 test('rejects unlinked profile',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:0},undefined),/not been linked/));
 test('ignores damaged local sync metadata',()=>{const store={getItem:()=>'{oops'};assert.deepEqual(readSyncLinks(store),{})});
 test('stores per-explorer revisions',()=>{const map=new Map();const store={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)};linkCloudProfile(store,id,2);assert.equal(readSyncLinks(store)[id],2)});
+
+test('accepts matching parent ownership and revision',()=>{const result=planCloudSync(profile,{profile_key:id,revision:3,parent_id:'parent_A'},3,'parent_A');assert.equal(result.expected_revision,3)});
+test('rejects another parent even when profile key and revision match',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:3,parent_id:'parent_B'},3,'parent_A'),/does not belong/));
+test('rejects cloud row missing parent ownership',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:3},3,'parent_A'),/does not belong/));
+test('rejects missing signed-in parent id',()=>assert.throws(()=>planCloudSync(profile,{profile_key:id,revision:3,parent_id:'parent_A'},3,''),/does not belong/));
