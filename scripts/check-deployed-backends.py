@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only check of public BrightPath built assets; print project refs only."""
+"""Read-only audit of deployed BrightPath JS, including lazy-loaded chunks."""
 import re
 import sys
 from html.parser import HTMLParser
@@ -11,6 +11,11 @@ SITES = {
     "testing": "https://brightpath-cloud-auth-testing.onrender.com/",
 }
 REF = re.compile(rb"https://([a-z0-9]{20})\.supabase\.co(?:[/\x22\x27\x60]|$)")
+# Vite outputs lazy chunks via import("./chunk-xxxx.js") and preload helpers.
+CHUNK = re.compile(rb'["\x27\x60]([^"\x27\x60<>\s]{1,180}\.js)["\x27\x60]')
+MAX_ASSETS = 60
+MAX_BYTES = 4_000_000
+
 class Scripts(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -22,49 +27,68 @@ class Scripts(HTMLParser):
                     self.paths.append(value)
 
 def read(url):
-    req = Request(url, headers={"User-Agent": "BrightPath-readonly-backend-audit/1.0"})
+    req = Request(url, headers={"User-Agent": "BrightPath-readonly-backend-audit/1.1"})
     with urlopen(req, timeout=15) as response:
-        if response.geturl().split("/")[2] != urlparse(url).netloc:
+        if urlparse(response.geturl()).netloc != urlparse(url).netloc:
             raise RuntimeError("unexpected redirect host")
-        if int(response.headers.get("Content-Length", "0")) > 4_000_000:
+        if int(response.headers.get("Content-Length", "0")) > MAX_BYTES:
             raise RuntimeError("asset too large")
-        return response.read(4_000_001)
+        data = response.read(MAX_BYTES + 1)
+        if len(data) > MAX_BYTES:
+            raise RuntimeError("asset too large")
+        return data
 
-def scan_site(url):
-    html = read(url)
-    if len(html) > 4_000_000:
-        raise RuntimeError("index too large")
+def safe_asset_url(site_url, parent_url, candidate):
+    url = urljoin(parent_url, candidate)
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or parsed.netloc != urlparse(site_url).netloc:
+        return None
+    if not parsed.path.endswith(".js"):
+        return None
+    return url
+
+def scan_site(site_url):
+    html = read(site_url)
     parser = Scripts()
     parser.feed(html.decode("utf-8", "replace"))
     refs = set(REF.findall(html))
-    for path in parser.paths[:30]:
-        asset_url = urljoin(url, path)
-        if urlparse(asset_url).netloc != urlparse(url).netloc:
+    pending = [(site_url, path) for path in parser.paths]
+    seen = set()
+    while pending:
+        parent, path = pending.pop(0)
+        asset_url = safe_asset_url(site_url, parent, path)
+        if asset_url is None or asset_url in seen:
             continue
-        if not urlparse(asset_url).path.endswith(".js"):
-            continue
+        if len(seen) >= MAX_ASSETS:
+            raise RuntimeError("asset scan limit reached; incomplete")
+        seen.add(asset_url)
         asset = read(asset_url)
-        if len(asset) > 4_000_000:
-            raise RuntimeError("asset too large")
         refs.update(REF.findall(asset))
-    return sorted(ref.decode() for ref in refs)
+        for chunk in CHUNK.findall(asset):
+            pending.append((asset_url, chunk.decode("utf-8", "replace")))
+    return sorted(ref.decode() for ref in refs), len(seen)
 
 def main():
     refs = {}
     for name, url in SITES.items():
         try:
-            refs[name] = scan_site(url)
+            refs[name], count = scan_site(url)
         except Exception as error:
-            print(f"{name}: unable to inspect deployed assets ({type(error).__name__})")
+            print(f"{name}: inspection incomplete ({type(error).__name__})")
             return 2
-        print(f"{name}: project refs = {', '.join(refs[name]) if refs[name] else 'unavailable'}")
+        print(f"{name}: JS assets scanned = {count}; project refs = {', '.join(refs[name]) if refs[name] else 'unavailable'}")
+    if refs["main"] == [] and refs["testing"] == ["kvsmoxyemuimmlivcevn"]:
+        print("MAIN CLOUD CONFIG: no Supabase URL found in public assets; likely not configured, but not proof of backend isolation.")
+        print("NEXT ACTION: verify main Render build-time VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY presence without printing values.")
+        print("BLOCKED: cannot certify two-backend separation; no accounts or database writes.")
+        return 2
     if len(refs["main"]) != 1 or refs["testing"] != ["kvsmoxyemuimmlivcevn"]:
-        print("BLOCKED: project reference unknown or unexpected")
+        print("BLOCKED: main backend not established or testing backend unexpected")
         return 2
     if refs["main"] == refs["testing"]:
-        print("BLOCKED: both sites use same Supabase project")
+        print("BLOCKED: both sites expose the same Supabase project")
         return 2
-    print("Distinct refs observed in publicly deployed assets. No database writes permitted.")
+    print("Distinct public refs observed; not permission to write to either database.")
     return 0
 
 if __name__ == "__main__":

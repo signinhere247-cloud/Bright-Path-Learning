@@ -32,6 +32,8 @@ jobs:
           retention-days: 14
       - name: Unit tests
         run: npm test
+      - name: Read-only deployed backend scanner unit tests
+        run: python3 -m unittest discover -s tests -p 'test_deployed_backend_audit.py'
       - name: Source audit
         run: npm run audit
       - name: Deployment and preview safety
