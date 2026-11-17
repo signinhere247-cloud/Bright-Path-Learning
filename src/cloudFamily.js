@@ -9,7 +9,7 @@ export function validParentEmail(value){
 }
 export async function cloudClient(){
  if(!cloudConfigured())throw Error('Cloud accounts are not configured for this website. Your local profiles are safe.');
- assertSafeCloudTarget({url:import.meta.env.VITE_SUPABASE_URL,hostname:location.hostname});
+ assertSafeCloudTarget({url:import.meta.env.VITE_SUPABASE_URL,hostname:location.hostname,allowExistingProduction:import.meta.env.VITE_ALLOW_EXISTING_BRIGHTPATH_PRODUCTION==='true'});
  if(!cached){cached=import('@supabase/supabase-js').then(({createClient})=>createClient(import.meta.env.VITE_SUPABASE_URL,import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}));}
  return cached;
 }
