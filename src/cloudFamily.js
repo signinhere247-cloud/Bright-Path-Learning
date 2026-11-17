@@ -58,10 +58,10 @@ export async function downloadCloudExplorer(profileKey){
 export async function syncCloudExplorer(profile,revision){
  const user=await parentAccount();if(!user)throw Error('Sign in as a parent first.');
  const client=await cloudClient();
- const {data:remote,error:readError}=await client.from('family_snapshots').select('profile_key,revision').eq('parent_id',user.id).eq('profile_key',profile.id).maybeSingle();
+ const {data:remote,error:readError}=await client.from('family_snapshots').select('profile_key,revision,parent_id').eq('parent_id',user.id).eq('profile_key',profile.id).maybeSingle();
  if(readError)throw Error('Could not verify cloud version. Local progress is unchanged.');
  const {planCloudSync}=await import('./cloudSync.js');
- const payload=planCloudSync(profile,remote,revision);
+ const payload=planCloudSync(profile,remote,revision,user.id);
  const {data,error}=await client.rpc('update_family_snapshot',{
   p_profile_key:payload.profile_key,p_expected_revision:payload.expected_revision,
   p_display_name:payload.display_name,p_learning_age:payload.learning_age,p_save_data:payload.save_data
