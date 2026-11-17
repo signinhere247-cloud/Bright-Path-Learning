@@ -10,3 +10,7 @@ test('rejects malformed and insecure URLs',()=>{for(const url of ['http://'+TEST
 test('custom domain cannot point to the testing project',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'learn.brightpath.example'}),/cannot use the testing database/));
 test('unrecognised preview host cannot point to the testing project',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'unknown-preview.onrender.com'}),/cannot use the testing database/));
 test('local development may use testing project',()=>assert.equal(assertSafeCloudTarget({url:testUrl,hostname:'localhost'}),TESTING_PROJECT_REF));
+
+test('live host accepts existing project only with explicit promotion',()=>assert.equal(assertSafeCloudTarget({url:testUrl,hostname:'bright-path-learning.onrender.com',allowExistingProduction:true}),TESTING_PROJECT_REF));
+test('live host rejects a nonboolean promotion flag',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'bright-path-learning.onrender.com',allowExistingProduction:'true'}),/cannot use the testing database/));
+test('promotion does not enable arbitrary custom domains',()=>assert.throws(()=>assertSafeCloudTarget({url:testUrl,hostname:'learning.example.com',allowExistingProduction:true}),/cannot use the testing database/));
