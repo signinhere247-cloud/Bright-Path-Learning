@@ -14,6 +14,13 @@ class PublicAssetAuditTests(unittest.TestCase):
         self.assertIsNone(audit.safe_asset_url("https://bright-path-learning.onrender.com/", "https://bright-path-learning.onrender.com/assets/index.js", "https://example.com/cloud.js"))
     def test_find_lazy_chunk(self):
         self.assertIn(b"./cloud-abc.js", audit.CHUNK.findall(b'const x=()=>import("./cloud-abc.js")'))
+    def test_missing_main_ref_stays_blocked(self):
+        output = StringIO()
+        with patch.object(audit, 'scan_site', side_effect=[([], 2), (['kvsmoxyemuimmlivcevn'], 2)]), redirect_stdout(output):
+            result = audit.main()
+        self.assertEqual(result, 2)
+        self.assertIn('no Supabase URL found', output.getvalue())
+        self.assertIn('no accounts or database writes', output.getvalue())
     def test_supabase_ref(self):
         self.assertEqual(audit.REF.findall(b'https://kvsmoxyemuimmlivcevn.supabase.co"'), [b'kvsmoxyemuimmlivcevn'])
 
