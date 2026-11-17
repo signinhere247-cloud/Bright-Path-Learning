@@ -77,6 +77,11 @@ def main():
             print(f"{name}: inspection incomplete ({type(error).__name__})")
             return 2
         print(f"{name}: JS assets scanned = {count}; project refs = {', '.join(refs[name]) if refs[name] else 'unavailable'}")
+    if refs["main"] == [] and refs["testing"] == ["kvsmoxyemuimmlivcevn"]:
+        print("MAIN CLOUD CONFIG: no Supabase URL found in public assets; likely not configured, but not proof of backend isolation.")
+        print("NEXT ACTION: verify main Render build-time VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY presence without printing values.")
+        print("BLOCKED: cannot certify two-backend separation; no accounts or database writes.")
+        return 2
     if len(refs["main"]) != 1 or refs["testing"] != ["kvsmoxyemuimmlivcevn"]:
         print("BLOCKED: main backend not established or testing backend unexpected")
         return 2
